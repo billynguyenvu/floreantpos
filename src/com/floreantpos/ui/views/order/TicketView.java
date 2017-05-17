@@ -612,6 +612,7 @@ public class TicketView extends JPanel {
 		if (selectedItem != null) {
 			if (TerminalConfig.isActiveCustomerDisplay()) {
 				String sendMessageToCustomerDisplay = getDisplayMessage(selectedItem, ticket.getTotalAmount().toString());
+                    System.out.println("Send total value to customer display with text: " + sendMessageToCustomerDisplay);
 				DrawerUtil.setItemDisplay(TerminalConfig.getCustomerDisplayPort(), sendMessageToCustomerDisplay);
 			}
 		}
