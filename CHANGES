@@ -30,3 +30,5 @@ creates necessary databse schema and populate initial values.
 5. Previously, it was not possible to switch database without restarting the application.
 This is now fixed. User can switch database any time from login screen by configuring database.
 1
+
+alter table TICKET_ITEM_MODIFIER add column MODIFIER_NAME_PRINTING varchar(120);
