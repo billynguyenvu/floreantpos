@@ -59,7 +59,8 @@ public class TicketDataSource extends AbstractReportDataSource {
 
 		switch (columnIndex) {
 			case 0:
-				return item.getNameDisplay();
+//				return item.getNameDisplay();
+				return item.getNamePrinting();
 
 			case 1:
 				return item.getItemQuantityDisplay();

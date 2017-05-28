@@ -123,4 +123,9 @@ public class TicketItemCookingInstruction extends BaseTicketItemCookingInstructi
 	public String getKitchenStatus() {
 		return ""; //$NON-NLS-1$
 	}
+
+    @Override
+    public String getNamePrinting() {
+		return "   * " + getDescription(); //$NON-NLS-1$
+    }
 }

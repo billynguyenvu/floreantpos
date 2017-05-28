@@ -30,7 +30,7 @@ import com.floreantpos.bo.ui.explorer.PizzaExplorer;
 public class PizzaExplorerAction extends AbstractAction {
 
 	public PizzaExplorerAction() {
-		super("Pizza");
+		super("Item with size");
 	}
 
 	public PizzaExplorerAction(String name) {
@@ -46,10 +46,10 @@ public class PizzaExplorerAction extends AbstractAction {
 		JTabbedPane tabbedPane = window.getTabbedPane();
 
 		PizzaExplorer explorer = null;
-		int index = tabbedPane.indexOfTab("Pizza");
+		int index = tabbedPane.indexOfTab("Item with size");
 		if (index == -1) {
 			explorer = new PizzaExplorer();
-			tabbedPane.addTab("Pizza", explorer);
+			tabbedPane.addTab("Item with size", explorer);
 		}
 		else {
 			explorer = (PizzaExplorer) tabbedPane.getComponentAt(index);

@@ -130,7 +130,7 @@ public class PeripheralConfigurationView extends ConfigurationView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				TerminalConfig.setCustomerDisplayPort(tfCustomerDisplayPort.getText());
-                                                                        DrawerUtil.setItemDisplay(tfCustomerDisplayPort.getText(), tfCustomerDisplayMessage.getText());
+				DrawerUtil.setItemDisplay(tfCustomerDisplayPort.getText(), tfCustomerDisplayMessage.getText());
 			}
 		});
 

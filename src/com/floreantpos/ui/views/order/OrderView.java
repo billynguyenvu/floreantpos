@@ -513,10 +513,14 @@ public class OrderView extends ViewPanel {
 
 	private void doAddSeatTreatTicketItem(Integer seatNumber) {
 		TicketItem ticketItem = new TicketItem();
-		if (seatNumber == 0)
+		if (seatNumber == 0) {
 			ticketItem.setName("Seat** Shared");
-		else
+                        ticketItem.setNameToPrinting("Seat** Shared");
+                }
+                else {
 			ticketItem.setName("Seat** " + seatNumber);
+                        ticketItem.setNameToPrinting("Seat** " + seatNumber);
+                }
 
 		ticketItem.setShouldPrintToKitchen(true);
 		ticketItem.setTreatAsSeat(true);

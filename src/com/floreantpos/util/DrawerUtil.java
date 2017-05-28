@@ -91,9 +91,10 @@ public class DrawerUtil {
 		}
 	}
 
-	public static boolean initialize() {
+	public static boolean initialize(boolean... isCustomerDisplay) {
 
 		try {
+			System.out.println("Port opened: " + serialPort.openPort());
 			serialPort.openPort();//Open serial port
 			serialPort.setParams(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 			//Set params. Also you can set params by this string: serialPort.setParams(9600, 8, 1, 0);
@@ -113,6 +114,7 @@ public class DrawerUtil {
 			setCharacterSet(USA);
 
 		} catch (SerialPortException ex) {
+                        logger.error(ex);
 			return false;
 		}
 
@@ -326,8 +328,19 @@ public class DrawerUtil {
 			serialPort.writeBytes(text.getBytes());
 
 		} catch (SerialPortException ex) {
+                    logger.error(ex);
 		}
 
+	}
+
+	public static String getString() {
+		try {
+			return serialPort.readString();
+
+		} catch (SerialPortException ex) {
+                    logger.error(ex);
+		}
+            return "";
 	}
 
 	public static void print(char text) {
@@ -377,6 +390,7 @@ public class DrawerUtil {
 		//printToThePort();
 		initialize();
 		try {
+                        print((char) 12); // clean display
 			print((char) 13); //added line feed
 			serialPort.writeBytes(customerDisplayMessage.getBytes());
 
@@ -390,8 +404,10 @@ public class DrawerUtil {
 		try {
 			serialPort = new SerialPort(port);
 			initialize();
+                        print((char) 12); // clean display
+			System.out.println("Write data: " + message);
 			print((char) 13); //added line feed
-			print(message);
+                        print(message);
 		} catch (Exception ex) {
 			logger.error(ex);
 		} finally {

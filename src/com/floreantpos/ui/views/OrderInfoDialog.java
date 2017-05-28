@@ -190,6 +190,7 @@ public class OrderInfoDialog extends POSDialog {
 			newTicketItem.setItemId(oldTicketItem.getItemId());
 			newTicketItem.setHasModifiers(oldTicketItem.isHasModifiers());
 			newTicketItem.setName(oldTicketItem.getName());
+			newTicketItem.setNameToPrinting(oldTicketItem.getNameToPrinting());
 			newTicketItem.setGroupName(oldTicketItem.getGroupName());
 			newTicketItem.setCategoryName(oldTicketItem.getCategoryName());
 			newTicketItem.setUnitPrice(oldTicketItem.getUnitPrice());
@@ -215,6 +216,7 @@ public class OrderInfoDialog extends POSDialog {
 					newModifier.setMenuItemModifierGroupId(ticketItemModifier.getMenuItemModifierGroupId());
 					newModifier.setItemCount(ticketItemModifier.getItemCount());
 					newModifier.setName(ticketItemModifier.getName());
+					newModifier.setNameToPrinting(ticketItemModifier.getNameToPrinting());
 					newModifier.setUnitPrice(ticketItemModifier.getUnitPrice());
 					newModifier.setTaxRate(ticketItemModifier.getTaxRate());
 					newModifier.setModifierType(ticketItemModifier.getModifierType());
@@ -232,6 +234,7 @@ public class OrderInfoDialog extends POSDialog {
 					newAddOns.setMenuItemModifierGroupId(addOns.getMenuItemModifierGroupId());
 					newAddOns.setItemCount(addOns.getItemCount());
 					newAddOns.setName(addOns.getName());
+					newAddOns.setNameToPrinting(addOns.getNameToPrinting());
 					newAddOns.setUnitPrice(addOns.getUnitPrice());
 					newAddOns.setTaxRate(addOns.getTaxRate());
 					newAddOns.setModifierType(addOns.getModifierType());

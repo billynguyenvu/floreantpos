@@ -132,4 +132,9 @@ public class TicketItemDiscount extends BaseTicketItemDiscount implements ITicke
 		return ""; //$NON-NLS-1$
 	}
 
+    @Override
+    public String getNamePrinting() {
+		return "   * " + getName(); //$NON-NLS-1$
+    }
+
 }

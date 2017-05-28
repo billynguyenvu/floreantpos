@@ -490,6 +490,7 @@ public class TicketView extends JPanel {
 			}
 
 			ticketItem.setName("Seat** " + seatNumber);
+                        ticketItem.setNameToPrinting("Seat** " + seatNumber);
 			ticketItem.setSeatNumber(seatNumber);
 			updateTicketItemsSeatNumber(ticketItem);
 		}
@@ -612,8 +613,8 @@ public class TicketView extends JPanel {
 		if (selectedItem != null) {
 			if (TerminalConfig.isActiveCustomerDisplay()) {
 				String sendMessageToCustomerDisplay = getDisplayMessage(selectedItem, ticket.getTotalAmount().toString());
-                    System.out.println("Send total value to customer display with text: " + sendMessageToCustomerDisplay);
-				DrawerUtil.setItemDisplay(TerminalConfig.getCustomerDisplayPort(), sendMessageToCustomerDisplay);
+				System.out.println("Send total value to customer display with text: " + sendMessageToCustomerDisplay);
+                                DrawerUtil.setItemDisplay(TerminalConfig.getCustomerDisplayPort(), sendMessageToCustomerDisplay);
 			}
 		}
 
@@ -755,7 +756,8 @@ public class TicketView extends JPanel {
 		String total = "TOTAL" + CurrencyUtil.getCurrencySymbol();
 		String line2 = String.format("%-6s %13s", total, totalPrice);
 
-		return line + line2;
+//		return line + line2;
+		return line + "\r" + line2;
 	}
 
 	/**

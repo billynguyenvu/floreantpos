@@ -88,6 +88,7 @@ import com.floreantpos.util.DatabaseUtil;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceBlue;
 import com.jidesoft.swing.JideScrollPane;
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -123,6 +124,7 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
     private JLabel lblEndDate;
     private JLabel lblSymbol;
     private JCheckBox chkDeleteOnAmount; //$NON-NLS-1$
+    private JLabel lblStatus;
 
     private boolean connectionSuccess;
     private boolean isDeleteOnAmount = false;
@@ -155,13 +157,13 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
     public void setupSizeAndLocation() {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setSize(PosUIManager.getSize(450, 280));
+        setSize(PosUIManager.getSize(450, 300));
     }
 
     protected void initUI() {
         getContentPane().setLayout(new BorderLayout()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        JPanel transactionsPanel = new JPanel(new MigLayout("fill,hidemode 3", "[150px][fill, grow]", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        JPanel transactionsPanel = new JPanel(new MigLayout("fill,hidemode 3", "[170px][fill, grow]", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         transactionsPanel.setBorder(new TitledBorder(Messages.getString("UpdateTicketsWindow.3"))); //$NON-NLS-1$
 
         chkDeleteOnAmount = new JCheckBox("Update by amount"); //$NON-NLS-1$
@@ -188,8 +190,6 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
         lblAmountOrPercent = new JLabel("Percentage (%):"); //$NON-NLS-1$ //$NON-NLS-2$
         transactionsPanel.add(lblAmountOrPercent);
         transactionsPanel.add(tfAmountOrPercent, "wrap"); //$NON-NLS-1$
-//        lblSymbol = new JLabel("(%)");
-//        transactionsPanel.add(lblSymbol, "wrap"); //$NON-NLS-1$
 
         UtilDateModel model1 = new UtilDateModel();
         model1.setValue(new Date());
@@ -208,7 +208,10 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
         transactionsPanel.add(tfStartDate, "wrap");
         lblEndDate = new JLabel("End Date" + ":"); //$NON-NLS-1$ //$NON-NLS-2$
         transactionsPanel.add(lblEndDate);
-        transactionsPanel.add(tfEndDate);
+        transactionsPanel.add(tfEndDate, "wrap");
+        lblStatus = new JLabel("Please select data to delete ...");
+        lblStatus.setForeground(Color.GREEN);
+        transactionsPanel.add(lblStatus, "wrap"); //$NON-NLS-1$
 
         btnSave = new PosButton("DELETE"); //$NON-NLS-1$
         btnSave.setActionCommand(SAVE);
@@ -311,6 +314,7 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
             List<Ticket> dbTickets = TicketDAO.getInstance().findClosedTickets(startDate, endDate);
 
             // Calculate total amount of tickets
+            lblStatus.setText("Calculating ticket to delete ... ");
             for (Ticket ticket : dbTickets) {
                 totalAmount += ticket.getTotalAmount();
                 System.out.println("printed customer copy: " + ticket.getPrintedCustomerCopy());
@@ -338,6 +342,7 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
             // Get tickets need to be deleted
             MatchData finalData = getMatchTickets(amountToDelete, tickets, 0, threshAmount);
             for (int i = 1; i < tickets.size(); i++) {
+                lblStatus.setText("Calculating ticket to delete. Round "+i+" ... ");
                 MatchData matchData = getMatchTickets(amountToDelete, tickets, i, threshAmount);
                 if (matchData.diff < finalData.diff || finalData.recentTickets.isEmpty()) finalData = matchData;
             }
@@ -360,9 +365,11 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                     tx = session.beginTransaction();
                     for (Ticket ticket : deleteTickets) {
                         System.out.println("Deleting ticket " + ticket.getId());
+                        lblStatus.setText("Deleting ticket " + ticket.getId());
                         // Delete kitchen data
                         List<KitchenTicket> kts = KitchenTicketDAO.getInstance().findByParentId(ticket.getId());
                         for (KitchenTicket kt : kts) {
+                            lblStatus.setText("Deleting kitchen ticket ... ");
                             for (KitchenTicketItem kti : kt.getTicketItems()) {
                                 KitchenTicketItemDAO.getInstance().delete(kti, session);
                             }
@@ -370,13 +377,16 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                         }
 
                         for (TicketDiscount td : ticket.getDiscounts()) {
+                            lblStatus.setText("Deleting discount ticket ... ");
                             TicketDiscountDAO.getInstance().delete(td, session);
                         }
                         for (PosTransaction postx : ticket.getTransactions()) {
+                            lblStatus.setText("Deleting transaction ... ");
                             PosTransactionDAO.getInstance().delete(postx, session);
                         }
                         // Delete ticket items
                         for (TicketItem ti : ticket.getTicketItems()) {
+                            lblStatus.setText("Deleting ticket item ... ");
                             for (TicketItemModifier tim : ti.getTicketItemModifiers()) {
                                 TicketItemModifierDAO.getInstance().delete(tim, session);
                             }
@@ -403,6 +413,7 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                 }
                 POSMessageDialog.showMessage("The transactions have been corected with total amount: $" + (double) Math.round(100 * realAmountToDelete) / 100 + " (based on " + realPercentToDelete + "% transactions).");
             }
+            lblStatus.setText("Please select data to delete ...");
         } catch (Exception ex) {
             ex.printStackTrace();
             PosLog.error(getClass(), ex);

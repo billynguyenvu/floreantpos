@@ -453,6 +453,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 		newTicketItem.setHasModifiers(ticketItem.isHasModifiers());
 		//newTicketItem.setTicketItemModifierGroups(new ArrayList<TicketItemModifierGroup>(ticketItem.getTicketItemModifierGroups()));
 		newTicketItem.setName(ticketItem.getName());
+		newTicketItem.setNameToPrinting(ticketItem.getNameToPrinting());
 		newTicketItem.setGroupName(ticketItem.getGroupName());
 		newTicketItem.setCategoryName(ticketItem.getCategoryName());
 		newTicketItem.setUnitPrice(ticketItem.getUnitPrice());
@@ -486,6 +487,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 						newModifier.setMenuItemModifierGroupId(ticketItemModifier.getMenuItemModifierGroupId());
 						newModifier.setItemCount(ticketItemModifier.getItemCount());
 						newModifier.setName(ticketItemModifier.getName());
+						newModifier.setNameToPrinting(ticketItemModifier.getNameToPrinting());
 						newModifier.setUnitPrice(ticketItemModifier.getUnitPrice());
 						newModifier.setTaxRate(ticketItemModifier.getTaxRate());
 						newModifier.setModifierType(ticketItemModifier.getModifierType());
@@ -505,6 +507,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 				newAddOns.setMenuItemModifierGroupId(addOns.getMenuItemModifierGroupId());
 				newAddOns.setItemCount(addOns.getItemCount());
 				newAddOns.setName(addOns.getName());
+				newAddOns.setNameToPrinting(addOns.getNameToPrinting());
 				newAddOns.setUnitPrice(addOns.getUnitPrice());
 				newAddOns.setTaxRate(addOns.getTaxRate());
 				newAddOns.setModifierType(addOns.getModifierType());
@@ -543,6 +546,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 		newTicketItem.setHasModifiers(ticketItem.isHasModifiers());
 		newTicketItem.setTicketItemModifiers(new ArrayList<TicketItemModifier>(ticketItem.getTicketItemModifiers()));
 		newTicketItem.setName(ticketItem.getName());
+		newTicketItem.setNameToPrinting(ticketItem.getNameToPrinting());
 		newTicketItem.setGroupName(ticketItem.getGroupName());
 		newTicketItem.setCategoryName(ticketItem.getCategoryName());
 		newTicketItem.setUnitPrice(ticketItem.getUnitPrice());

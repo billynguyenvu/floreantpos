@@ -77,6 +77,14 @@ public class MenuModifier extends BaseMenuModifier {
 		return super.getName();
 	}
 
+	public String getPrintedName() {
+		if (!TerminalConfig.isUseTranslatedName() && StringUtils.isNotEmpty(getTranslatedName())) {
+			return getTranslatedName();
+		}
+
+		return super.getName();
+	}
+
 	@Override
 	public String toString() {
 		return getName();

@@ -670,6 +670,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		}
 		TicketItemModifier ticketItemModifier = new TicketItemModifier();
 		ticketItemModifier.setName("== " + sectionName + " ==");
+		ticketItemModifier.setNameToPrinting("== " + sectionName + " ==");
 		ticketItemModifier.setModifierType(TicketItemModifier.SEPERATOR);
 		ticketItemModifier.setInfoOnly(true);
 		ticketItemModifier.setSectionName(sectionName);
@@ -712,11 +713,13 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		}
 		ticketItemModifier.setItemCount(1);
 		ticketItemModifier.setName(menuModifier.getDisplayName().trim());
+		ticketItemModifier.setNameToPrinting(menuModifier.getPrintedName().trim());
 		ticketItemModifier.setTicketItem(ticketItem);
 		double priceForSize = menuModifier.getPriceForSizeAndMultiplier(getSelectedSize(), false, multiplier);
 		if (multiplier != null) {
 			ticketItemModifier.setMultiplierName(multiplier.getName());
 			ticketItemModifier.setName(multiplier.getTicketPrefix() + " " + menuModifier.getDisplayName());
+			ticketItemModifier.setNameToPrinting(multiplier.getTicketPrefix() + " " + menuModifier.getPrintedName());
 		}
 		ticketItemModifier.setUnitPrice(priceForSize);
 		ticketItemModifier.setTaxRate(menuModifier.getTaxByOrderType(type));
@@ -1437,11 +1440,13 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		TicketItemModifier sizeAndCrustModifer = getSizeAndCrustModifer();
 		if (sizeAndCrustModifer != null) {
 			sizeAndCrustModifer.setName(pizzaPrice.getSize().getName() + " " + pizzaPrice.getCrust());
+			sizeAndCrustModifer.setNameToPrinting(pizzaPrice.getSize().getTranslatedName()+ " " + pizzaPrice.getCrust().getTranslatedName());
 			crustModifier = sizeAndCrustModifer;
 		}
 		else {
 			crustModifier = new TicketItemModifier();
 			crustModifier.setName(pizzaPrice.getSize().getName() + " " + pizzaPrice.getCrust());
+			crustModifier.setNameToPrinting(pizzaPrice.getSize().getTranslatedName() + " " + pizzaPrice.getCrust().getTranslatedName());
 			crustModifier.setModifierType(TicketItemModifier.CRUST);
 			crustModifier.setInfoOnly(true);
 			crustModifier.setTicketItem(ticketItem);

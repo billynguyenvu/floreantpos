@@ -164,10 +164,11 @@ public class TicketItem extends BaseTicketItem implements ITicketItem {
 		}
 		ticketItemModifier.setItemCount(1);
 		ticketItemModifier.setName(menuModifier.getDisplayName());
+		ticketItemModifier.setNameToPrinting(menuModifier.getPrintedName());
 		double price = menuModifier.getPriceForMultiplier(multiplier);
 		if (multiplier != null) {
 			ticketItemModifier.setMultiplierName(multiplier.getName());
-			ticketItemModifier.setName(multiplier.getTicketPrefix() + " " + menuModifier.getDisplayName());
+			ticketItemModifier.setNameToPrinting(multiplier.getTicketPrefix() + " " + menuModifier.getPrintedName());
 		}
 		ticketItemModifier.setUnitPrice(price);
 		ticketItemModifier.setTaxRate(menuModifier.getTaxByOrderType(type));
@@ -190,6 +191,7 @@ public class TicketItem extends BaseTicketItem implements ITicketItem {
 		}
 		ticketItemModifier.setItemCount(1);
 		ticketItemModifier.setName(menuModifier.getDisplayName());
+		ticketItemModifier.setNameToPrinting(menuModifier.getPrintedName());
 
 		if (addOn) {
 			ticketItemModifier.setUnitPrice(menuModifier.getExtraPrice());
@@ -368,6 +370,7 @@ public class TicketItem extends BaseTicketItem implements ITicketItem {
 		ticketItemModifier.setMenuItemModifierGroupId(menuModifier.getModifierGroup().getId());
 		ticketItemModifier.setItemCount(1);
 		ticketItemModifier.setName(menuModifier.getDisplayName());
+		ticketItemModifier.setNameToPrinting(menuModifier.getPrintedName());
 
 		//ticketItemModifier.setUnitPrice(menuModifier.getExtraPrice());
 		ticketItemModifier.setUnitPrice(menuModifier.getExtraPriceByOrderType(this.getTicket().getOrderType()));
@@ -710,6 +713,17 @@ public class TicketItem extends BaseTicketItem implements ITicketItem {
 		String name = getName();
 		if (getSizeModifier() != null) {
 			name += "\n" + getSizeModifier().getNameDisplay();
+		}
+		return name;
+	}
+
+	@Override
+	public String getNamePrinting() {
+		String name = getNameToPrinting();
+                System.out.println("Printing name: " + name);
+		if (getSizeModifier() != null) {
+			name += "\n" + getSizeModifier().getNamePrinting();
+                        System.out.println("Printing modifier name: " + name);
 		}
 		return name;
 	}

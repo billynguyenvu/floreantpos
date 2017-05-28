@@ -167,6 +167,29 @@ public class TicketItemModifier extends BaseTicketItemModifier implements ITicke
 	}
 
 	@Override
+	public String getNamePrinting() {
+		if (isInfoOnly()) {
+			return getNameToPrinting().trim();
+		}
+		int itemCount = getItemCount();
+		if (getTicketItem().isPizzaType()) {
+			itemCount = itemCount / getTicketItem().getItemCount();
+		}
+		String display;
+		if (itemCount > 1) {
+			display = itemCount + "x " + getNameToPrinting(); //$NON-NLS-1$
+		}
+		else {
+			display = getNameToPrinting().trim(); //$NON-NLS-1$
+		}
+		if (getModifierType() == NORMAL_MODIFIER) {
+			display += "*"; //$NON-NLS-1$
+		}
+
+		return display; //$NON-NLS-1$
+	}
+
+	@Override
 	public Double getUnitPriceDisplay() {
 		if (isInfoOnly()) {
 			return null;

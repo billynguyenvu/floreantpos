@@ -150,6 +150,15 @@ public class MenuItem extends BaseMenuItem {
 		return super.getName();
 	}
 
+	@XmlTransient
+	public String getPrintedName() {
+		if (!TerminalConfig.isUseTranslatedName() && StringUtils.isNotEmpty(getTranslatedName())) {
+			return getTranslatedName();
+		}
+
+		return super.getName();
+	}
+
 	public double getPrice(Shift currentShift) {
 		List<MenuItemShift> shifts = getShifts();
 		double price = super.getPrice();
@@ -210,6 +219,7 @@ public class MenuItem extends BaseMenuItem {
 		}
 
 		ticketItem.setName(this.getDisplayName());
+		ticketItem.setNameToPrinting(this.getPrintedName());
 		ticketItem.setGroupName(this.getParent().getDisplayName());
 		ticketItem.setCategoryName(this.getParent().getParent().getDisplayName());
 

@@ -28,6 +28,8 @@ public interface ITicketItem {
 	Boolean isPrintedToKitchen();
 	
 	String getNameDisplay();
+	
+	String getNamePrinting();
 
 	Double getUnitPriceDisplay();
 
