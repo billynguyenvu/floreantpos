@@ -272,15 +272,15 @@ public class DatabaseUtil {
 			orderType.setShowInLoginScreen(true);
 			orderTypeDAO.save(orderType);
 
-//			orderType = new OrderType();
-//			orderType.setName("TAKE OUT");
-//			orderType.setShowTableSelection(false);
-//			orderType.setCloseOnPaid(true);
-//			orderType.setEnabled(true);
-//			orderType.setPrepaid(true);
-//			orderType.setShouldPrintToKitchen(true);
-//			orderType.setShowInLoginScreen(true);
-//			orderTypeDAO.save(orderType);
+			orderType = new OrderType();
+			orderType.setName("TAKE OUT");
+			orderType.setShowTableSelection(false);
+			orderType.setCloseOnPaid(true);
+			orderType.setEnabled(true);
+			orderType.setPrepaid(true);
+			orderType.setShouldPrintToKitchen(true);
+			orderType.setShowInLoginScreen(true);
+			orderTypeDAO.save(orderType);
 //
 //			orderType = new OrderType();
 //			orderType.setName("RETAIL");

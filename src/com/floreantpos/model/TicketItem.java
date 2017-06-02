@@ -168,6 +168,7 @@ public class TicketItem extends BaseTicketItem implements ITicketItem {
 		double price = menuModifier.getPriceForMultiplier(multiplier);
 		if (multiplier != null) {
 			ticketItemModifier.setMultiplierName(multiplier.getName());
+			ticketItemModifier.setName(multiplier.getTicketPrefix() + " " + menuModifier.getDisplayName());
 			ticketItemModifier.setNameToPrinting(multiplier.getTicketPrefix() + " " + menuModifier.getPrintedName());
 		}
 		ticketItemModifier.setUnitPrice(price);

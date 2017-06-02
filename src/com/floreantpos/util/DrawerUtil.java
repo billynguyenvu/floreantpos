@@ -95,7 +95,7 @@ public class DrawerUtil {
 
 		try {
 			System.out.println("Port opened: " + serialPort.openPort());
-			serialPort.openPort();//Open serial port
+//			serialPort.openPort();//Open serial port
 			serialPort.setParams(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 			//Set params. Also you can set params by this string: serialPort.setParams(9600, 8, 1, 0);
 			//serialPort.writeBytes( reconstitutedString.getBytes());//
@@ -111,7 +111,7 @@ public class DrawerUtil {
 			//selectDraftPrinting();
 
 			//set character set
-			setCharacterSet(USA);
+//			setCharacterSet(USA);
 
 		} catch (SerialPortException ex) {
                         logger.error(ex);
@@ -412,7 +412,7 @@ public class DrawerUtil {
 			logger.error(ex);
 		} finally {
 			try {
-				serialPort.closePort();
+                            System.out.println("Close port: " + serialPort.closePort());
 			} catch (SerialPortException e) {
 			}
 		}

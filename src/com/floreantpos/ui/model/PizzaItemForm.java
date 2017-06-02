@@ -813,9 +813,9 @@ public class PizzaItemForm extends BeanEditor<MenuItem> implements ActionListene
 	public String getDisplayText() {
 		MenuItem foodItem = (MenuItem) getBean();
 		if (foodItem.getId() == null) {
-			return "New pizza item";
+			return "New item with multiple sizes";
 		}
-		return "Edit pizza item";
+		return "Edit item with multiple sizes";
 	}
 
 	class MenuItemMGListModel extends AbstractTableModel {
@@ -1126,7 +1126,7 @@ public class PizzaItemForm extends BeanEditor<MenuItem> implements ActionListene
 		}
 		PizzaPrice pizzaPrice = priceTableModel.getRow(selectedRow);
 		PizzaItemPriceDialog pizzaItemPriceDialog = new PizzaItemPriceDialog(this.getParentFrame(), pizzaPrice, pizzaPriceList);
-		pizzaItemPriceDialog.setTitle("Edit Pizza Price");
+		pizzaItemPriceDialog.setTitle("Edit Price of Item With Multiple Sizes");
 		pizzaItemPriceDialog.setSize(PosUIManager.getSize(350, 220));
 		pizzaItemPriceDialog.open();
 

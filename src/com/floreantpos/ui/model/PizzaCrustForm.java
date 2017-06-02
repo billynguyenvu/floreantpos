@@ -152,8 +152,8 @@ public class PizzaCrustForm extends BeanEditor {
 	public String getDisplayText() {
 		PizzaCrust pizzaCrust = (PizzaCrust) getBean();
 		if (pizzaCrust.getId() == null) {
-			return "New Pizza Crust";
+			return "New Item With Multiple Sizes Crust";
 		}
-		return "Edit Pizza Crust";
+		return "Edit Item With Multiple Sizes Crust";
 	}
 }

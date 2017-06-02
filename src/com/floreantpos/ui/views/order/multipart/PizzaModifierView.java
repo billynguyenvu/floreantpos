@@ -122,8 +122,8 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 					defaultMultiplierButton = btnMultiplier;
 					btnMultiplier.setSelected(true);
 				}
-				multiplierPanel.add(btnMultiplier, "grow");
-				group.add(btnMultiplier);
+//				multiplierPanel.add(btnMultiplier, "grow");
+//				group.add(btnMultiplier);
 			}
 		}
 		mainPanel.add(multiplierPanel, BorderLayout.SOUTH);

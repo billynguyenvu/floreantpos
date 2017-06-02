@@ -740,24 +740,28 @@ public class TicketView extends JPanel {
 
 	private String getDisplayMessage(ITicketItem item, String totalPrice) {
 
-		int currentItemLenth = item.getNameDisplay().length();
+		int currentItemLenth = item.getNamePrinting().length();
 		String ticketItems;
 		if (currentItemLenth > 12) {
-			ticketItems = item.getNameDisplay().substring(0, 12);
+			ticketItems = item.getNamePrinting().substring(0, 12);
 		}
 		else {
-			ticketItems = item.getNameDisplay();
+			ticketItems = item.getNamePrinting();
 		}
+		int index = ticketItems.indexOf("\n");
+		if (index > 0) ticketItems = ticketItems.substring(0, index);
+                
 		String quantity = item.getItemQuantityDisplay();
 		double itemPrice = item.getUnitPriceDisplay();
 
-		String line = String.format("%-1s %-12s %4s", quantity, ticketItems, itemPrice);
+		String line = String.format("%-1s %-12s %5s", quantity, ticketItems, itemPrice);
+                System.out.println("line:\n" + line);
 
-		String total = "TOTAL" + CurrencyUtil.getCurrencySymbol();
-		String line2 = String.format("%-6s %13s", total, totalPrice);
+		String total = "TOTAL";
+		String line2 = String.format("%-5s %14s", total, CurrencyUtil.getCurrencySymbol() + totalPrice);
 
-//		return line + line2;
-		return line + "\r" + line2;
+		return line + line2;
+//		return line + "\r" + line2;
 	}
 
 	/**
