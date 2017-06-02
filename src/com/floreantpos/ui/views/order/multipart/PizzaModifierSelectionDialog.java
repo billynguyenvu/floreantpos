@@ -146,7 +146,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 	}
 
 	private void initComponents() {
-		setTitle("MODIFY PIZZA");
+		setTitle("MODIFY ITEM WITH MULTIPLE SIZES");
 
 		setLayout(new java.awt.BorderLayout(10, 10));
 		JPanel panel = (JPanel) getContentPane();
@@ -340,9 +340,9 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		quarterSectionLayout.add(sectionQuarter3);
 		quarterSectionLayout.add(sectionQuarter4);
 
-		sectionView.add(fullSectionLayout, "full");
-		sectionView.add(halfSectionLayout, "half");
-		sectionView.add(quarterSectionLayout, "quarter");
+//		sectionView.add(fullSectionLayout, "full");
+//		sectionView.add(halfSectionLayout, "half");
+//		sectionView.add(quarterSectionLayout, "quarter");
 		sectionLayout.show(sectionView, "full");
 
 		wholeSectionView = new JPanel(new MigLayout("fill,ins 0 0 0 0"));
@@ -350,7 +350,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		westPanel.setOpaque(false);
 
 		westPanel.add(sectionView, BorderLayout.CENTER);
-		westPanel.add(wholeSectionView, BorderLayout.SOUTH);
+//		westPanel.add(wholeSectionView, BorderLayout.SOUTH);
 
 		return westPanel;
 	}
@@ -371,9 +371,9 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		btnQuarter = new POSToggleButton("QUARTER");
 		btnQuarter.addActionListener(this);
 
-		btnGroup.add(btnFull);
-		btnGroup.add(btnHalf);
-		btnGroup.add(btnQuarter);
+//		btnGroup.add(btnFull);
+//		btnGroup.add(btnHalf);
+//		btnGroup.add(btnQuarter);
 
 		PosButton btnClear = new PosButton("CLEAR");
 		btnClear.addActionListener(new java.awt.event.ActionListener() {
@@ -416,10 +416,10 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		});
 		int width = PosUIManager.getSize(80);
 		JSeparator separator = new JSeparator(JSeparator.VERTICAL);
-		buttonPanel.add(btnFull, "w " + width + "!, split 5");
-		buttonPanel.add(btnHalf, "w " + width + "!");
-		buttonPanel.add(btnQuarter, "w " + width + "!");
-		buttonPanel.add(separator, "growy");
+//		buttonPanel.add(btnFull, "w " + width + "!, split 5");
+//		buttonPanel.add(btnHalf, "w " + width + "!");
+//		buttonPanel.add(btnQuarter, "w " + width + "!");
+//		buttonPanel.add(separator, "growy");
 		buttonPanel.add(btnClear, "grow");
 		buttonPanel.add(btnClearAll, "grow");
 		buttonPanel.add(btnCancel, "grow");
@@ -448,8 +448,8 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		if (!editMode) {
 			OrderView.getInstance().getTicketView().addTicketItem(ticketItem);
 
-			int showYesNoQuestionDialog = POSMessageDialog.showYesNoQuestionDialog(POSUtil.getFocusedWindow(), "Do you want to create more pizza?",
-					"More Pizza");
+			int showYesNoQuestionDialog = POSMessageDialog.showYesNoQuestionDialog(POSUtil.getFocusedWindow(), "Do you want to create more?",
+					"More Item With Multiple Sizes");
 			if (showYesNoQuestionDialog == 0) {
 				TicketItem newTicketItem = ticketItem.clone(ticketItem);
 				newTicketItem.setId(null);
@@ -613,7 +613,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		//////----------------------------------------
 		if (findTicketItemModifierForWholeSection != null && !selectedSection.mainSection && ticketItemModifier == null) {
 			int questionDialog = POSMessageDialog.showYesNoQuestionDialog(POSUtil.getFocusedWindow(),
-					"Item already added in pizza, Would you like to add again?", "Add Modifier");
+					"Item already added in multiple sizes, Would you like to add again?", "Add Modifier");
 			if (questionDialog == 1) {
 				return;
 			}
@@ -1021,49 +1021,49 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 
-			int x = 15;
-			int width = getWidth() - 30;
-			int y = (getHeight() + 40) / 2 - width / 2;
-			g.setColor(Color.WHITE);
-
-			Graphics2D g2d = (Graphics2D) g;
-			g.setColor(new Color(255, 251, 211));
-			Ellipse2D.Double circle = new Ellipse2D.Double(x, y, width, width);
-			g2d.fill(circle);
-			//			drawCircleByCenter(g, getWidth() / 2, getHeight() / 2, width / 2);
-			//
-			//			g.setColor(new Color(255, 251, 211));
-			//			g.fillOval(2, getHeight() / 2, getWidth() - 4, getHeight() - 4);
-			//			g.setColor(Color.LIGHT_GRAY);
-			//			g.drawLine(0, getWidth() / 2, getWidth(), height / 2);
-			//			g.setColor(Color.lightGray);
-			//			g.drawLine(height / 2, 0, getWidth() / 2, height);
-
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setColor(Color.green);
-			Section selectedSection = getSelectedSection();
-			if (selectedSection == null) {
-				return;
-			}
-
-			if (selectedSection.getSectionName().equalsIgnoreCase("Quarter 1")) {
-				fillQuarter1(g2, x, y, width);
-			}
-			else if (selectedSection.getSectionName().equalsIgnoreCase("Quarter 2")) {
-				fillQuarter2(g2, x, y, width);
-			}
-			else if (selectedSection.getSectionName().equalsIgnoreCase("Quarter 3")) {
-				fillQuarter3(g2, x, y, width);
-			}
-			else if (selectedSection.getSectionName().equalsIgnoreCase("Quarter 4")) {
-				fillQuarter4(g2, x, y, width);
-			}
-			else if (selectedSection.getSectionName().equalsIgnoreCase("Half 1")) {
-				fillHalf1(g2, x, y, width);
-			}
-			else if (selectedSection.getSectionName().equalsIgnoreCase("Half 2")) {
-				fillHalf2(g2, x, y, width);
-			}
+//			int x = 15;
+//			int width = getWidth() - 30;
+//			int y = (getHeight() + 40) / 2 - width / 2;
+//			g.setColor(Color.WHITE);
+//
+//			Graphics2D g2d = (Graphics2D) g;
+//			g.setColor(new Color(255, 251, 211));
+//			Ellipse2D.Double circle = new Ellipse2D.Double(x, y, width, width);
+//			g2d.fill(circle);
+//			//			drawCircleByCenter(g, getWidth() / 2, getHeight() / 2, width / 2);
+//			//
+//			//			g.setColor(new Color(255, 251, 211));
+//			//			g.fillOval(2, getHeight() / 2, getWidth() - 4, getHeight() - 4);
+//			//			g.setColor(Color.LIGHT_GRAY);
+//			//			g.drawLine(0, getWidth() / 2, getWidth(), height / 2);
+//			//			g.setColor(Color.lightGray);
+//			//			g.drawLine(height / 2, 0, getWidth() / 2, height);
+//
+//			Graphics2D g2 = (Graphics2D) g;
+//			g2.setColor(Color.green);
+//			Section selectedSection = getSelectedSection();
+//			if (selectedSection == null) {
+//				return;
+//			}
+//
+//			if (selectedSection.getSectionName().equalsIgnoreCase("Quarter 1")) {
+//				fillQuarter1(g2, x, y, width);
+//			}
+//			else if (selectedSection.getSectionName().equalsIgnoreCase("Quarter 2")) {
+//				fillQuarter2(g2, x, y, width);
+//			}
+//			else if (selectedSection.getSectionName().equalsIgnoreCase("Quarter 3")) {
+//				fillQuarter3(g2, x, y, width);
+//			}
+//			else if (selectedSection.getSectionName().equalsIgnoreCase("Quarter 4")) {
+//				fillQuarter4(g2, x, y, width);
+//			}
+//			else if (selectedSection.getSectionName().equalsIgnoreCase("Half 1")) {
+//				fillHalf1(g2, x, y, width);
+//			}
+//			else if (selectedSection.getSectionName().equalsIgnoreCase("Half 2")) {
+//				fillHalf2(g2, x, y, width);
+//			}
 		}
 
 		void drawCircleByCenter(Graphics g, int x, int y, int radius) {

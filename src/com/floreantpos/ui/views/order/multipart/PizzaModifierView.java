@@ -77,6 +77,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 	private ModifierGroupView modifierGroupView;
 
 	private JPanel mainPanel;
+                  private JPanel multiplierPanel;
 
 	private JPanel contentPanel;
 	private PizzaModifierSelectionDialog pizzaModifierSelectionDialog;
@@ -111,7 +112,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 	}
 
 	private void addMultiplierButtons() {
-		JPanel multiplierPanel = new JPanel(new MigLayout("fillx,center"));
+		multiplierPanel = new JPanel(new MigLayout("fillx,center"));
 		List<Multiplier> multiplierList = MultiplierDAO.getInstance().findAll();
 		ButtonGroup group = new ButtonGroup();
 		if (multiplierList != null) {
@@ -122,11 +123,12 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 					defaultMultiplierButton = btnMultiplier;
 					btnMultiplier.setSelected(true);
 				}
-//				multiplierPanel.add(btnMultiplier, "grow");
-//				group.add(btnMultiplier);
+				multiplierPanel.add(btnMultiplier, "grow");
+				group.add(btnMultiplier);
 			}
 		}
 		mainPanel.add(multiplierPanel, BorderLayout.SOUTH);
+                multiplierPanel.setVisible(false);
 	}
 
 	//	public void setModifiers(Collection<MenuModifier> modifiers) {
@@ -184,6 +186,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 			menuModifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
 			groupPanel.getContentPane().add(new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize()));
 		}
+                if(modifiers.size() > 0) multiplierPanel.setVisible(true);
 		contentPanel.add(js, "newline,top,center");
 		mainPanel.add(contentPanel, BorderLayout.CENTER);
 		contentPanel.repaint();
@@ -227,6 +230,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 				menuModifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
 				groupPanel.getContentPane().add(new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize()));
 			}
+                        if(modifiers.size() > 0) multiplierPanel.setVisible(true);
 			contentPanel.repaint();
 			mainPanel.repaint();
 		}
@@ -274,6 +278,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 				menuModifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
 				groupPanel.getContentPane().add(new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize()));
 			}
+                        if(modifiers.size() > 0) multiplierPanel.setVisible(true);
 			contentPanel.repaint();
 			mainPanel.repaint();
 		}
