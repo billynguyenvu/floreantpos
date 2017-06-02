@@ -146,7 +146,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 	}
 
 	private void initComponents() {
-		setTitle("MODIFY ITEM WITH MULTIPLE SIZES");
+		setTitle("MODIFY PIZZA");
 
 		setLayout(new java.awt.BorderLayout(10, 10));
 		JPanel panel = (JPanel) getContentPane();
@@ -320,37 +320,37 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		sectionHalf1 = new Section("Half 1", "Half 1", 5, false, 0.5);
 		sectionHalf2 = new Section("Half 2", "Half 2", 6, false, 0.5);
 
-//		sectionList.add(sectionWhole);
+		sectionList.add(sectionWhole);
 
-//		sectionList.add(sectionQuarter1);
-//		sectionList.add(sectionQuarter2);
-//		sectionList.add(sectionQuarter3);
-//		sectionList.add(sectionQuarter4);
-//
-//		sectionList.add(sectionHalf1);
-//		sectionList.add(sectionHalf2);
+		sectionList.add(sectionQuarter1);
+		sectionList.add(sectionQuarter2);
+		sectionList.add(sectionQuarter3);
+		sectionList.add(sectionQuarter4);
 
-//		fullSectionLayout.add(sectionWhole);
-//
-//		halfSectionLayout.add(sectionHalf1);
-//		halfSectionLayout.add(sectionHalf2);
-//
-//		quarterSectionLayout.add(sectionQuarter1);
-//		quarterSectionLayout.add(sectionQuarter2);
-//		quarterSectionLayout.add(sectionQuarter3);
-//		quarterSectionLayout.add(sectionQuarter4);
+		sectionList.add(sectionHalf1);
+		sectionList.add(sectionHalf2);
 
-//		sectionView.add(fullSectionLayout, "full");
-//		sectionView.add(halfSectionLayout, "half");
-//		sectionView.add(quarterSectionLayout, "quarter");
-//		sectionLayout.show(sectionView, "full");
+		fullSectionLayout.add(sectionWhole);
 
-//		wholeSectionView = new JPanel(new MigLayout("fill,ins 0 0 0 0"));
-//		sectionView.setOpaque(false);
-//		westPanel.setOpaque(false);
+		halfSectionLayout.add(sectionHalf1);
+		halfSectionLayout.add(sectionHalf2);
+
+		quarterSectionLayout.add(sectionQuarter1);
+		quarterSectionLayout.add(sectionQuarter2);
+		quarterSectionLayout.add(sectionQuarter3);
+		quarterSectionLayout.add(sectionQuarter4);
+
+		sectionView.add(fullSectionLayout, "full");
+		sectionView.add(halfSectionLayout, "half");
+		sectionView.add(quarterSectionLayout, "quarter");
+		sectionLayout.show(sectionView, "full");
+
+		wholeSectionView = new JPanel(new MigLayout("fill,ins 0 0 0 0"));
+		sectionView.setOpaque(false);
+		westPanel.setOpaque(false);
 
 		westPanel.add(sectionView, BorderLayout.CENTER);
-//		westPanel.add(wholeSectionView, BorderLayout.SOUTH);
+		westPanel.add(wholeSectionView, BorderLayout.SOUTH);
 
 		return westPanel;
 	}
@@ -371,9 +371,9 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		btnQuarter = new POSToggleButton("QUARTER");
 		btnQuarter.addActionListener(this);
 
-//		btnGroup.add(btnFull);
-//		btnGroup.add(btnHalf);
-//		btnGroup.add(btnQuarter);
+		btnGroup.add(btnFull);
+		btnGroup.add(btnHalf);
+		btnGroup.add(btnQuarter);
 
 		PosButton btnClear = new PosButton("CLEAR");
 		btnClear.addActionListener(new java.awt.event.ActionListener() {
@@ -416,10 +416,10 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		});
 		int width = PosUIManager.getSize(80);
 		JSeparator separator = new JSeparator(JSeparator.VERTICAL);
-//		buttonPanel.add(btnFull, "w " + width + "!, split 5");
-//		buttonPanel.add(btnHalf, "w " + width + "!");
-//		buttonPanel.add(btnQuarter, "w " + width + "!");
-//		buttonPanel.add(separator, "growy");
+		buttonPanel.add(btnFull, "w " + width + "!, split 5");
+		buttonPanel.add(btnHalf, "w " + width + "!");
+		buttonPanel.add(btnQuarter, "w " + width + "!");
+		buttonPanel.add(separator, "growy");
 		buttonPanel.add(btnClear, "grow");
 		buttonPanel.add(btnClearAll, "grow");
 		buttonPanel.add(btnCancel, "grow");
@@ -448,8 +448,8 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		if (!editMode) {
 			OrderView.getInstance().getTicketView().addTicketItem(ticketItem);
 
-			int showYesNoQuestionDialog = POSMessageDialog.showYesNoQuestionDialog(POSUtil.getFocusedWindow(), "Do you want to create more?",
-					"More Item With Multiple Sizes");
+			int showYesNoQuestionDialog = POSMessageDialog.showYesNoQuestionDialog(POSUtil.getFocusedWindow(), "Do you want to create more pizza?",
+					"More Pizza");
 			if (showYesNoQuestionDialog == 0) {
 				TicketItem newTicketItem = ticketItem.clone(ticketItem);
 				newTicketItem.setId(null);
@@ -613,7 +613,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		//////----------------------------------------
 		if (findTicketItemModifierForWholeSection != null && !selectedSection.mainSection && ticketItemModifier == null) {
 			int questionDialog = POSMessageDialog.showYesNoQuestionDialog(POSUtil.getFocusedWindow(),
-					"Item already added in multiple sizes, Would you like to add again?", "Add Modifier");
+					"Item already added in pizza, Would you like to add again?", "Add Modifier");
 			if (questionDialog == 1) {
 				return;
 			}
@@ -1455,11 +1455,11 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 	}
 
 	private void doFullSectionMode() {
-//		wholeSectionView.removeAll();
-//		fullSectionLayout.removeAll();
-//		fullSectionLayout.add(sectionWhole);
-//		sectionLayout.show(sectionView, "full");
-//		ticketItem.setPizzaSectionMode(PIZZA_SECTION_MODE.FULL);
+		wholeSectionView.removeAll();
+		fullSectionLayout.removeAll();
+		fullSectionLayout.add(sectionWhole);
+		sectionLayout.show(sectionView, "full");
+		ticketItem.setPizzaSectionMode(PIZZA_SECTION_MODE.FULL);
 	}
 
 	private void allSectionModifierClear() {
@@ -1472,15 +1472,15 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 	}
 
 	private void doHalfSectionMode() {
-//		wholeSectionView.add(sectionWhole, "grow");
-//		sectionLayout.show(sectionView, "half");
-//		ticketItem.setPizzaSectionMode(PIZZA_SECTION_MODE.HALF);
+		wholeSectionView.add(sectionWhole, "grow");
+		sectionLayout.show(sectionView, "half");
+		ticketItem.setPizzaSectionMode(PIZZA_SECTION_MODE.HALF);
 	}
 
 	private void doQuarterSectionMode() {
-//		wholeSectionView.add(sectionWhole, "grow");
-//		sectionLayout.show(sectionView, "quarter");
-//		ticketItem.setPizzaSectionMode(PIZZA_SECTION_MODE.QUARTER);
+		wholeSectionView.add(sectionWhole, "grow");
+		sectionLayout.show(sectionView, "quarter");
+		ticketItem.setPizzaSectionMode(PIZZA_SECTION_MODE.QUARTER);
 	}
 
 	class SectionModifierTableModel extends ListTableModel<TicketItemModifier> {
