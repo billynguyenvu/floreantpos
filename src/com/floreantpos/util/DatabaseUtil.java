@@ -291,16 +291,16 @@ public class DatabaseUtil {
 //			orderType.setShowInLoginScreen(true);
 //			orderTypeDAO.save(orderType);
 //
-//			orderType = new OrderType();
-//			orderType.setName("HOME DELIVERY");
-//			orderType.setShowTableSelection(false);
-//			orderType.setCloseOnPaid(false);
-//			orderType.setEnabled(true);
-//			orderType.setShouldPrintToKitchen(true);
-//			orderType.setShowInLoginScreen(true);
-//			orderType.setRequiredCustomerData(true);
-//			orderType.setDelivery(true);
-//			orderTypeDAO.save(orderType);
+			orderType = new OrderType();
+			orderType.setName("HOME DELIVERY");
+			orderType.setShowTableSelection(false);
+			orderType.setCloseOnPaid(false);
+			orderType.setEnabled(true);
+			orderType.setShouldPrintToKitchen(true);
+			orderType.setShowInLoginScreen(true);
+			orderType.setRequiredCustomerData(true);
+			orderType.setDelivery(true);
+			orderTypeDAO.save(orderType);
 
 			DiscountDAO discountDao = new DiscountDAO();
 

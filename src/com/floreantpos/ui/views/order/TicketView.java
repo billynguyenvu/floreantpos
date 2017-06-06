@@ -163,7 +163,8 @@ public class TicketView extends JPanel {
 				}
 
 				if (!addMenuItemByBarcode(txtSearchItem.getText())) {
-					addMenuItemByItemId(txtSearchItem.getText());
+					addMenuItemBySortOrder(txtSearchItem.getText());
+//					addMenuItemByItemId(txtSearchItem.getText());
 				}
 				txtSearchItem.setText("");
 			}
@@ -183,9 +184,12 @@ public class TicketView extends JPanel {
 				txtSearchItem.requestFocus();
 
 				if (!addMenuItemByBarcode(dialog.getValue())) {
-					if (!addMenuItemByItemId(dialog.getValue())) {
+					if (!addMenuItemBySortOrder(dialog.getValue())) {
 						POSMessageDialog.showError(Application.getPosWindow(), "Item not found");
 					}
+//					if (!addMenuItemByItemId(dialog.getValue())) {
+//						POSMessageDialog.showError(Application.getPosWindow(), "Item not found");
+//					}
 				}
 			}
 		});
@@ -234,6 +238,33 @@ public class TicketView extends JPanel {
 		MenuItemDAO dao = new MenuItemDAO();
 
 		MenuItem menuItem = dao.getMenuItemByBarcode(barcode);
+
+		if (menuItem == null) {
+			return false;
+		}
+
+		if (!filterByOrderType(menuItem)) {
+			return false;
+		}
+
+		if (!filterByStockAmount(menuItem)) {
+			return false;
+		}
+
+		OrderView.getInstance().getOrderController().itemSelected(menuItem);
+		return true;
+	}
+
+	private boolean addMenuItemBySortOrder(String sortOrder) {
+
+		if (!isParsable(sortOrder)) {
+			return false;
+		}
+
+		Integer itemSortOrder = Integer.parseInt(sortOrder);
+		MenuItemDAO dao = new MenuItemDAO();
+
+		MenuItem menuItem = dao.getMenuItemBySortOrder(itemSortOrder);
 
 		if (menuItem == null) {
 			return false;

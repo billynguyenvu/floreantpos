@@ -334,6 +334,23 @@ public class MenuItemDAO extends BaseMenuItemDAO {
 		}
 	}
 
+	public MenuItem getMenuItemBySortOrder(Integer sortOrder) {
+		Session session = null;
+		Criteria criteria = null;
+		try {
+			session = createNewSession();
+			criteria = session.createCriteria(MenuItem.class);
+			criteria.add(Restrictions.eq(MenuItem.PROP_SORT_ORDER, sortOrder));
+			List<MenuItem> result = criteria.list();
+			if (result == null || result.isEmpty()) {
+				return null;
+			}
+			return (MenuItem) result.get(0);
+		} finally {
+			closeSession(session);
+		}
+	}
+
 	public List<MenuItem> getPizzaItems() {
 		Session session = null;
 		Criteria criteria = null;
