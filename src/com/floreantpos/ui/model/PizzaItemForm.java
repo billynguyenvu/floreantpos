@@ -354,6 +354,8 @@ public class PizzaItemForm extends BeanEditor<MenuItem> implements ActionListene
 		tabGeneral.add(orderCheckBoxList, "cell 3 3 3 3"); //$NON-NLS-1$
 		cbDisableStockCount = new JCheckBox(Messages.getString("MenuItemForm.18")); //$NON-NLS-1$
 		tabGeneral.add(cbDisableStockCount, "cell 1 8"); //$NON-NLS-1$
+                                    tabGeneral.add(new JLabel("Sort order"), "cell 0 9, right"); //$NON-NLS-1$
+		tabGeneral.add(tfSortOrder, "cell 1 9"); //$NON-NLS-1$
 
 		tabGeneral.add(new JLabel(Messages.getString("MenuItemForm.29")), "cell 2 6,alignx right"); //$NON-NLS-1$ //$NON-NLS-2$
 		JScrollPane scrlDescription = new JScrollPane(tfDescription, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

@@ -433,15 +433,15 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 			POSMessageDialog.showError("Please select size and crust.");
 			return false;
 		}
-		List<MenuItemModifierGroup> menuItemModiferGroups = ticketItem.getMenuItem().getMenuItemModiferGroups();
-		for (Iterator iterator = menuItemModiferGroups.iterator(); iterator.hasNext();) {
-			MenuItemModifierGroup menuItemModifierGroup = (MenuItemModifierGroup) iterator.next();
-			if (!ticketItem.requiredModifiersAdded(menuItemModifierGroup)) {
-				POSMessageDialog.showMessage(POSUtil.getFocusedWindow(),
-						String.format("Required modifiers for group %s not added!", menuItemModifierGroup.getModifierGroup().getDisplayName()));
-				return false;
-			}
-		}
+//		List<MenuItemModifierGroup> menuItemModiferGroups = ticketItem.getMenuItem().getMenuItemModiferGroups();
+//		for (Iterator iterator = menuItemModiferGroups.iterator(); iterator.hasNext();) {
+//			MenuItemModifierGroup menuItemModifierGroup = (MenuItemModifierGroup) iterator.next();
+//			if (!ticketItem.requiredModifiersAdded(menuItemModifierGroup)) {
+//				POSMessageDialog.showMessage(POSUtil.getFocusedWindow(),
+//						String.format("Required modifiers for group %s not added!", menuItemModifierGroup.getModifierGroup().getDisplayName()));
+//				return false;
+//			}
+//		}
 
 		updatePizzaQuantityAndPrice();
 
@@ -1132,6 +1132,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 
 			crustPanel.setBorder(BorderFactory.createTitledBorder(null, "CRUST", TitledBorder.CENTER, TitledBorder.TOP));
 			crustPanel.setLayout(new java.awt.FlowLayout());
+                        crustPanel.setVisible(false);
 
 			Set<MenuItemSize> uniqueSizeList = new HashSet<MenuItemSize>();
 
@@ -1258,23 +1259,23 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 					pizzaCrustSelected(crustButton);
 					setPizzaCrust(pizzaPrice.getCrust());
 				}
-				if (pizzaPrice.getCrust().isDefaultCrust() && sizeAndCrustModifer == null) {
+				if (pizzaPrice.getCrust().isDefaultCrust()) {// && sizeAndCrustModifer == null) {
 					crustSelected = true;
 					crustButton.setSelected(true);
 					pizzaCrustSelected(crustButton);
 					setPizzaCrust(pizzaPrice.getCrust());
 				}
-				if (sizeAndCrustModifer != null) {
-					String sizeAndCrustName = sizeAndCrustModifer.getName();
-					String[] split = sizeAndCrustName.split(" ");
-					String crustName = split[1];
-					if (pizzaPrice.getCrust().getName().startsWith(crustName)) {
-						crustSelected = true;
-						crustButton.setSelected(true);
-						pizzaCrustSelected(crustButton);
-						setPizzaCrust(pizzaPrice.getCrust());
-					}
-				}
+//				if (sizeAndCrustModifer != null) {
+//					String sizeAndCrustName = sizeAndCrustModifer.getName();
+//					String[] split = sizeAndCrustName.split(" ");
+//					String crustName = split[1];
+//					if (pizzaPrice.getCrust().getName().startsWith(crustName)) {
+//						crustSelected = true;
+//						crustButton.setSelected(true);
+//						pizzaCrustSelected(crustButton);
+//						setPizzaCrust(pizzaPrice.getCrust());
+//					}
+//				}
 				crustButton.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -1439,14 +1440,14 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 
 		TicketItemModifier sizeAndCrustModifer = getSizeAndCrustModifer();
 		if (sizeAndCrustModifer != null) {
-			sizeAndCrustModifer.setName(pizzaPrice.getSize().getName() + " " + pizzaPrice.getCrust());
-			sizeAndCrustModifer.setNameToPrinting(pizzaPrice.getSize().getTranslatedName()+ " " + pizzaPrice.getCrust().getTranslatedName());
+			sizeAndCrustModifer.setName(pizzaPrice.getSize().getName());// + " " + pizzaPrice.getCrust());
+			sizeAndCrustModifer.setNameToPrinting(pizzaPrice.getSize().getTranslatedName());//+ " " + pizzaPrice.getCrust().getTranslatedName());
 			crustModifier = sizeAndCrustModifer;
 		}
 		else {
 			crustModifier = new TicketItemModifier();
-			crustModifier.setName(pizzaPrice.getSize().getName() + " " + pizzaPrice.getCrust());
-			crustModifier.setNameToPrinting(pizzaPrice.getSize().getTranslatedName() + " " + pizzaPrice.getCrust().getTranslatedName());
+			crustModifier.setName(pizzaPrice.getSize().getName());// + " " + pizzaPrice.getCrust());
+			crustModifier.setNameToPrinting(pizzaPrice.getSize().getTranslatedName());// + " " + pizzaPrice.getCrust().getTranslatedName());
 			crustModifier.setModifierType(TicketItemModifier.CRUST);
 			crustModifier.setInfoOnly(true);
 			crustModifier.setTicketItem(ticketItem);

@@ -280,6 +280,7 @@ public class TicketView extends JPanel {
 
 //		OrderView.getInstance().getOrderController().itemSelected(menuItem);
 //		OrderView.getInstance().getOrderController().categorySelected(menuItem.getParent().getParent());
+		OrderView.getInstance().getCategoryView().fireCategorySelected(menuItem.getParent().getParent());
 		OrderView.getInstance().getCategoryView().setSelectedCategory(menuItem.getParent().getParent());
 		OrderView.getInstance().getOrderController().groupSelected(menuItem.getParent());
 		return true;

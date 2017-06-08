@@ -178,6 +178,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 		JScrollPane js = new JScrollPane(groupPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		js.setBorder(null);
 
+                if (menuModifierGroup != null) {
 		Set<MenuModifier> modifiers = menuModifierGroup.getModifiers();
 		for (MenuModifier menuModifier : modifiers) {
 			if (!menuModifier.isPizzaModifier()) {
@@ -187,6 +188,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 			groupPanel.getContentPane().add(new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize()));
 		}
                 if(modifiers.size() > 0) multiplierPanel.setVisible(true);
+                }
 		contentPanel.add(js, "newline,top,center");
 		mainPanel.add(contentPanel, BorderLayout.CENTER);
 		contentPanel.repaint();

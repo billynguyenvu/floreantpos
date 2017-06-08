@@ -169,7 +169,7 @@ public class CategoryView extends SelectionView implements ActionListener {
 		listenerList.remove(listener);
 	}
 
-	private void fireCategorySelected(MenuCategory foodCategory) {
+	public void fireCategorySelected(MenuCategory foodCategory) {
 		selectedCategory = foodCategory;
 		for (CategorySelectionListener listener : listenerList) {
 			listener.categorySelected(foodCategory);
