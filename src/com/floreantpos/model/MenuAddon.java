@@ -44,16 +44,6 @@ public class MenuAddon extends BaseMenuAddon {
 
 	/* [CONSTRUCTOR MARKER END] */
 
-	private transient MenuItemModifierGroup menuItemModifierGroup;
-
-	public MenuItemModifierGroup getMenuItemModifierGroup() {
-		return menuItemModifierGroup;
-	}
-
-	public void setMenuItemModifierGroup(MenuItemModifierGroup menuItemModifierGroup) {
-		this.menuItemModifierGroup = menuItemModifierGroup;
-	}
-
 	@Override
 	public Integer getSortOrder() {
 		return sortOrder == null ? 9999 : sortOrder;
@@ -91,7 +81,7 @@ public class MenuAddon extends BaseMenuAddon {
 	}
 
 	public String getUniqueId() {
-		return ("menu_modifier_" + getName() + "_" + getId()).replaceAll("\\s+", "_"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		return ("menu_menuaddon_" + getName() + "_" + getId()).replaceAll("\\s+", "_"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 
 	//
@@ -135,59 +125,6 @@ public class MenuAddon extends BaseMenuAddon {
 		}
 		properties.remove(typeProperty);
 		properties.remove(taxProperty);
-	}
-
-	public double getPriceForMultiplier(Multiplier multiplier) {
-		double defaultPrice = this.getPrice();
-		if (multiplier == null || multiplier.isMain()) {
-			return defaultPrice;
-		}
-
-		List<ModifierMultiplierPrice> priceList = getMultiplierPriceList();
-		if (priceList == null || priceList.isEmpty()) {
-			return defaultPrice * multiplier.getRate() / 100;
-		}
-		for (ModifierMultiplierPrice multiplierPrice : priceList) {
-			if (multiplier.getName().equals(multiplierPrice.getMultiplier().getName())) {
-				return multiplierPrice.getPrice();
-			}
-		}
-		return defaultPrice * multiplier.getRate() / 100;
-	}
-
-	public double getPriceForSize(MenuItemSize size, boolean extra) {
-		return getPriceForSizeAndMultiplier(size, extra, null);
-	}
-
-	public double getPriceForSizeAndMultiplier(MenuItemSize size, boolean extra, Multiplier multiplier) {
-		List<PizzaModifierPrice> priceList = getPizzaModifierPriceList();
-		double regularPrice = 0;
-		if (isPizzaModifier() && priceList != null) {
-			for (PizzaModifierPrice pizzaModifierPrice : priceList) {
-				if (size.getId().intValue() == pizzaModifierPrice.getSize().getId().intValue()) {
-					List<ModifierMultiplierPrice> multiplierPriceList = pizzaModifierPrice.getMultiplierPriceList();
-					if (multiplierPriceList != null) {
-						Double multiplierPrice = null;
-						for (ModifierMultiplierPrice price : multiplierPriceList) {
-							String priceTableMultiplierName = price.getMultiplier().getName();
-							if (priceTableMultiplierName.equals(Multiplier.REGULAR)) {
-								regularPrice = price.getPrice();
-								if (multiplier.getName().equals(Multiplier.REGULAR)) {
-									return regularPrice;
-								}
-							}
-							else if (priceTableMultiplierName.equals(multiplier.getName())) {
-								multiplierPrice = price.getPrice();
-							}
-						}
-						if (multiplierPrice != null) {
-							return multiplierPrice;
-						}
-					}
-				}
-			}
-		}
-		return regularPrice * multiplier.getRate() / 100;
 	}
 
 	public double getPriceByOrderType(OrderType type) {

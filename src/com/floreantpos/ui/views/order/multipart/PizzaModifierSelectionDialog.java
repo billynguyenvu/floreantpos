@@ -241,17 +241,17 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		sizeAndCrustPanel = new SizeAndCrustSelectionPane();
 		centerPanel.add(sizeAndCrustPanel, BorderLayout.NORTH);
 
-//		modifierView = new PizzaModifierView(ticketItem, menuItem, this);
-//		modifierView.addModifierSelectionListener(this);
-//		PosScrollPane modifierSc = new PosScrollPane(modifierView);
-//		modifierSc.setBorder(null);
-//		centerPanel.add(modifierSc, BorderLayout.CENTER);
+		modifierView = new PizzaModifierView(ticketItem, menuItem, this);
+		modifierView.addModifierSelectionListener(this);
+		PosScrollPane modifierSc = new PosScrollPane(modifierView);
+		modifierSc.setBorder(null);
+		centerPanel.add(modifierSc, BorderLayout.CENTER);
                 
-		addonView = new PizzaAddonView(ticketItem, menuItem, this);
-		addonView.addAddonSelectionListener(this);
-		PosScrollPane addonSc = new PosScrollPane(addonView);
-		addonSc.setBorder(null);
-		centerPanel.add(addonSc, BorderLayout.CENTER);
+//		addonView = new PizzaAddonView(ticketItem, menuItem, this);
+//		addonView.addAddonSelectionListener(this);
+//		PosScrollPane addonSc = new PosScrollPane(addonView);
+//		addonSc.setBorder(null);
+//		centerPanel.add(addonSc, BorderLayout.CENTER);
                 
 		add(centerPanel, BorderLayout.CENTER);
 		add(westPanel, BorderLayout.WEST);

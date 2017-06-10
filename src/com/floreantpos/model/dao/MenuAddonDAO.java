@@ -24,6 +24,10 @@ import org.hibernate.Transaction;
 
 import com.floreantpos.PosLog;
 import com.floreantpos.model.MenuAddon;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 
 public class MenuAddonDAO extends BaseMenuAddonDAO {
 
@@ -33,31 +37,21 @@ public class MenuAddonDAO extends BaseMenuAddonDAO {
 	public MenuAddonDAO() {
 	}
 
-//	public MenuAddon getMenuAddonFromTicketItemModifier(TicketItemModifier ticketItemModifier) {
-//		MenuAddon menuModifier = get(ticketItemModifier.getMenuItemId());
-//		menuModifier.setMenuItemModifierGroup(ticketItemModifier.getParent().getMenuItemModifierGroup());
-//		return menuModifier;
-//	}
-
-	public void saveAll(List<MenuAddon> menuModifiers) {
-		if (menuModifiers == null) {
-			return;
-		}
+	public List<MenuAddon> findMenuAddon(String name) {
 		Session session = null;
-		Transaction tx = null;
+		Criteria criteria = null;
 
 		try {
-			session = createNewSession();
-			tx = session.beginTransaction();
-			for (MenuAddon menuModifier : menuModifiers) {
-				session.saveOrUpdate(menuModifier);
+			session = getSession();
+			criteria = session.createCriteria(MenuAddon.class);
+			if (StringUtils.isNotEmpty(name)) {
+				criteria.add(Restrictions.ilike(MenuAddon.PROP_NAME, name + "%".trim(), MatchMode.ANYWHERE)); //$NON-NLS-1$
 			}
-			tx.commit();
-		} catch (Exception e) {
-			tx.rollback();
-			PosLog.error(getClass(), e);
+
+			return criteria.list();
 		} finally {
-			closeSession(session);
+
+			session.close();
 		}
 	}
 }

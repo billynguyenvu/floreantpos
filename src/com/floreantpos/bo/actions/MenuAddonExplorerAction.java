@@ -24,36 +24,36 @@ import javax.swing.Icon;
 import javax.swing.JTabbedPane;
 
 import com.floreantpos.bo.ui.BackOfficeWindow;
-import com.floreantpos.bo.ui.explorer.MenuFreeAddonExplorer;
+import com.floreantpos.bo.ui.explorer.MenuAddonExplorer;
 
-public class MenuFreeAddonExplorerAction extends AbstractAction {
+public class MenuAddonExplorerAction extends AbstractAction {
 
-	public MenuFreeAddonExplorerAction() {
-		super("Menu Free Addons");
+	public MenuAddonExplorerAction() {
+		super("Menu Addons");
 	}
 
-	public MenuFreeAddonExplorerAction(String name) {
+	public MenuAddonExplorerAction(String name) {
 		super(name);
 	}
 
-	public MenuFreeAddonExplorerAction(String name, Icon icon) {
+	public MenuAddonExplorerAction(String name, Icon icon) {
 		super(name, icon);
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		BackOfficeWindow backOfficeWindow = com.floreantpos.util.POSUtil.getBackOfficeWindow();
-		
-		MenuFreeAddonExplorer explorer = null;
-		JTabbedPane tabbedPane = backOfficeWindow.getTabbedPane();
-		int index = tabbedPane.indexOfTab("Menu Free Addons");
+		JTabbedPane tabbedPane;
+		MenuAddonExplorer modifier;
+		tabbedPane = backOfficeWindow.getTabbedPane();
+		int index = tabbedPane.indexOfTab("Menu Addons");
 		if (index == -1) {
-			explorer = new MenuFreeAddonExplorer();
-			tabbedPane.addTab("Menu Free Addons", explorer);
+			modifier = new MenuAddonExplorer();
+			tabbedPane.addTab("Menu Addons", modifier);
 		}
 		else {
-			explorer = (MenuFreeAddonExplorer) tabbedPane.getComponentAt(index);
+			modifier = (MenuAddonExplorer) tabbedPane.getComponentAt(index);
 		}
-		tabbedPane.setSelectedComponent(explorer);
+		tabbedPane.setSelectedComponent(modifier);
 	}
 
 }

@@ -38,19 +38,20 @@ import net.miginfocom.swing.MigLayout;
 import com.floreantpos.Messages;
 import com.floreantpos.model.MenuFreeAddon;
 import com.floreantpos.model.dao.MenuFreeAddonDAO;
-import com.floreantpos.swing.DoubleTextField;
 import com.floreantpos.swing.FixedLengthTextField;
 import com.floreantpos.swing.IntegerTextField;
 import com.floreantpos.swing.MessageDialog;
 import com.floreantpos.ui.BeanEditor;
 import com.floreantpos.util.POSUtil;
+import javax.swing.JFormattedTextField;
 
 /**
  *
  * @author  MShahriar
  */
 public class MenuFreeAddonForm extends BeanEditor {
-	private FixedLengthTextField tfName;
+	private JFormattedTextField tfName;
+	private FixedLengthTextField tfTranslatedName;
 	private IntegerTextField tfSortOrder;
 	private JButton btnButtonColor;
 	private JButton btnTextColor;
@@ -65,24 +66,24 @@ public class MenuFreeAddonForm extends BeanEditor {
 	}
 
 	private void initComponents() {
-		tfName = new com.floreantpos.swing.FixedLengthTextField();
-		tfName.setLength(20);
+		tfName = new javax.swing.JFormattedTextField();
+		tfTranslatedName = new FixedLengthTextField();
 
 		tfSortOrder = new IntegerTextField();
 
-		JLabel lblButtonColor = new JLabel(Messages.getString("MenuModifierForm.1")); //$NON-NLS-1$
-		JLabel lblTextColor = new JLabel(Messages.getString("MenuModifierForm.27")); //$NON-NLS-1$
+		JLabel lblButtonColor = new JLabel(Messages.getString("MenuAddonForm.1")); //$NON-NLS-1$
+		JLabel lblTextColor = new JLabel(Messages.getString("MenuAddonForm.27")); //$NON-NLS-1$
 
 		btnButtonColor = new JButton(""); //$NON-NLS-1$
 		btnButtonColor.setPreferredSize(new Dimension(140, 40));
 
-		btnTextColor = new JButton(Messages.getString("MenuModifierForm.29")); //$NON-NLS-1$
+		btnTextColor = new JButton(Messages.getString("MenuAddonForm.29")); //$NON-NLS-1$
 		btnTextColor.setPreferredSize(new Dimension(140, 40));
 
 		btnButtonColor.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Color color = JColorChooser.showDialog(POSUtil.getBackOfficeWindow(), Messages.getString("MenuModifierForm.39"), btnButtonColor.getBackground()); //$NON-NLS-1$
+				Color color = JColorChooser.showDialog(POSUtil.getBackOfficeWindow(), Messages.getString("MenuAddonForm.39"), btnButtonColor.getBackground()); //$NON-NLS-1$
 				btnButtonColor.setBackground(color);
 				btnTextColor.setBackground(color);
 			}
@@ -91,7 +92,7 @@ public class MenuFreeAddonForm extends BeanEditor {
 		btnTextColor.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Color color = JColorChooser.showDialog(POSUtil.getBackOfficeWindow(), Messages.getString("MenuModifierForm.40"), btnTextColor.getForeground()); //$NON-NLS-1$
+				Color color = JColorChooser.showDialog(POSUtil.getBackOfficeWindow(), Messages.getString("MenuAddonForm.40"), btnTextColor.getForeground()); //$NON-NLS-1$
 				btnTextColor.setForeground(color);
 			}
 		});
@@ -100,6 +101,9 @@ public class MenuFreeAddonForm extends BeanEditor {
 
 		contentPanel.add(new javax.swing.JLabel("Name"));
 		contentPanel.add(tfName, "grow,wrap");
+
+		contentPanel.add(new javax.swing.JLabel("Translated Name"));
+		contentPanel.add(tfTranslatedName, "grow,wrap");
 
 		contentPanel.add(new javax.swing.JLabel("Sort Order"));
 		contentPanel.add(tfSortOrder, "grow,wrap");
@@ -122,13 +126,10 @@ public class MenuFreeAddonForm extends BeanEditor {
 
 			MenuFreeAddon menuFreeAddon = (MenuFreeAddon) getBean();
 			MenuFreeAddonDAO dao = new MenuFreeAddonDAO();
-			if (dao.get(menuFreeAddon.getName()) == null) {
-				dao.save(menuFreeAddon);
-			}
-			else
-				dao.update(menuFreeAddon);
+                        dao.saveOrUpdate(menuFreeAddon);
 		} catch (Exception e) {
 			MessageDialog.showError(e);
+                        e.printStackTrace();
 			return false;
 		}
 
@@ -139,16 +140,17 @@ public class MenuFreeAddonForm extends BeanEditor {
 	protected void updateView() {
 		MenuFreeAddon menuFreeAddon = (MenuFreeAddon) getBean();
 		tfName.setText(menuFreeAddon.getName());
+                tfTranslatedName.setText(menuFreeAddon.getTranslatedName());
 		tfSortOrder.setText(String.valueOf(menuFreeAddon.getSortOrder()));
 
 		if (menuFreeAddon.getButtonColor() != null) {
-			Color color = menuFreeAddon.getButtonColor();
+			Color color = new Color(menuFreeAddon.getButtonColor());
 			btnButtonColor.setBackground(color);
 			btnTextColor.setBackground(color);
 		}
 
 		if (menuFreeAddon.getTextColor() != null) {
-			Color color = menuFreeAddon.getTextColor();
+			Color color = new Color(menuFreeAddon.getTextColor());
 			btnTextColor.setForeground(color);
 		}
 	}
@@ -164,9 +166,10 @@ public class MenuFreeAddonForm extends BeanEditor {
 		}
 
 		menuFreeAddon.setName(name);
+                menuFreeAddon.setTranslatedName(tfTranslatedName.getText());
 		menuFreeAddon.setSortOrder(tfSortOrder.getInteger());
-		menuFreeAddon.setButtonColor(btnButtonColor.getBackground());
-		menuFreeAddon.setTextColor(btnTextColor.getForeground());
+		menuFreeAddon.setButtonColor(btnButtonColor.getBackground().getRGB());
+		menuFreeAddon.setTextColor(btnTextColor.getForeground().getRGB());
 
 		return true;
 	}
@@ -174,8 +177,8 @@ public class MenuFreeAddonForm extends BeanEditor {
 	public String getDisplayText() {
 		MenuFreeAddon menuFreeAddon = (MenuFreeAddon) getBean();
 		if (menuFreeAddon.getName() == null) {
-			return "New menuFreeAddon";
+			return "New Menu Free Addon";
 		}
-		return "Edit menuFreeAddon";
+		return "Edit Menu Free Addon";
 	}
 }

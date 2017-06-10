@@ -37,7 +37,6 @@ import com.floreantpos.bo.ui.CustomCellRenderer;
 import com.floreantpos.model.MenuFreeAddon;
 import com.floreantpos.model.dao.MenuFreeAddonDAO;
 import com.floreantpos.swing.TransparentPanel;
-import com.floreantpos.ui.PosTableRenderer;
 import com.floreantpos.ui.dialog.BeanEditorDialog;
 import com.floreantpos.ui.dialog.ConfirmDeleteDialog;
 import com.floreantpos.ui.model.MenuFreeAddonForm;
@@ -56,7 +55,6 @@ public class MenuFreeAddonExplorer extends TransparentPanel {
 		tableModel = new MenuFreeAddonExplorerTableModel();
 		table = new JTable(tableModel);
 		table.setDefaultRenderer(Object.class, new CustomCellRenderer());
-		table.getColumnModel().getColumn(6).setCellRenderer(new PosTableRenderer());
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
@@ -133,34 +131,16 @@ public class MenuFreeAddonExplorer extends TransparentPanel {
 			}
 		});
 
-		JButton btnSetAsDefault = new JButton("Set default");
-		btnSetAsDefault.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					int index = table.getSelectedRow();
-					if (index < 0)
-						return;
-					MenuFreeAddon selectedMenuFreeAddon = menuFreeAddonList.get(index);
-					MenuFreeAddonDAO.getInstance().saveOrUpdateMenuFreeAddons(menuFreeAddonList);
-					tableModel.fireTableDataChanged();
-				} catch (Exception x) {
-					BOMessageDialog.showError(com.floreantpos.POSConstants.ERROR_MESSAGE, x);
-				}
-			}
-
-		});
-
 		TransparentPanel panel = new TransparentPanel();
 		panel.add(addButton);
 		panel.add(editButton);
 		panel.add(deleteButton);
-		panel.add(btnSetAsDefault);
 		add(panel, BorderLayout.SOUTH);
 	}
 
 	class MenuFreeAddonExplorerTableModel extends AbstractTableModel {
-		String[] columnNames = { POSConstants.NAME, "Prefix", POSConstants.RATE, POSConstants.SORT_ORDER, POSConstants.BUTTON_COLOR, POSConstants.TEXT_COLOR,
-				"Default" };
+		String[] columnNames = { com.floreantpos.POSConstants.ID, com.floreantpos.POSConstants.NAME, 
+                    POSConstants.TRANSLATED_NAME, POSConstants.SORT_ORDER, POSConstants.BUTTON_COLOR, POSConstants.TEXT_COLOR };
 
 		public int getRowCount() {
 			if (menuFreeAddonList == null) {
@@ -191,18 +171,22 @@ public class MenuFreeAddonExplorer extends TransparentPanel {
 
 			switch (columnIndex) {
 				case 0:
-					return menuFreeAddon.getName();
+					return String.valueOf(menuFreeAddon.getId());
 				case 1:
-					return menuFreeAddon.getSortOrder();
+					return menuFreeAddon.getName();
 				case 2:
+					return menuFreeAddon.getTranslatedName();
+				case 3:
+					return menuFreeAddon.getSortOrder();
+				case 4:
 					if (menuFreeAddon.getButtonColor() != null) {
-						return menuFreeAddon.getButtonColor();
+						return new Color(menuFreeAddon.getButtonColor());
 					}
 
 					return null;
-				case 3:
+				case 5:
 					if (menuFreeAddon.getTextColor() != null) {
-						return menuFreeAddon.getTextColor();
+						return new Color(menuFreeAddon.getTextColor());
 					}
 
 					return null;

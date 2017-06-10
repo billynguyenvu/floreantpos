@@ -32,9 +32,9 @@ public class PizzaExplorer extends TransparentPanel {
 		});
 
 		mainTab.addTab("Item", new PizzaItemExplorer());
-//		mainTab.addTab("Modifier", new PizzaModifierExplorer());
+		mainTab.addTab("Modifier", new PizzaModifierExplorer());
 		mainTab.addTab("Size", new MenuItemSizeExplorer());
-//		mainTab.addTab("Crust", new PizzaCrustExplorer());
+		mainTab.addTab("Crust", new PizzaCrustExplorer());
 //		mainTab.addTab("Modifier Group", new ModifierGroupExplorer());
 
 		add(mainTab);

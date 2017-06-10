@@ -46,9 +46,9 @@ import com.floreantpos.POSConstants;
 import com.floreantpos.model.MenuItem;
 import com.floreantpos.model.MenuItemSize;
 import com.floreantpos.model.MenuAddon;
-import com.floreantpos.model.Multiplier;
+import com.floreantpos.model.MenuFreeAddon;
 import com.floreantpos.model.TicketItem;
-import com.floreantpos.model.dao.MultiplierDAO;
+import com.floreantpos.model.dao.MenuFreeAddonDAO;
 import com.floreantpos.swing.POSToggleButton;
 import com.floreantpos.swing.PosButton;
 import com.floreantpos.swing.PosUIManager;
@@ -68,11 +68,11 @@ public class PizzaAddonView extends JPanel {
 	private PosButton btnClear = new PosButton(POSConstants.CLEAR);
 
 	private HashMap<String, AddonButton> buttonMap = new HashMap<String, AddonButton>();
-	private Multiplier selectedMultiplier;
-	private MultiplierButton defaultMultiplierButton;
+	private MenuFreeAddon selectedMenuFreeAddon;
+	private MenuFreeAddonButton defaultMenuFreeAddonButton;
 
 	private JPanel mainPanel;
-                  private JPanel multiplierPanel;
+                  private JPanel menuFreeAddonPanel;
 
 	private JPanel contentPanel;
 	private PizzaModifierSelectionDialog pizzaAddonSelectionDialog;
@@ -88,7 +88,7 @@ public class PizzaAddonView extends JPanel {
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new MigLayout("fillx, aligny top"));
 		add(mainPanel, BorderLayout.CENTER);
-		addMultiplierButtons();
+		addMenuFreeAddonButtons();
 	}
 
 	private void addActionButtons() {
@@ -100,24 +100,24 @@ public class PizzaAddonView extends JPanel {
 		});
 	}
 
-	private void addMultiplierButtons() {
-		multiplierPanel = new JPanel(new MigLayout("fillx,center"));
-		List<Multiplier> multiplierList = MultiplierDAO.getInstance().findAll();
+	private void addMenuFreeAddonButtons() {
+		menuFreeAddonPanel = new JPanel(new MigLayout("fillx,center"));
+		List<MenuFreeAddon> menuFreeAddonList = MenuFreeAddonDAO.getInstance().findAll();
 		ButtonGroup group = new ButtonGroup();
-		if (multiplierList != null) {
-			for (Multiplier multiplier : multiplierList) {
-				MultiplierButton btnMultiplier = new MultiplierButton(multiplier);
-				if (multiplier.isDefaultMultiplier()) {
-					selectedMultiplier = multiplier;
-					defaultMultiplierButton = btnMultiplier;
-					btnMultiplier.setSelected(true);
-				}
-				multiplierPanel.add(btnMultiplier, "grow");
-				group.add(btnMultiplier);
+		if (menuFreeAddonList != null) {
+			for (MenuFreeAddon menuFreeAddon : menuFreeAddonList) {
+				MenuFreeAddonButton btnMenuFreeAddon = new MenuFreeAddonButton(menuFreeAddon);
+//				if (menuFreeAddon.isDefaultMenuFreeAddon()) {
+//					selectedMenuFreeAddon = menuFreeAddon;
+//					defaultMenuFreeAddonButton = btnMenuFreeAddon;
+//					btnMenuFreeAddon.setSelected(true);
+//				}
+				menuFreeAddonPanel.add(btnMenuFreeAddon, "grow");
+				group.add(btnMenuFreeAddon);
 			}
 		}
-		mainPanel.add(multiplierPanel, BorderLayout.SOUTH);
-//                multiplierPanel.setVisible(false);
+		mainPanel.add(menuFreeAddonPanel, BorderLayout.SOUTH);
+//                menuFreeAddonPanel.setVisible(false);
 	}
 
 	//	public void setAddons(Collection<MenuAddon> addons) {
@@ -174,9 +174,9 @@ public class PizzaAddonView extends JPanel {
 //				continue;
 //			}
 //			menuAddon.setMenuItemAddonGroup(menuAddonGroup.getMenuItemAddonGroup());
-//			groupPanel.getContentPane().add(new AddonButton(menuAddon, selectedMultiplier, pizzaAddonSelectionDialog.getSelectedSize()));
+//			groupPanel.getContentPane().add(new AddonButton(menuAddon, selectedMenuFreeAddon, pizzaAddonSelectionDialog.getSelectedSize()));
 //		}
-//                if(addons.size() > 0) multiplierPanel.setVisible(true);
+//                if(addons.size() > 0) menuFreeAddonPanel.setVisible(true);
 //                }
 		contentPanel.add(js, "newline,top,center");
 		mainPanel.add(contentPanel, BorderLayout.CENTER);
@@ -188,10 +188,10 @@ public class PizzaAddonView extends JPanel {
 	private class AddonButton extends PosButton implements ActionListener {
 		private MenuAddon menuAddon;
 
-		public AddonButton(MenuAddon addon, Multiplier multiplier, MenuItemSize menuItemSize) {
+		public AddonButton(MenuAddon addon, MenuFreeAddon menuFreeAddon, MenuItemSize menuItemSize) {
 			this.menuAddon = addon;
 
-			setText("<html><center>" + addon.getDisplayName() + "<br/>" + addon.getPriceForSizeAndMultiplier(menuItemSize, true, multiplier) + "</center></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+			setText("<html><center>" + addon.getDisplayName() + "<br/>+" + addon.getPrice() + "</center></html>"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			if (addon.getButtonColor() != null) {
 				setBackground(new Color(addon.getButtonColor()));
@@ -207,10 +207,10 @@ public class PizzaAddonView extends JPanel {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			addonSelectionListener.addonSelected(menuAddon, selectedMultiplier);
+			addonSelectionListener.addonSelected(menuAddon, null);
 
-		//	defaultMultiplierButton.setSelected(true);
-		//	selectedMultiplier = defaultMultiplierButton.getMultiplier();
+		//	defaultMenuFreeAddonButton.setSelected(true);
+		//	selectedMenuFreeAddon = defaultMenuFreeAddonButton.getMenuFreeAddon();
 			
 			groupPanel.getContentPane().removeAll();
 //			Set<MenuAddon> addons = menuAddonGroup.getAddons();
@@ -219,9 +219,9 @@ public class PizzaAddonView extends JPanel {
 //					continue;
 //				}
 //				menuAddon.setMenuItemAddonGroup(menuAddonGroup.getMenuItemAddonGroup());
-//				groupPanel.getContentPane().add(new AddonButton(menuAddon, selectedMultiplier, pizzaAddonSelectionDialog.getSelectedSize()));
+//				groupPanel.getContentPane().add(new AddonButton(menuAddon, selectedMenuFreeAddon, pizzaAddonSelectionDialog.getSelectedSize()));
 //			}
-//                        if(addons.size() > 0) multiplierPanel.setVisible(true);
+//                        if(addons.size() > 0) menuFreeAddonPanel.setVisible(true);
 			contentPanel.repaint();
 			mainPanel.repaint();
 		}
@@ -231,17 +231,17 @@ public class PizzaAddonView extends JPanel {
 		btnClear.setVisible(b);
 	}
 
-	private class MultiplierButton extends POSToggleButton implements ActionListener {
-		private Multiplier multiplier;
+	private class MenuFreeAddonButton extends POSToggleButton implements ActionListener {
+		private MenuFreeAddon menuFreeAddon;
 
-		public MultiplierButton(Multiplier multiplier) {
-			this.multiplier = multiplier;
-			setText(multiplier.getName());
-			Integer buttonColor = multiplier.getButtonColor();
+		public MenuFreeAddonButton(MenuFreeAddon menuFreeAddon) {
+			this.menuFreeAddon = menuFreeAddon;
+			setText(menuFreeAddon.getName());
+			Integer buttonColor = menuFreeAddon.getButtonColor();
 			if (buttonColor != null) {
 				setBackground(new Color(buttonColor));
 			}
-			Integer textColor = multiplier.getTextColor();
+			Integer textColor = menuFreeAddon.getTextColor();
 			if (textColor != null) {
 				setForeground(new Color(textColor));
 			}
@@ -249,13 +249,13 @@ public class PizzaAddonView extends JPanel {
 			addActionListener(this);
 		}
 
-		public Multiplier getMultiplier() {
-			return multiplier;
+		public MenuFreeAddon getMenuFreeAddon() {
+			return menuFreeAddon;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			selectedMultiplier = multiplier;
+			selectedMenuFreeAddon = menuFreeAddon;
 			updateAddonPrice();
 		}
 
@@ -267,9 +267,9 @@ public class PizzaAddonView extends JPanel {
 //					continue;
 //				}
 //				menuAddon.setMenuItemAddonGroup(menuAddonGroup.getMenuItemAddonGroup());
-//				groupPanel.getContentPane().add(new AddonButton(menuAddon, selectedMultiplier, pizzaAddonSelectionDialog.getSelectedSize()));
+//				groupPanel.getContentPane().add(new AddonButton(menuAddon, selectedMenuFreeAddon, pizzaAddonSelectionDialog.getSelectedSize()));
 //			}
-//                        if(addons.size() > 0) multiplierPanel.setVisible(true);
+//                        if(addons.size() > 0) menuFreeAddonPanel.setVisible(true);
 			contentPanel.repaint();
 			mainPanel.repaint();
 		}

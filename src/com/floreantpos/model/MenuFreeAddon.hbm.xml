@@ -13,7 +13,7 @@
 			not-null="false" type="java.lang.String" />
 
 		<property column="SORT_ORDER" name="sortOrder" type="java.lang.Integer" />
-		<property column="BTN_COLOR" name="buttonColorCode" type="java.lang.Integer" />
-		<property column="TEXT_COLOR" name="textColorCode" type="java.lang.Integer" />
+		<property column="BTN_COLOR" name="buttonColor" type="java.lang.Integer" />
+		<property column="TEXT_COLOR" name="textColor" type="java.lang.Integer" />
 	</class>
 </hibernate-mapping>

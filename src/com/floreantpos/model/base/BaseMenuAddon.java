@@ -14,10 +14,8 @@ import java.io.Serializable;
 
 public abstract class BaseMenuAddon implements Comparable, Serializable {
 
-	public static String REF = "MenuModifier"; //$NON-NLS-1$
+	public static String REF = "MenuAddon"; //$NON-NLS-1$
 	public static String PROP_SHOULD_PRINT_TO_KITCHEN = "shouldPrintToKitchen"; //$NON-NLS-1$
-	public static String PROP_EXTRA_PRICE = "extraPrice"; //$NON-NLS-1$
-	public static String PROP_MODIFIER_GROUP = "modifierGroup"; //$NON-NLS-1$
 	public static String PROP_SORT_ORDER = "sortOrder"; //$NON-NLS-1$
 	public static String PROP_TAX = "tax"; //$NON-NLS-1$
 	public static String PROP_NAME = "name"; //$NON-NLS-1$
@@ -29,7 +27,6 @@ public abstract class BaseMenuAddon implements Comparable, Serializable {
 	public static String PROP_TEXT_COLOR = "textColor"; //$NON-NLS-1$
 	public static String PROP_PIZZA_MODIFIER = "pizzaModifier"; //$NON-NLS-1$
 	public static String PROP_ID = "id"; //$NON-NLS-1$
-	public static String PROP_FIXED_PRICE = "fixedPrice"; //$NON-NLS-1$
 
 	// constructors
 	public BaseMenuAddon() {
@@ -67,12 +64,9 @@ public abstract class BaseMenuAddon implements Comparable, Serializable {
 	protected java.lang.Boolean pizzaModifier;
 
 	// many to one
-	private com.floreantpos.model.MenuModifierGroup modifierGroup;
 	private com.floreantpos.model.Tax tax;
 
 	// collections
-	private java.util.List<com.floreantpos.model.PizzaModifierPrice> pizzaModifierPriceList;
-	private java.util.List<com.floreantpos.model.ModifierMultiplierPrice> multiplierPriceList;
 	private java.util.Map<String, String> properties;
 
 	/**
@@ -282,21 +276,6 @@ public abstract class BaseMenuAddon implements Comparable, Serializable {
 	}
 
 	/**
-	 * Return the value associated with the column: GROUP_ID
-	 */
-	public com.floreantpos.model.MenuModifierGroup getModifierGroup() {
-		return modifierGroup;
-	}
-
-	/**
-	 * Set the value related to the column: GROUP_ID
-	 * @param modifierGroup the GROUP_ID value
-	 */
-	public void setModifierGroup(com.floreantpos.model.MenuModifierGroup modifierGroup) {
-		this.modifierGroup = modifierGroup;
-	}
-
-	/**
 	 * Return the value associated with the column: TAX_ID
 	 */
 	public com.floreantpos.model.Tax getTax() {
@@ -309,48 +288,6 @@ public abstract class BaseMenuAddon implements Comparable, Serializable {
 	 */
 	public void setTax(com.floreantpos.model.Tax tax) {
 		this.tax = tax;
-	}
-
-	/**
-	 * Return the value associated with the column: pizzaModifierPriceList
-	 */
-	public java.util.List<com.floreantpos.model.PizzaModifierPrice> getPizzaModifierPriceList() {
-		return pizzaModifierPriceList;
-	}
-
-	/**
-	 * Set the value related to the column: pizzaModifierPriceList
-	 * @param pizzaModifierPriceList the pizzaModifierPriceList value
-	 */
-	public void setPizzaModifierPriceList(java.util.List<com.floreantpos.model.PizzaModifierPrice> pizzaModifierPriceList) {
-		this.pizzaModifierPriceList = pizzaModifierPriceList;
-	}
-
-	public void addTopizzaModifierPriceList(com.floreantpos.model.PizzaModifierPrice pizzaModifierPrice) {
-		if (null == getPizzaModifierPriceList())
-			setPizzaModifierPriceList(new java.util.ArrayList<com.floreantpos.model.PizzaModifierPrice>());
-		getPizzaModifierPriceList().add(pizzaModifierPrice);
-	}
-
-	/**
-	 * Return the value associated with the column: multiplierPriceList
-	 */
-	public java.util.List<com.floreantpos.model.ModifierMultiplierPrice> getMultiplierPriceList() {
-		return multiplierPriceList;
-	}
-
-	/**
-	 * Set the value related to the column: multiplierPriceList
-	 * @param multiplierPriceList the multiplierPriceList value
-	 */
-	public void setMultiplierPriceList(java.util.List<com.floreantpos.model.ModifierMultiplierPrice> multiplierPriceList) {
-		this.multiplierPriceList = multiplierPriceList;
-	}
-
-	public void addTomultiplierPriceList(com.floreantpos.model.ModifierMultiplierPrice modifierMultiplierPrice) {
-		if (null == getMultiplierPriceList())
-			setMultiplierPriceList(new java.util.ArrayList<com.floreantpos.model.ModifierMultiplierPrice>());
-		getMultiplierPriceList().add(modifierMultiplierPrice);
 	}
 
 	/**
@@ -371,10 +308,10 @@ public abstract class BaseMenuAddon implements Comparable, Serializable {
 	public boolean equals(Object obj) {
 		if (null == obj)
 			return false;
-		if (!(obj instanceof com.floreantpos.model.MenuModifier))
+		if (!(obj instanceof com.floreantpos.model.MenuAddon))
 			return false;
 		else {
-			com.floreantpos.model.MenuModifier menuModifier = (com.floreantpos.model.MenuModifier) obj;
+			com.floreantpos.model.MenuAddon menuModifier = (com.floreantpos.model.MenuAddon) obj;
 			if (null == this.getId() || null == menuModifier.getId())
 				return false;
 			else

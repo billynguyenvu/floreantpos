@@ -20,7 +20,6 @@ package com.floreantpos.model;
 import java.awt.Color;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -43,64 +42,33 @@ public class MenuFreeAddon extends BaseMenuFreeAddon {
 		super(id);
 	}
 
-	/**
-	 * Constructor for required fields
-	 */
-	public MenuFreeAddon (
-		java.lang.Integer id,
-		java.lang.String name) {
-
-		super (
-			id,
-			name);
-	}
-
 	/*[CONSTRUCTOR MARKER END]*/
-
-	private Color buttonColor;
-	private Color textColor;
 
 	@Override
 	public Integer getSortOrder() {
 		return sortOrder == null ? 9999 : sortOrder;
 	}
 
-	@XmlTransient
-	public Color getButtonColor() {
-		if (buttonColor != null) {
-			return buttonColor;
-		}
-
-		if (getButtonColorCode() == null || getButtonColorCode() == 0) {
-			return null;
-		}
-
-		return buttonColor = new Color(getButtonColorCode());
+	@Override
+	public Integer getButtonColor() {
+		return buttonColor;
 	}
 
-	public void setButtonColor(Color buttonColor) {
-		this.buttonColor = buttonColor;
-	}
-
-	@XmlTransient
-	public Color getTextColor() {
-		if (textColor != null) {
-			return textColor;
-		}
-
-		if (getTextColorCode() == null || getTextColorCode() == 0) {
-			return null;
-		}
-
-		return textColor = new Color(getTextColorCode());
-	}
-
-	public void setTextColor(Color textColor) {
-		this.textColor = textColor;
+	@Override
+	public Integer getTextColor() {
+		return textColor;
 	}
 
 	public String getDisplayName() {
 		if (TerminalConfig.isUseTranslatedName() && StringUtils.isNotEmpty(getTranslatedName())) {
+			return getTranslatedName();
+		}
+
+		return super.getName();
+	}
+
+	public String getPrintedName() {
+		if (!TerminalConfig.isUseTranslatedName() && StringUtils.isNotEmpty(getTranslatedName())) {
 			return getTranslatedName();
 		}
 
