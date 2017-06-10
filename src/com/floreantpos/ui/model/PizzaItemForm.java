@@ -284,7 +284,7 @@ public class PizzaItemForm extends BeanEditor<MenuItem> implements ActionListene
 		tabbedPane.addTab(com.floreantpos.POSConstants.GENERAL, tabGeneral);
 		tabbedPane.setPreferredSize(new Dimension(750, 470));
 
-		tabbedPane.addTab(com.floreantpos.POSConstants.MODIFIER_GROUPS, getModifierGroupTab());
+//		tabbedPane.addTab(com.floreantpos.POSConstants.MODIFIER_GROUPS, getModifierGroupTab());
 
 		btnAddShift.addActionListener(this);
 		btnDeleteShift.addActionListener(this);

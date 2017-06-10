@@ -67,6 +67,7 @@ import org.jdesktop.swingx.JXCollapsiblePane;
 import com.floreantpos.IconFactory;
 import com.floreantpos.POSConstants;
 import com.floreantpos.model.ITicketItem;
+import com.floreantpos.model.MenuAddon;
 import com.floreantpos.model.MenuItem;
 import com.floreantpos.model.MenuItemModifierGroup;
 import com.floreantpos.model.MenuItemSize;
@@ -90,6 +91,7 @@ import com.floreantpos.ui.dialog.NumberSelectionDialog2;
 import com.floreantpos.ui.dialog.POSDialog;
 import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.ui.views.order.OrderView;
+import com.floreantpos.ui.views.order.modifier.AddonSelectionListener;
 import com.floreantpos.ui.views.order.modifier.ModifierSelectionListener;
 import com.floreantpos.util.CurrencyUtil;
 import com.floreantpos.util.NumberUtil;
@@ -99,10 +101,12 @@ import com.floreantpos.util.POSUtil;
  * 
  * @author MShahriar
  */
-public class PizzaModifierSelectionDialog extends POSDialog implements ModifierSelectionListener, ActionListener {
+public class PizzaModifierSelectionDialog extends POSDialog implements ModifierSelectionListener, AddonSelectionListener, ActionListener {
 	private static final String PROP_PIZZA_PRICE = "pizzaPrice";
 	private SizeAndCrustSelectionPane sizeAndCrustPanel;
 	private PizzaModifierView modifierView;
+        
+	private PizzaAddonView addonView;
 
 	private List<Section> sectionList;
 	private boolean crustSelected = false;
@@ -237,11 +241,18 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		sizeAndCrustPanel = new SizeAndCrustSelectionPane();
 		centerPanel.add(sizeAndCrustPanel, BorderLayout.NORTH);
 
-		modifierView = new PizzaModifierView(ticketItem, menuItem, this);
-		modifierView.addModifierSelectionListener(this);
-		PosScrollPane modifierSc = new PosScrollPane(modifierView);
-		modifierSc.setBorder(null);
-		centerPanel.add(modifierSc, BorderLayout.CENTER);
+//		modifierView = new PizzaModifierView(ticketItem, menuItem, this);
+//		modifierView.addModifierSelectionListener(this);
+//		PosScrollPane modifierSc = new PosScrollPane(modifierView);
+//		modifierSc.setBorder(null);
+//		centerPanel.add(modifierSc, BorderLayout.CENTER);
+                
+		addonView = new PizzaAddonView(ticketItem, menuItem, this);
+		addonView.addAddonSelectionListener(this);
+		PosScrollPane addonSc = new PosScrollPane(addonView);
+		addonSc.setBorder(null);
+		centerPanel.add(addonSc, BorderLayout.CENTER);
+                
 		add(centerPanel, BorderLayout.CENTER);
 		add(westPanel, BorderLayout.WEST);
 
@@ -741,6 +752,21 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 
 		return null;
 	}
+
+    @Override
+    public void addonSelected(MenuAddon addon, Multiplier multiplier) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addonRemoved(TicketItemModifier addon) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void finishAddonSelection() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 	private class Section extends JPanel implements MouseListener {
 		//JList<TicketItemModifier> list;

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.floreantpos.model">
+	<class lazy="false" name="com.floreantpos.model.MenuFreeAddon"
+		table="MENU_FREE_ADDON">
+		<id column="ID" name="id" type="java.lang.Integer">
+			<generator class="identity" />
+		</id>
+
+		<property column="NAME" length="120" name="name" not-null="true"
+			type="java.lang.String" />
+		<property column="TRANSLATED_NAME" length="120" name="translatedName"
+			not-null="false" type="java.lang.String" />
+
+		<property column="SORT_ORDER" name="sortOrder" type="java.lang.Integer" />
+		<property column="BTN_COLOR" name="buttonColorCode" type="java.lang.Integer" />
+		<property column="TEXT_COLOR" name="textColorCode" type="java.lang.Integer" />
+	</class>
+</hibernate-mapping>

@@ -45,8 +45,7 @@ import net.miginfocom.swing.MigLayout;
 import com.floreantpos.POSConstants;
 import com.floreantpos.model.MenuItem;
 import com.floreantpos.model.MenuItemSize;
-import com.floreantpos.model.MenuModifier;
-import com.floreantpos.model.MenuModifierGroup;
+import com.floreantpos.model.MenuAddon;
 import com.floreantpos.model.Multiplier;
 import com.floreantpos.model.TicketItem;
 import com.floreantpos.model.dao.MultiplierDAO;
@@ -54,52 +53,42 @@ import com.floreantpos.swing.POSToggleButton;
 import com.floreantpos.swing.PosButton;
 import com.floreantpos.swing.PosUIManager;
 import com.floreantpos.swing.ScrollableFlowPanel;
-import com.floreantpos.ui.views.order.modifier.ModifierGroupSelectionListener;
-import com.floreantpos.ui.views.order.modifier.ModifierGroupView;
-import com.floreantpos.ui.views.order.modifier.ModifierSelectionListener;
-import com.floreantpos.ui.views.order.modifier.ModifierSelectionModel;
+import com.floreantpos.ui.views.order.modifier.AddonSelectionListener;
+import com.floreantpos.ui.views.order.modifier.AddonSelectionModel;
 
 /**
  * 
  * @author MShahriar
  */
-public class PizzaModifierView extends JPanel implements ModifierGroupSelectionListener {
-	private ModifierSelectionListener modifierSelectionListener;
+public class PizzaAddonView extends JPanel {
+	private AddonSelectionListener addonSelectionListener;
 
-	//private ModifierSelectionModel modifierSelectionModel;
+	//private AddonSelectionModel addonSelectionModel;
 
 	private PosButton btnClear = new PosButton(POSConstants.CLEAR);
 
-	private HashMap<String, ModifierButton> buttonMap = new HashMap<String, ModifierButton>();
+	private HashMap<String, AddonButton> buttonMap = new HashMap<String, AddonButton>();
 	private Multiplier selectedMultiplier;
 	private MultiplierButton defaultMultiplierButton;
-
-	private ModifierGroupView modifierGroupView;
 
 	private JPanel mainPanel;
                   private JPanel multiplierPanel;
 
 	private JPanel contentPanel;
-	private PizzaModifierSelectionDialog pizzaModifierSelectionDialog;
-	private MenuModifierGroup menuModifierGroup;
+	private PizzaModifierSelectionDialog pizzaAddonSelectionDialog;
 	private ScrollableFlowPanel groupPanel;
 
-	public PizzaModifierView(TicketItem ticketItem, MenuItem menuItem, PizzaModifierSelectionDialog pizzaModifierSelectionDialog) {
-		ModifierSelectionModel modifierSelectionModel = new ModifierSelectionModel(ticketItem, menuItem);
-		//this.modifierSelectionModel = modifierSelectionModel;
-		this.pizzaModifierSelectionDialog = pizzaModifierSelectionDialog;
+	public PizzaAddonView(TicketItem ticketItem, MenuItem menuItem, PizzaModifierSelectionDialog pizzaAddonSelectionDialog) {
+		AddonSelectionModel addonSelectionModel = new AddonSelectionModel(ticketItem, menuItem);
+		//this.addonSelectionModel = addonSelectionModel;
+		this.pizzaAddonSelectionDialog = pizzaAddonSelectionDialog;
 		setLayout(new BorderLayout());
 		mainPanel = new JPanel(new BorderLayout());
-		mainPanel.setBorder(new TitledBorder(null, "MODIFIERS", TitledBorder.CENTER, TitledBorder.CENTER));
+		mainPanel.setBorder(new TitledBorder(null, "ADDONS", TitledBorder.CENTER, TitledBorder.CENTER));
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new MigLayout("fillx, aligny top"));
-		modifierGroupView = new com.floreantpos.ui.views.order.modifier.ModifierGroupView(modifierSelectionModel);
-		add(modifierGroupView, BorderLayout.EAST);
 		add(mainPanel, BorderLayout.CENTER);
 		addMultiplierButtons();
-		modifierGroupView.addModifierGroupSelectionListener(this);
-
-		modifierGroupView.selectFirst();
 	}
 
 	private void addActionButtons() {
@@ -131,15 +120,15 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 //                multiplierPanel.setVisible(false);
 	}
 
-	//	public void setModifiers(Collection<MenuModifier> modifiers) {
+	//	public void setAddons(Collection<MenuAddon> addons) {
 	//		buttonMap.clear();
 	//
 	//		try {
 	//
 	//			List itemList = new ArrayList();
 	//
-	//			for (MenuModifier modifier : modifiers) {
-	//				itemList.add(modifier);
+	//			for (MenuAddon addon : addons) {
+	//				itemList.add(addon);
 	//			}
 	//
 	//			setItems(itemList);
@@ -155,20 +144,20 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 	//	}
 
 	protected AbstractButton createItemButton(Object item) {
-		MenuModifier modifier = (MenuModifier) item;
-		ModifierButton modifierButton = new ModifierButton(modifier, null, null);
-		String key = modifier.getId() + "_" + modifier.getModifierGroup().getId(); //$NON-NLS-1$
-		buttonMap.put(key, modifierButton);
+		MenuAddon addon = (MenuAddon) item;
+		AddonButton addonButton = new AddonButton(addon, null, null);
+//		String key = addon.getId() + "_" + addon.getAddonGroup().getId(); //$NON-NLS-1$
+//		buttonMap.put(key, addonButton);
 
-		return modifierButton;
+		return addonButton;
 	}
 
-	public void addModifierSelectionListener(ModifierSelectionListener listener) {
-		this.modifierSelectionListener = listener;
+	public void addAddonSelectionListener(AddonSelectionListener listener) {
+		this.addonSelectionListener = listener;
 	}
 
-	public void removeModifierSelectionListener(ModifierSelectionListener listener) {
-		this.modifierSelectionListener = null;
+	public void removeAddonSelectionListener(AddonSelectionListener listener) {
+		this.addonSelectionListener = null;
 	}
 
 	public void updateView() {
@@ -176,19 +165,19 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 		groupPanel = new ScrollableFlowPanel();
 		groupPanel.setPreferredSize(new Dimension(PosUIManager.getSize(500, 0)));
 		JScrollPane js = new JScrollPane(groupPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		js.setBorder(null);
-
-                if (menuModifierGroup != null) {
-		Set<MenuModifier> modifiers = menuModifierGroup.getModifiers();
-		for (MenuModifier menuModifier : modifiers) {
-			if (!menuModifier.isPizzaModifier()) {
-				continue;
-			}
-			menuModifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
-			groupPanel.getContentPane().add(new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize()));
-		}
-                if(modifiers.size() > 0) multiplierPanel.setVisible(true);
-                }
+//		js.setBorder(null);
+//
+//                if (menuAddonGroup != null) {
+//		Set<MenuAddon> addons = menuAddonGroup.getAddons();
+//		for (MenuAddon menuAddon : addons) {
+//			if (!menuAddon.isPizzaAddon()) {
+//				continue;
+//			}
+//			menuAddon.setMenuItemAddonGroup(menuAddonGroup.getMenuItemAddonGroup());
+//			groupPanel.getContentPane().add(new AddonButton(menuAddon, selectedMultiplier, pizzaAddonSelectionDialog.getSelectedSize()));
+//		}
+//                if(addons.size() > 0) multiplierPanel.setVisible(true);
+//                }
 		contentPanel.add(js, "newline,top,center");
 		mainPanel.add(contentPanel, BorderLayout.CENTER);
 		contentPanel.repaint();
@@ -196,20 +185,20 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 
 	}
 
-	private class ModifierButton extends PosButton implements ActionListener {
-		private MenuModifier menuModifier;
+	private class AddonButton extends PosButton implements ActionListener {
+		private MenuAddon menuAddon;
 
-		public ModifierButton(MenuModifier modifier, Multiplier multiplier, MenuItemSize menuItemSize) {
-			this.menuModifier = modifier;
+		public AddonButton(MenuAddon addon, Multiplier multiplier, MenuItemSize menuItemSize) {
+			this.menuAddon = addon;
 
-			setText("<html><center>" + modifier.getDisplayName() + "<br/>" + modifier.getPriceForSizeAndMultiplier(menuItemSize, true, multiplier) + "</center></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+			setText("<html><center>" + addon.getDisplayName() + "<br/>" + addon.getPriceForSizeAndMultiplier(menuItemSize, true, multiplier) + "</center></html>"); //$NON-NLS-1$ //$NON-NLS-2$
 
-			if (modifier.getButtonColor() != null) {
-				setBackground(new Color(modifier.getButtonColor()));
+			if (addon.getButtonColor() != null) {
+				setBackground(new Color(addon.getButtonColor()));
 			}
 
-			if (modifier.getTextColor() != null) {
-				setForeground(new Color(modifier.getTextColor()));
+			if (addon.getTextColor() != null) {
+				setForeground(new Color(addon.getTextColor()));
 			}
 
 			setFocusable(true);
@@ -218,21 +207,21 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			modifierSelectionListener.modifierSelected(menuModifier, selectedMultiplier);
+			addonSelectionListener.addonSelected(menuAddon, selectedMultiplier);
 
 		//	defaultMultiplierButton.setSelected(true);
 		//	selectedMultiplier = defaultMultiplierButton.getMultiplier();
 			
 			groupPanel.getContentPane().removeAll();
-			Set<MenuModifier> modifiers = menuModifierGroup.getModifiers();
-			for (MenuModifier menuModifier : modifiers) {
-				if (!menuModifier.isPizzaModifier()) {
-					continue;
-				}
-				menuModifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
-				groupPanel.getContentPane().add(new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize()));
-			}
-                        if(modifiers.size() > 0) multiplierPanel.setVisible(true);
+//			Set<MenuAddon> addons = menuAddonGroup.getAddons();
+//			for (MenuAddon menuAddon : addons) {
+//				if (!menuAddon.isPizzaAddon()) {
+//					continue;
+//				}
+//				menuAddon.setMenuItemAddonGroup(menuAddonGroup.getMenuItemAddonGroup());
+//				groupPanel.getContentPane().add(new AddonButton(menuAddon, selectedMultiplier, pizzaAddonSelectionDialog.getSelectedSize()));
+//			}
+//                        if(addons.size() > 0) multiplierPanel.setVisible(true);
 			contentPanel.repaint();
 			mainPanel.repaint();
 		}
@@ -267,20 +256,20 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			selectedMultiplier = multiplier;
-			updateModifierPrice();
+			updateAddonPrice();
 		}
 
-		private void updateModifierPrice() {
+		private void updateAddonPrice() {
 			groupPanel.getContentPane().removeAll();
-			Set<MenuModifier> modifiers = menuModifierGroup.getModifiers();
-			for (MenuModifier menuModifier : modifiers) {
-				if (!menuModifier.isPizzaModifier()) {
-					continue;
-				}
-				menuModifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
-				groupPanel.getContentPane().add(new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize()));
-			}
-                        if(modifiers.size() > 0) multiplierPanel.setVisible(true);
+//			Set<MenuAddon> addons = menuAddonGroup.getAddons();
+//			for (MenuAddon menuAddon : addons) {
+//				if (!menuAddon.isPizzaAddon()) {
+//					continue;
+//				}
+//				menuAddon.setMenuItemAddonGroup(menuAddonGroup.getMenuItemAddonGroup());
+//				groupPanel.getContentPane().add(new AddonButton(menuAddon, selectedMultiplier, pizzaAddonSelectionDialog.getSelectedSize()));
+//			}
+//                        if(addons.size() > 0) multiplierPanel.setVisible(true);
 			contentPanel.repaint();
 			mainPanel.repaint();
 		}
@@ -295,18 +284,6 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 				setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		}
-	}
-
-	@Override
-	public void modifierGroupSelected(MenuModifierGroup menuModifierGroup) {
-		this.menuModifierGroup = menuModifierGroup;
-		contentPanel.repaint();
-		contentPanel.revalidate();
-		updateView();
-	}
-
-	public ModifierGroupView getModifierGroupView() {
-		return modifierGroupView;
 	}
 
 }

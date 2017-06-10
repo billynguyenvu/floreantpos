@@ -60,6 +60,7 @@ import com.floreantpos.bo.actions.ItemExplorerAction;
 import com.floreantpos.bo.actions.JournalReportAction;
 import com.floreantpos.bo.actions.KeyStatisticsSalesReportAction;
 import com.floreantpos.bo.actions.LanguageSelectionAction;
+import com.floreantpos.bo.actions.MenuFreeAddonExplorerAction;
 import com.floreantpos.bo.actions.MenuItemSizeExplorerAction;
 import com.floreantpos.bo.actions.MenuUsageReportAction;
 import com.floreantpos.bo.actions.ModifierExplorerAction;
@@ -242,10 +243,12 @@ public class BackOfficeWindow extends javax.swing.JFrame {
 		//explorerMenu.add(subMenuPizza);
 
 		subMenuPizza.add(new MenuItemSizeExplorerAction());
-		subMenuPizza.add(new PizzaCrustExplorerAction());
+//		subMenuPizza.add(new PizzaCrustExplorerAction());
 		subMenuPizza.add(new PizzaItemExplorerAction());
 		subMenuPizza.add(new PizzaModifierExplorerAction());
-		explorerMenu.add(new MultiplierExplorerAction());
+//		explorerMenu.add(new MultiplierExplorerAction());
+		explorerMenu.add(new MenuFreeAddonExplorerAction());
+//		explorerMenu.add(new MenuAddonExplorerAction());
 
 		OrderServiceExtension plugin = (OrderServiceExtension) ExtensionManager.getPlugin(OrderServiceExtension.class);
 		if (plugin == null) {
