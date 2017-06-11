@@ -43,17 +43,21 @@ import javax.swing.border.TitledBorder;
 import net.miginfocom.swing.MigLayout;
 
 import com.floreantpos.POSConstants;
+import com.floreantpos.main.Application;
 import com.floreantpos.model.MenuItem;
 import com.floreantpos.model.MenuItemSize;
 import com.floreantpos.model.MenuModifier;
 import com.floreantpos.model.MenuModifierGroup;
 import com.floreantpos.model.Multiplier;
 import com.floreantpos.model.TicketItem;
+import com.floreantpos.model.dao.MenuModifierDAO;
 import com.floreantpos.model.dao.MultiplierDAO;
 import com.floreantpos.swing.POSToggleButton;
 import com.floreantpos.swing.PosButton;
 import com.floreantpos.swing.PosUIManager;
 import com.floreantpos.swing.ScrollableFlowPanel;
+import com.floreantpos.ui.dialog.ItemSearchDialog;
+import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.ui.views.order.modifier.ModifierGroupSelectionListener;
 import com.floreantpos.ui.views.order.modifier.ModifierGroupView;
 import com.floreantpos.ui.views.order.modifier.ModifierSelectionListener;
@@ -77,7 +81,8 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 	private ModifierGroupView modifierGroupView;
 
 	private JPanel mainPanel;
-                  private JPanel multiplierPanel;
+        private JPanel multiplierPanel;
+        private JPanel freeAddonPanel;
 
 	private JPanel contentPanel;
 	private PizzaModifierSelectionDialog pizzaModifierSelectionDialog;
@@ -97,6 +102,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 		add(modifierGroupView, BorderLayout.EAST);
 		add(mainPanel, BorderLayout.CENTER);
 		addMultiplierButtons();
+                addFreeAddonButtons();
 		modifierGroupView.addModifierGroupSelectionListener(this);
 
 		modifierGroupView.selectFirst();
@@ -130,6 +136,39 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 		mainPanel.add(multiplierPanel, BorderLayout.SOUTH);
                 multiplierPanel.setVisible(false);
 	}
+        
+        private void addFreeAddonButtons() {
+            //new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize())
+		freeAddonPanel = new JPanel(new MigLayout("fillx,center"));
+                List<MenuModifier> modifierList = MenuModifierDAO.getInstance().findAll();
+		ButtonGroup group = new ButtonGroup();
+		if (modifierList != null) {
+			for (MenuModifier modifier : modifierList) {
+                            if (!modifier.getModifierGroup().getName().equalsIgnoreCase("FREE ADDON")) continue;
+				ModifierButton btnModifier = new ModifierButton(modifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize());
+				freeAddonPanel.add(btnModifier, "grow");
+				group.add(btnModifier);
+			}
+		}
+                PosButton btnSpecialModifier = new PosButton("Special");
+                btnSpecialModifier.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Show special request form
+                        ItemSearchDialog dialog = new ItemSearchDialog(Application.getPosWindow());
+                        dialog.setTitle("Free Addon Special Request");
+                        dialog.pack();
+                        dialog.open();
+                        if (dialog.isCanceled()) {
+                                return;
+                        }
+                        POSMessageDialog.showMessage(dialog.getValue());
+                    }
+                });
+                freeAddonPanel.add(btnSpecialModifier, "grow");
+                group.add(btnSpecialModifier);
+		mainPanel.add(freeAddonPanel, BorderLayout.SOUTH);
+        }
 
 	//	public void setModifiers(Collection<MenuModifier> modifiers) {
 	//		buttonMap.clear();
@@ -187,7 +226,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 			menuModifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
 			groupPanel.getContentPane().add(new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize()));
 		}
-                if(modifiers.size() > 0) multiplierPanel.setVisible(true);
+                if(modifiers.size() > 0) multiplierPanel.setVisible(false);
                 }
 		contentPanel.add(js, "newline,top,center");
 		mainPanel.add(contentPanel, BorderLayout.CENTER);
@@ -232,7 +271,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 				menuModifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
 				groupPanel.getContentPane().add(new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize()));
 			}
-                        if(modifiers.size() > 0) multiplierPanel.setVisible(true);
+                        if(modifiers.size() > 0) multiplierPanel.setVisible(false);
 			contentPanel.repaint();
 			mainPanel.repaint();
 		}
@@ -280,7 +319,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 				menuModifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
 				groupPanel.getContentPane().add(new ModifierButton(menuModifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize()));
 			}
-                        if(modifiers.size() > 0) multiplierPanel.setVisible(true);
+                        if(modifiers.size() > 0) multiplierPanel.setVisible(false);
 			contentPanel.repaint();
 			mainPanel.repaint();
 		}
@@ -299,6 +338,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 
 	@Override
 	public void modifierGroupSelected(MenuModifierGroup menuModifierGroup) {
+            POSMessageDialog.showMessage(menuModifierGroup.getDisplayName());
 		this.menuModifierGroup = menuModifierGroup;
 		contentPanel.repaint();
 		contentPanel.revalidate();
