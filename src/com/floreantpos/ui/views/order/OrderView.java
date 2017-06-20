@@ -55,14 +55,17 @@ import com.floreantpos.model.ITicketItem;
 import com.floreantpos.model.MenuCategory;
 import com.floreantpos.model.MenuGroup;
 import com.floreantpos.model.MenuItem;
+import com.floreantpos.model.MenuModifier;
 import com.floreantpos.model.OrderType;
 import com.floreantpos.model.ShopTable;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketItem;
 import com.floreantpos.model.TicketItemCookingInstruction;
+import com.floreantpos.model.TicketItemModifier;
 import com.floreantpos.model.User;
 import com.floreantpos.model.UserPermission;
 import com.floreantpos.model.dao.MenuItemDAO;
+import com.floreantpos.model.dao.MenuModifierDAO;
 import com.floreantpos.model.dao.ShopTableDAO;
 import com.floreantpos.model.dao.TicketDAO;
 import com.floreantpos.model.dao.UserDAO;
@@ -72,9 +75,13 @@ import com.floreantpos.ui.dialog.NumberSelectionDialog2;
 import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.ui.dialog.PasswordEntryDialog;
 import com.floreantpos.ui.dialog.SeatSelectionDialog;
+import com.floreantpos.ui.dialog.SpecialRequestDialog;
 import com.floreantpos.ui.tableselection.TableSelectorDialog;
 import com.floreantpos.ui.tableselection.TableSelectorFactory;
 import com.floreantpos.ui.views.CookingInstructionSelectionView;
+import com.floreantpos.util.POSUtil;
+import java.awt.Color;
+import javax.swing.ButtonGroup;
 
 /**
  *
@@ -94,6 +101,7 @@ public class OrderView extends ViewPanel {
 
 	private GroupView groupView = new GroupView();
 	private MenuItemView itemView = new MenuItemView();
+                  private JPanel freeAddonPanel;
 	private OrderController orderController = new OrderController(this);
 
 	private JPanel actionButtonPanel = new JPanel(new MigLayout("fill, ins 2, hidemode 3", "sg, fill", ""));
@@ -115,6 +123,7 @@ public class OrderView extends ViewPanel {
 	/** Creates new form OrderView */
 	private OrderView() {
 		initComponents();
+                    initFreeAddonButtons();
 	}
 
 	public void addView(final String viewName, final JComponent view) {
@@ -124,6 +133,114 @@ public class OrderView extends ViewPanel {
 		}
 		midContainer.add(view, viewName);
 	}
+
+    public void updateFreeAddonView(MenuCategory selectedCategory) {
+        freeAddonPanel.removeAll();
+        addFreeAddonButtons(selectedCategory);
+        freeAddonPanel.revalidate();
+        freeAddonPanel.repaint();
+        midContainer.revalidate();
+        midContainer.repaint();
+    }
+    private void initFreeAddonButtons() {
+        freeAddonPanel = new JPanel(new MigLayout("fillx,center"));
+        addFreeAddonButtons(null);
+        midContainer.add(freeAddonPanel, BorderLayout.SOUTH);
+    }
+    
+    private void addFreeAddonButtons(MenuCategory selectedCategory) {
+        String specialCategory = "BEVERRAGES";
+
+        List<MenuModifier> modifierList = MenuModifierDAO.getInstance().findAll();
+        ButtonGroup group = new ButtonGroup();
+        if (modifierList != null) {
+            for (MenuModifier modifier : modifierList) {
+                if (!modifier.getModifierGroup().getName().equalsIgnoreCase("FREE ADDON") || (selectedCategory != null && selectedCategory.getTranslatedName() != null && selectedCategory.getTranslatedName().equalsIgnoreCase(specialCategory))) {
+                    continue;
+                }
+                ModifierButton btnModifier = new ModifierButton(modifier);
+                freeAddonPanel.add(btnModifier, "grow");
+                group.add(btnModifier);
+            }
+        }
+        PosButton btnSpecialModifier = new PosButton("Special");
+        btnSpecialModifier.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Show special request form
+                SpecialRequestDialog dialog = new SpecialRequestDialog(Application.getPosWindow());
+                dialog.setTitle("Free Addon Special Request");
+                dialog.pack();
+                dialog.open();
+                if (dialog.isCanceled()) {
+                    return;
+                }
+//                        POSMessageDialog.showMessage(dialog.getValue());
+
+
+                TicketItem ticketItem = (TicketItem)ticketView.getTicketViewerTable().getSelected();
+            if (ticketItem == null) {
+                POSMessageDialog.showMessage(POSUtil.getFocusedWindow(), "Please select ticket item before apply free addon!");
+                return;
+            }
+
+                MenuModifier menuModifier = new MenuModifier(-1);
+                menuModifier.setName(dialog.getValue());
+                menuModifier.setTranslatedName(dialog.getValue());
+
+                TicketItemModifier ticketItemModifier = ticketItem.findTicketItemModifierFor(menuModifier);
+                if (ticketItemModifier == null) {
+                    OrderType type = ticketItem.getTicket().getOrderType();
+                    ticketItem.addTicketItemModifier(menuModifier, false);
+                } else {
+                    ticketItemModifier.setItemCount(ticketItemModifier.getItemCount() + 1);
+                }
+                ticketView.updateView();
+            }
+        });
+        freeAddonPanel.add(btnSpecialModifier, "grow");
+        group.add(btnSpecialModifier);    }
+
+    private class ModifierButton extends PosButton implements ActionListener {
+
+        private MenuModifier menuModifier;
+
+        public ModifierButton(MenuModifier modifier) {
+            this.menuModifier = modifier;
+
+            setText("<html><center>" + modifier.getDisplayName() + "<br/>0.0</center></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            if (modifier.getButtonColor() != null) {
+                setBackground(new Color(modifier.getButtonColor()));
+            }
+
+            if (modifier.getTextColor() != null) {
+                setForeground(new Color(modifier.getTextColor()));
+            }
+
+            setFocusable(true);
+            setFocusPainted(true);
+            addActionListener(this);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            TicketItem ticketItem = (TicketItem) ticketView.getTicketViewerTable().getSelected();
+            if (ticketItem == null) {
+                POSMessageDialog.showMessage(POSUtil.getFocusedWindow(), "Please select ticket item before apply free addon!");
+                return;
+            }
+
+            TicketItemModifier ticketItemModifier = ticketItem.findTicketItemModifierFor(menuModifier);
+            if (ticketItemModifier == null) {
+                OrderType type = ticketItem.getTicket().getOrderType();
+                ticketItem.addTicketItemModifier(menuModifier, false);
+            } else {
+                POSMessageDialog.showMessage(POSUtil.getFocusedWindow(), "Item already added!");
+                return;
+            }
+            ticketView.updateView();
+        }
+    }
 
 	/** This method is called from within the constructor to
 	 * initialize the form.

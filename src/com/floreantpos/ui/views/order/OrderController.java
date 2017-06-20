@@ -70,6 +70,7 @@ public class OrderController implements OrderListener, CategorySelectionListener
 		orderView.showView(GroupView.VIEW_NAME);
 		orderView.getGroupView().setMenuCategory(foodCategory);
 		orderView.getTicketView().getTxtSearchItem().requestFocus();
+		orderView.updateFreeAddonView(foodCategory);
 	}
 
 	public void groupSelected(MenuGroup foodGroup) {
