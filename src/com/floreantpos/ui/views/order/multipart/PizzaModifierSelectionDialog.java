@@ -157,7 +157,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		JPanel centerPanel = new JPanel(new BorderLayout());
 
 		JPanel ticketItemTableViewPanel = new JPanel(new BorderLayout());
-		ticketItemTableViewPanel.setPreferredSize(PosUIManager.getSize(0, 200));
+		ticketItemTableViewPanel.setPreferredSize(PosUIManager.getSize(0, 500));
 
 		table = new JTable();
 		ticketItemViewerModel = new PizzaTicketItemTableModel();
@@ -528,6 +528,19 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 
 	@Override
 	public void modifierSelected(MenuModifier modifier, Multiplier multiplier) {
+            
+            if (multiplier == null) {
+
+                TicketItemModifier ticketItemModifier = ticketItem.findTicketItemModifierFor(modifier);
+                if (ticketItemModifier == null) {
+                    ticketItem.addTicketItemModifier(modifier, false);
+                } else {
+                    ticketItemModifier.setItemCount(ticketItemModifier.getItemCount() + 1);
+                }
+                ticketItemViewerModel.updateView();
+                
+                return;
+            }
 
 		MenuItemModifierGroup menuItemModifierGroup = modifier.getMenuItemModifierGroup();
 		int countModifier = ticketItem.countModifierFromGroup(menuItemModifierGroup);

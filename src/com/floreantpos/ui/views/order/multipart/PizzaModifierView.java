@@ -149,7 +149,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 			for (MenuModifier modifier : modifierList) {
                             if (!modifier.getModifierGroup().getName().equalsIgnoreCase("FREE ADDON")) continue;
 //                            modifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
-				ModifierButton btnModifier = new ModifierButton(modifier, selectedMultiplier, pizzaModifierSelectionDialog.getSelectedSize());
+				FreeAddonButton btnModifier = new FreeAddonButton(modifier);
 				freeAddonPanel.add(btnModifier, "grow");
 				group.add(btnModifier);
 			}
@@ -170,9 +170,7 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
                         MenuModifier menuModifier = new MenuModifier(-1);
                         menuModifier.setName(dialog.getValue());
                         menuModifier.setTranslatedName(dialog.getValue());
-                        menuModifier.setMenuItemModifierGroup(menuModifierGroup.getMenuItemModifierGroup());
-                        menuModifier.setModifierGroup(menuModifierGroup);
-                        modifierSelectionListener.modifierSelected(menuModifier, selectedMultiplier);
+                        modifierSelectionListener.modifierSelected(menuModifier, null);
                     }
                 });
                 freeAddonPanel.add(btnSpecialModifier, "grow");
@@ -303,6 +301,32 @@ public class PizzaModifierView extends JPanel implements ModifierGroupSelectionL
 			contentPanel.repaint();
                         contentPanel.revalidate();
 			mainPanel.repaint();
+		}
+	}
+
+	private class FreeAddonButton extends PosButton implements ActionListener {
+		private MenuModifier menuModifier;
+
+		public FreeAddonButton(MenuModifier modifier) {
+			this.menuModifier = modifier;
+
+			setText("<html><center>" + modifier.getDisplayName() + "<br/>0.0</center></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+
+			if (modifier.getButtonColor() != null) {
+				setBackground(new Color(modifier.getButtonColor()));
+			}
+
+			if (modifier.getTextColor() != null) {
+				setForeground(new Color(modifier.getTextColor()));
+			}
+
+			setFocusable(true);
+			setFocusPainted(true);
+			addActionListener(this);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			modifierSelectionListener.modifierSelected(menuModifier, null);
 		}
 	}
 
