@@ -180,14 +180,14 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
             }
         });
         transactionsPanel.add(chkDeleteOnAmount, "wrap");
-        lblPercentThreshold = new JLabel("Threshold (%):");
+        lblPercentThreshold = new JLabel("Threshold (%, ex: 10, 20, 100):");
         transactionsPanel.add(lblPercentThreshold);
-        tfPercentThreshold = new POSTextField("0.1");
+        tfPercentThreshold = new POSTextField("10");
         tfPercentThreshold.setHorizontalAlignment(JTextField.RIGHT);
         transactionsPanel.add(tfPercentThreshold, "wrap");
-        tfAmountOrPercent = new POSTextField();
+        tfAmountOrPercent = new POSTextField("10");
         tfAmountOrPercent.setHorizontalAlignment(JTextField.RIGHT);
-        lblAmountOrPercent = new JLabel("Percentage (%):"); //$NON-NLS-1$ //$NON-NLS-2$
+        lblAmountOrPercent = new JLabel("Percentage (%, ex: 10, 20, 100):"); //$NON-NLS-1$ //$NON-NLS-2$
         transactionsPanel.add(lblAmountOrPercent);
         transactionsPanel.add(tfAmountOrPercent, "wrap"); //$NON-NLS-1$
 
@@ -316,6 +316,8 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
             // Calculate total amount of tickets
             lblStatus.setText("Calculating ticket to delete ... ");
             for (Ticket ticket : dbTickets) {
+                if (ticket.getTransactions().isEmpty()) continue;
+//                if (ticket.getTransactions().iterator().next().getTransactionTime())
                 totalAmount += ticket.getTotalAmount();
                 System.out.println("printed customer copy: " + ticket.getPrintedCustomerCopy());
                 if ((ticket.getPrintedCustomerCopy() == null || !ticket.getPrintedCustomerCopy())
@@ -535,16 +537,16 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                 } else {
                     Double threshold = 0.00d;
                     if (!NumberUtils.isNumber(tfPercentThreshold.getText())) {
-                        tfPercentThreshold.setText("0.0");
+                        tfPercentThreshold.setText("10.0");
                     } else {
                         threshold = Double.parseDouble(tfPercentThreshold.getText());
                     }
                     Double value = Double.parseDouble(tfAmountOrPercent.getText());
                     if (!(value.equals(0.00d) || value.equals(0d))) {
                         if (chkDeleteOnAmount.isSelected()) {
-                            deleteTransactions(getDate(tfStartDate, true), getDate(tfEndDate, false), null, value, threshold);
+                            deleteTransactions(getDate(tfStartDate, true), getDate(tfEndDate, false), null, value, threshold/100);
                         } else {
-                            deleteTransactions(getDate(tfStartDate, true), getDate(tfEndDate, false), value.floatValue(), null, threshold);
+                            deleteTransactions(getDate(tfStartDate, true), getDate(tfEndDate, false), value.floatValue()/100, null, threshold/100);
                         }
                     } else {
                         POSMessageDialog.showMessage(this, "The input number must greater than zero.");

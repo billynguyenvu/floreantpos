@@ -104,7 +104,7 @@ public class DebitCardReportView extends JPanel {
 		
 		Date currentTime = new Date();
 		
-		List<DebitCardTransaction> transactions = (List<DebitCardTransaction>) PosTransactionDAO.getInstance().findTransactions(null, DebitCardTransaction.class, fromDate, toDate);
+		List<DebitCardTransaction> transactions = (List<DebitCardTransaction>) PosTransactionDAO.getInstance().findTransactions(DebitCardTransaction.class, fromDate, toDate);
 		
 		int saleCount = 0;
 		double totalSales = 0;

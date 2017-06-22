@@ -104,7 +104,7 @@ public class CashReportView extends JPanel {
 		
 		Date currentTime = new Date();
 		
-		List<CashTransaction> transactions = (List<CashTransaction>) PosTransactionDAO.getInstance().findTransactions(null, CashTransaction.class, fromDate, toDate);
+		List<CashTransaction> transactions = (List<CashTransaction>) PosTransactionDAO.getInstance().findTransactions(CashTransaction.class, fromDate, toDate);
 		
 		int saleCount = 0;
 		double totalSales = 0;

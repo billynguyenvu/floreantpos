@@ -104,7 +104,7 @@ public class CreditCardReportView extends JPanel {
 		
 		Date currentTime = new Date();
 		
-		List<CreditCardTransaction> transactions = (List<CreditCardTransaction>) PosTransactionDAO.getInstance().findTransactions(null, CreditCardTransaction.class, fromDate, toDate);
+		List<CreditCardTransaction> transactions = (List<CreditCardTransaction>) PosTransactionDAO.getInstance().findTransactions(CreditCardTransaction.class, fromDate, toDate);
 		
 		int saleCount = 0;
 		double totalSales = 0;
