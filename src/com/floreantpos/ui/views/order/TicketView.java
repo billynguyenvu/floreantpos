@@ -74,6 +74,7 @@ import com.floreantpos.util.CurrencyUtil;
 import com.floreantpos.util.DrawerUtil;
 import com.floreantpos.util.NumberUtil;
 import com.floreantpos.util.POSUtil;
+import javax.swing.ButtonGroup;
 
 /**
  * 
@@ -264,12 +265,14 @@ public class TicketView extends JPanel {
 		Integer itemSortOrder = Integer.parseInt(sortOrder);
 		MenuItemDAO dao = new MenuItemDAO();
 
-		MenuItem menuItem = dao.getMenuItemBySortOrder(itemSortOrder);
+		List<MenuItem> menuItems = dao.getMenuItemBySortOrder(itemSortOrder);
 
-		if (menuItem == null) {
+		if (menuItems == null) {
 			return false;
 		}
 
+                if (menuItems.size() > 0) {
+                    MenuItem menuItem = menuItems.get(0);
 		if (!filterByOrderType(menuItem)) {
 			return false;
 		}
@@ -278,11 +281,12 @@ public class TicketView extends JPanel {
 			return false;
 		}
 
-//		OrderView.getInstance().getOrderController().itemSelected(menuItem);
 //		OrderView.getInstance().getOrderController().categorySelected(menuItem.getParent().getParent());
 		OrderView.getInstance().getCategoryView().fireCategorySelected(menuItem.getParent().getParent());
 		OrderView.getInstance().getCategoryView().setSelectedCategory(menuItem.getParent().getParent());
 		OrderView.getInstance().getOrderController().groupSelected(menuItem.getParent());
+                                    if (menuItems.size() == 1) OrderView.getInstance().getOrderController().itemSelected(menuItem);
+                }
 		return true;
 	}
 
@@ -309,8 +313,11 @@ public class TicketView extends JPanel {
 	}
 
 	private void createPayButton() {
+            JPanel totalButtonPanel = new JPanel(new MigLayout("fillx,center"));
+            ButtonGroup buttonGroup = new ButtonGroup();
 		btnTotal = new PosButton(POSConstants.TOTAL.toUpperCase());
 		btnTotal.setFont(btnTotal.getFont().deriveFont(Font.BOLD));
+                btnTotal.setSize(400, btnTotal.getHeight());
 
 		if (!Application.getInstance().getTerminal().isHasCashDrawer()) {
 			btnTotal.setEnabled(false);
@@ -337,7 +344,25 @@ public class TicketView extends JPanel {
 			}
 		});
 
-		add(btnTotal, BorderLayout.SOUTH);
+                buttonGroup.add(btnTotal);
+		totalButtonPanel.add(btnTotal, "grow");
+                
+		PosButton btnTO = new PosButton("T.O");
+		btnTO.setFont(btnTO.getFont().deriveFont(Font.BOLD));
+
+		if (!Application.getInstance().getTerminal().isHasCashDrawer()) {
+			btnTO.setEnabled(false);
+		}
+
+		btnTO.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+                            System.out.println("T.O pressed.");
+			}
+		});
+                buttonGroup.add(btnTO);
+		totalButtonPanel.add(btnTO, "grow");
+		add(totalButtonPanel, BorderLayout.SOUTH);
 	}
 
 	private void createTicketItemControlPanel() {

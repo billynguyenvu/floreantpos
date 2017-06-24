@@ -334,7 +334,7 @@ public class MenuItemDAO extends BaseMenuItemDAO {
 		}
 	}
 
-	public MenuItem getMenuItemBySortOrder(Integer sortOrder) {
+	public List<MenuItem> getMenuItemBySortOrder(Integer sortOrder) {
 		Session session = null;
 		Criteria criteria = null;
 		try {
@@ -345,7 +345,7 @@ public class MenuItemDAO extends BaseMenuItemDAO {
 			if (result == null || result.isEmpty()) {
 				return null;
 			}
-			return (MenuItem) result.get(0);
+			return result;
 		} finally {
 			closeSession(session);
 		}

@@ -94,6 +94,7 @@ import com.floreantpos.ui.views.order.modifier.ModifierSelectionListener;
 import com.floreantpos.util.CurrencyUtil;
 import com.floreantpos.util.NumberUtil;
 import com.floreantpos.util.POSUtil;
+import javax.swing.ListSelectionModel;
 
 /**
  * 
@@ -267,9 +268,12 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 			return;
 		}
 		for (Section section : sectionList) {
+                    System.out.println("x1");
 			for (Iterator iterator = ticketItemModifiers.iterator(); iterator.hasNext();) {
+                            System.out.println("x2");
 				TicketItemModifier ticketItemModifier = (TicketItemModifier) iterator.next();
 				if (!ticketItemModifier.isInfoOnly() && section.getSectionName().equals(ticketItemModifier.getSectionName())) {
+                                    System.out.println("x3");
 					section.sectionModifierTableModel.addItem(ticketItemModifier);
 				}
 			}
@@ -313,42 +317,43 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		sectionList = new ArrayList<>();
 
 		sectionWhole = new Section("WHOLE", "WHOLE", 0, true, 1);
-		sectionQuarter1 = new Section("Quarter 1", "Quarter 1", 1, false, 0.25);
-		sectionQuarter2 = new Section("Quarter 2", "Quarter 2", 2, false, 0.25);
-		sectionQuarter3 = new Section("Quarter 3", "Quarter 3", 3, false, 0.25);
-		sectionQuarter4 = new Section("Quarter 4", "Quarter 4", 4, false, 0.25);
-		sectionHalf1 = new Section("Half 1", "Half 1", 5, false, 0.5);
-		sectionHalf2 = new Section("Half 2", "Half 2", 6, false, 0.5);
+//		sectionQuarter1 = new Section("Quarter 1", "Quarter 1", 1, false, 0.25);
+//		sectionQuarter2 = new Section("Quarter 2", "Quarter 2", 2, false, 0.25);
+//		sectionQuarter3 = new Section("Quarter 3", "Quarter 3", 3, false, 0.25);
+//		sectionQuarter4 = new Section("Quarter 4", "Quarter 4", 4, false, 0.25);
+//		sectionHalf1 = new Section("Half 1", "Half 1", 5, false, 0.5);
+//		sectionHalf2 = new Section("Half 2", "Half 2", 6, false, 0.5);
 
 		sectionList.add(sectionWhole);
 
-		sectionList.add(sectionQuarter1);
-		sectionList.add(sectionQuarter2);
-		sectionList.add(sectionQuarter3);
-		sectionList.add(sectionQuarter4);
+//		sectionList.add(sectionQuarter1);
+//		sectionList.add(sectionQuarter2);
+//		sectionList.add(sectionQuarter3);
+//		sectionList.add(sectionQuarter4);
 
-		sectionList.add(sectionHalf1);
-		sectionList.add(sectionHalf2);
+//		sectionList.add(sectionHalf1);
+//		sectionList.add(sectionHalf2);
 
 		fullSectionLayout.add(sectionWhole);
 
-		halfSectionLayout.add(sectionHalf1);
-		halfSectionLayout.add(sectionHalf2);
-
-		quarterSectionLayout.add(sectionQuarter1);
-		quarterSectionLayout.add(sectionQuarter2);
-		quarterSectionLayout.add(sectionQuarter3);
-		quarterSectionLayout.add(sectionQuarter4);
+//		halfSectionLayout.add(sectionHalf1);
+//		halfSectionLayout.add(sectionHalf2);
+//
+//		quarterSectionLayout.add(sectionQuarter1);
+//		quarterSectionLayout.add(sectionQuarter2);
+//		quarterSectionLayout.add(sectionQuarter3);
+//		quarterSectionLayout.add(sectionQuarter4);
 
 //		sectionView.add(fullSectionLayout, "full");
 //		sectionView.add(halfSectionLayout, "half");
 //		sectionView.add(quarterSectionLayout, "quarter");
 		sectionLayout.show(sectionView, "full");
 
-		wholeSectionView = new JPanel(new MigLayout("fill,ins 0 0 0 0"));
+//		wholeSectionView = new JPanel(new MigLayout("fill,ins 0 0 0 0"));
 		sectionView.setOpaque(false);
 		westPanel.setOpaque(false);
 
+                sectionWhole.setSelected(true);
 		westPanel.add(sectionView, BorderLayout.CENTER);
 //		westPanel.add(wholeSectionView, BorderLayout.SOUTH);
 
@@ -533,7 +538,11 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 
                 TicketItemModifier ticketItemModifier = ticketItem.findTicketItemModifierFor(modifier);
                 if (ticketItemModifier == null) {
-                    ticketItem.addTicketItemModifier(modifier, false);
+                    ticketItemModifier = ticketItem.addTicketItemModifier(modifier, false);
+                    Section selectedSection = getSelectedSection();
+                    System.out.println("Section name: " + selectedSection.getSectionName());
+                    selectedSection.addItem(ticketItemModifier);
+                    ticketItemModifier.setSectionName(selectedSection.getSectionName());
                 } else {
                     ticketItemModifier.setItemCount(ticketItemModifier.getItemCount() + 1);
                 }
@@ -769,6 +778,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		private SectionModifierTableModel sectionModifierTableModel;
 
 		public Section(String sectionName, String displayTitle, int sortOrder, boolean main, double price) {
+                    System.out.println("Create section: " + sectionName);
 			this.sectionName = sectionName;
 			this.displayTitle = displayTitle;
 			this.sortOrder = sortOrder;
@@ -799,10 +809,13 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 
 			sectionTable = new JTable();
 			sectionTable.setTableHeader(null);
-			sectionTable.setRowHeight(PosUIManager.getSize(30));
+			sectionTable.setRowHeight(PosUIManager.getSize(60));
 			sectionModifierTableModel = new SectionModifierTableModel();
 			sectionTable.setDefaultRenderer(Object.class, new ModifierTableCellRenderer());
 			sectionTable.setModel(sectionModifierTableModel);
+                        sectionTable.setRowSelectionAllowed(true);
+                        sectionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                        
 			JScrollPane scrollPane = new JScrollPane(sectionTable);
 			scrollPane.setBorder(null);
 			JViewport viewPort = scrollPane.getViewport();
@@ -876,7 +889,14 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 			if (sectionModifierTableModel.getRows().size() == 0) {
 				return;
 			}
-			int index = sectionTable.getSelectedRow();
+                        System.out.println("rows size = " + sectionModifierTableModel.getRows().size());
+                        System.out.println("rows size 2 = " + sectionTable.getModel().getRowCount());
+			int index = table.getSelectedRow() - 1;//sectionTable.getSelectedRow();
+                        
+//                        if (index < 0) {
+//                                                sectionTable.selectAll();
+//                        }
+                        
 			if (index < 0) {
 				return;
 			}
@@ -931,6 +951,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		}
 
 		public void setSelected(boolean selected) {
+                    System.out.println(this.sectionName + " is selected.");
 			this.selected = selected;
 			repaint();
 		}
@@ -942,6 +963,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		public void addItem(TicketItemModifier newModifier) {
 			//model.addElement(newModifier);
 			sectionModifierTableModel.addItem(newModifier);
+                    System.out.println("addItem " + newModifier.getName());
 			repaint();
 		}
 
@@ -1171,7 +1193,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 				String sizeAndCrustName = sizeAndCrustModifer.getName();
 				String[] split = sizeAndCrustName.split(" ");
 				String sizeName = split[0];
-				String crustName = split[1];//.replaceAll("\\s", "").trim();
+				String crustName = "Regular";//split[1];//.replaceAll("\\s", "").trim();
 
 				for (POSToggleButton sizeButton : sizeButtonList) {
 					PizzaPrice pizzaPrice = (PizzaPrice) sizeButton.getClientProperty(PROP_PIZZA_PRICE);
