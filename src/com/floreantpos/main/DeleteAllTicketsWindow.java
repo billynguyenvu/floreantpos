@@ -273,23 +273,56 @@ public class DeleteAllTicketsWindow extends JFrame implements ActionListener {
                         for (TicketItem ti : ticket.getTicketItems()) {
                             lblStatus.setText("Deleting ticket item ... ");
                             System.out.println("Deleting ticket item id: " + ti.getId());
+                            
+                            List<TicketItemModifier> tims = TicketItemModifierDAO.getInstance().findByTicket(ti);                            
+                            if (tims.size() > 0) {
+                                for (TicketItemModifier tim : tims) {
+                                    boolean needDelete = true;
+                                    if (ti.getSizeModifier() != null) {
+                                        System.out.println("Ticket item size modifier id: " + ti.getSizeModifier().getId());
+                                    }
+                                    if (ti.getSizeModifier() != null && tim.getId().equals(ti.getSizeModifier().getId())) needDelete = false;
+                                    else {
+                                        for (TicketItemModifier tim2 : ti.getTicketItemModifiers())
+                                            if (tim.getId().equals(tim2.getId())) {
+                                                needDelete = false;
+                                                break;
+                                            }
+                                        if (needDelete) {
+                                            for (TicketItemModifier tim2 : ti.getAddOns())
+                                                if (tim.getId().equals(tim2.getId())) {
+                                                    needDelete = false;
+                                                    break;
+                                                }
+                                        }
+                                    }
+                                    if (needDelete) {
+                                        System.out.println("Deleting orphan ticket item modifier: " + tim.getId());
+                                        TicketItemModifierDAO.getInstance().delete(tim, session);
+                                    }
+                                }
+                            }
+                            
+                            if (ti.getSizeModifier() != null) {
+                                System.out.println("Deleting ticket item size modifier id: " + ti.getSizeModifier().getId());
+                                TicketItemModifier tim = ti.getSizeModifier();
+                                TicketItemModifierDAO.getInstance().delete(tim, session);
+                            }
+                            
                             if (ti.getTicketItemModifiers().size() > 0) {
-                                System.out.println("Deleting ticket item modifier...");
                                 for (TicketItemModifier tim : ti.getTicketItemModifiers()) {
+                                    System.out.println("Deleting ticket item modifier: " + tim.getId());
                                     TicketItemModifierDAO.getInstance().delete(tim, session);
                                 }
                             }
-                            else {
-                                // Deleting ticket item modifiers ... 
-//                                System.out.println("Deleting orphan ticket item modifier...");
-//                                List<TicketItemModifier> tims = TicketItemModifierDAO.getInstance().findByTicket(ti);
-//                                if (tims != null) {
-//                                    for (TicketItemModifier tim : tims) {
-//                                        System.out.println("Deleting ticket item modifier id: " + tim.getId());
-//                                        TicketItemModifierDAO.getInstance().delete(26, session);
-//                                    }
-//                                }
+                            
+                            if (ti.getAddOns().size() > 0) {
+                                for (TicketItemModifier tim : ti.getAddOns()) {
+                                    System.out.println("Deleting ticket item addon: " + tim.getId());
+                                    TicketItemModifierDAO.getInstance().delete(tim, session);
+                                }
                             }
+                            
                             for (TicketItemDiscount tid : ti.getDiscounts()) {
                                 TicketItemDiscountDAO.getInstance().delete(tid, session);
                             }
@@ -307,9 +340,16 @@ public class DeleteAllTicketsWindow extends JFrame implements ActionListener {
                         List<Gratuity> gratuities = GratuityDAO.getInstance().findByTicket(ticket);
                         if (gratuities != null) {
                             for (Gratuity gratuity: gratuities) {
-                                System.out.println("Deleting gratuity id: " + gratuity.getId());
-                                GratuityDAO.getInstance().delete(gratuity);
+                                if (ticket.getGratuity() == null || !ticket.getGratuity().getId().equals(gratuity.getId())) {
+                                    System.out.println("Deleting orphan gratuity id: " + gratuity.getId());
+                                    GratuityDAO.getInstance().delete(gratuity, session);
+                                }
                             }
+                        }
+
+                        if (ticket.getGratuity() != null) {
+                            System.out.println("Deleting gratuity id: " + ticket.getGratuity().getId());
+                            GratuityDAO.getInstance().delete(ticket.getGratuity(), session);
                         }
                         
                         // Delete ticket

@@ -35,6 +35,18 @@ public class TicketItemModifierDAO extends BaseTicketItemModifierDAO {
 	public TicketItemModifierDAO () {}
 
 
+	public List<TicketItemModifier> findByTicket(TicketItem ticketItem, Session session) throws PosException {
+		try {
+			Criteria criteria = session.createCriteria(getReferenceClass());
+			criteria.add(Restrictions.eq(TicketItemModifier.PROP_TICKET_ITEM, ticketItem));
+
+			return criteria.list();
+		} catch (Exception e) {
+			throw new PosException("Cannot get ticket item modifier object for ticket: " + ticketItem.getId()); //$NON-NLS-1$ //$NON-NLS-2$
+		} 
+	}
+
+
 	public List<TicketItemModifier> findByTicket(TicketItem ticketItem) throws PosException {
 		Session session = null;
 
