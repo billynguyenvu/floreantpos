@@ -17,6 +17,14 @@
  */
 package com.floreantpos.model.dao;
 
+import com.floreantpos.PosException;
+import com.floreantpos.model.TicketItem;
+import com.floreantpos.model.TicketItemModifier;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+
 
 
 public class TicketItemModifierDAO extends BaseTicketItemModifierDAO {
@@ -26,5 +34,22 @@ public class TicketItemModifierDAO extends BaseTicketItemModifierDAO {
 	 */
 	public TicketItemModifierDAO () {}
 
+
+	public List<TicketItemModifier> findByTicket(TicketItem ticketItem) throws PosException {
+		Session session = null;
+
+		try {
+			session = getSession();
+
+			Criteria criteria = session.createCriteria(getReferenceClass());
+			criteria.add(Restrictions.eq(TicketItemModifier.PROP_TICKET_ITEM, ticketItem));
+
+			return criteria.list();
+		} catch (Exception e) {
+			throw new PosException("Cannot get ticket item modifier object for ticket: " + ticketItem.getId()); //$NON-NLS-1$ //$NON-NLS-2$
+		} finally {
+			closeSession(session);
+		}
+	}
 
 }

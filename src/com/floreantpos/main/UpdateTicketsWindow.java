@@ -50,6 +50,7 @@ import com.floreantpos.PosLog;
 import com.floreantpos.bo.actions.DataImportAction;
 import com.floreantpos.config.AppConfig;
 import com.floreantpos.config.TerminalConfig;
+import com.floreantpos.model.Gratuity;
 import com.floreantpos.model.KitchenTicket;
 import com.floreantpos.model.KitchenTicketItem;
 import com.floreantpos.model.PaymentType;
@@ -64,6 +65,7 @@ import com.floreantpos.model.TicketItemCookingInstruction;
 import com.floreantpos.model.TicketItemDiscount;
 import com.floreantpos.model.TicketItemModifier;
 import com.floreantpos.model.User;
+import com.floreantpos.model.dao.GratuityDAO;
 import com.floreantpos.model.dao.KitchenTicketDAO;
 import com.floreantpos.model.dao.KitchenTicketItemDAO;
 import com.floreantpos.model.dao.PosTransactionDAO;
@@ -391,8 +393,20 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                         // Delete ticket items
                         for (TicketItem ti : ticket.getTicketItems()) {
                             lblStatus.setText("Deleting ticket item ... ");
-                            for (TicketItemModifier tim : ti.getTicketItemModifiers()) {
-                                TicketItemModifierDAO.getInstance().delete(tim, session);
+                            if (ti.getTicketItemModifiers().size() > 0) {
+                                for (TicketItemModifier tim : ti.getTicketItemModifiers()) {
+                                    TicketItemModifierDAO.getInstance().delete(tim, session);
+                                }
+                            }
+                            else {
+//                                // Deleting ticket item modifiers ... 
+//                                List<TicketItemModifier> tims = TicketItemModifierDAO.getInstance().findByTicket(ti);
+//                                if (tims != null) {
+//                                    for (TicketItemModifier tim : tims) {
+//                                        System.out.println("Deleting ticket item modifier id: " + tim.getId());
+//                                        TicketItemModifierDAO.getInstance().delete(tim);
+//                                    }
+//                                }
                             }
                             for (TicketItemDiscount tid : ti.getDiscounts()) {
                                 TicketItemDiscountDAO.getInstance().delete(tid, session);
@@ -405,6 +419,15 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                         for (ShopTable shopTable: shopTables) {
                             shopTable.setServing(false);
                             ShopTableDAO.getInstance().update(shopTable);
+                        }
+                        
+                        // Gratuity deletion
+                        List<Gratuity> gratuities = GratuityDAO.getInstance().findByTicket(ticket);
+                        if (gratuities != null) {
+                            for (Gratuity gratuity: gratuities) {
+                                System.out.println("Deleting gratuity id: " + gratuity.getId());
+                                GratuityDAO.getInstance().delete(gratuity);
+                            }
                         }
                         
                         // Delete ticket

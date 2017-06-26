@@ -349,7 +349,7 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 //		sectionView.add(quarterSectionLayout, "quarter");
 		sectionLayout.show(sectionView, "full");
 
-//		wholeSectionView = new JPanel(new MigLayout("fill,ins 0 0 0 0"));
+		wholeSectionView = new JPanel(new MigLayout("fill,ins 0 0 0 0"));
 		sectionView.setOpaque(false);
 		westPanel.setOpaque(false);
 

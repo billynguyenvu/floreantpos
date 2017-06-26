@@ -63,6 +63,23 @@ public class GratuityDAO extends BaseGratuityDAO {
 		}
 	}
 
+	public List<Gratuity> findByTicket(Ticket ticket) throws PosException {
+		Session session = null;
+
+		try {
+			session = getSession();
+
+			Criteria criteria = session.createCriteria(getReferenceClass());
+			criteria.add(Restrictions.eq(Gratuity.PROP_TICKET, ticket));
+
+			return criteria.list();
+		} catch (Exception e) {
+			throw new PosException("Cannot get gratuity object for ticket: " + ticket.getId()); //$NON-NLS-1$ //$NON-NLS-2$
+		} finally {
+			closeSession(session);
+		}
+	}
+
 	public void payGratuities(List<Gratuity> gratuities) {
 		Session session = null;
 		Transaction tx = null;
