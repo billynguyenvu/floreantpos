@@ -17,6 +17,7 @@
  */
 package com.floreantpos.report;
 
+import com.floreantpos.model.CashTransaction;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,6 +45,19 @@ public class SalesDetailedReport {
 
 	private List<DrawerPullData> drawerPullDatas = new ArrayList<DrawerPullData>();
 	private Map<String,CreditCardData> creditCardDatas = new HashMap<String,CreditCardData>();
+
+	public void addCashData(CashTransaction t) {
+		CreditCardData data = creditCardDatas.get("CASH");
+		if(data == null) {
+			data = new CreditCardData();
+			data.setCardName("CASH");
+			creditCardDatas.put(t.getCardType(), data);
+		}
+		data.setSalesCount(data.getSalesCount() + 1);
+		data.setSalesAmount(data.getSalesAmount() + t.getAmount());
+		data.setNetSalesAmount(data.getNetSalesAmount() + t.getAmount());
+		//data.setNetTipsAmount(data.getNetTipsAmount() + t.getGratuityAmount());
+	}
 
 	public void addCreditCardData(CreditCardTransaction t) {
 		CreditCardData data = creditCardDatas.get(t.getCardType());

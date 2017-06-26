@@ -608,6 +608,16 @@ public class ReportService {
 				report.addDrawerPullData(data);
 			}
 
+			criteria = session.createCriteria(CashTransaction.class);
+			criteria.add(Restrictions.ge(CashTransaction.PROP_TRANSACTION_TIME, fromDate));
+			criteria.add(Restrictions.le(CashTransaction.PROP_TRANSACTION_TIME, toDate));
+			list = criteria.list();
+
+			for (Iterator iter = list.iterator(); iter.hasNext();) {
+				CashTransaction t = (CashTransaction) iter.next();
+				report.addCashData(t);
+			}
+
 			criteria = session.createCriteria(CreditCardTransaction.class);
 			criteria.add(Restrictions.ge(CreditCardTransaction.PROP_TRANSACTION_TIME, fromDate));
 			criteria.add(Restrictions.le(CreditCardTransaction.PROP_TRANSACTION_TIME, toDate));

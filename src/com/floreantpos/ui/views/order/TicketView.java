@@ -74,7 +74,9 @@ import com.floreantpos.util.CurrencyUtil;
 import com.floreantpos.util.DrawerUtil;
 import com.floreantpos.util.NumberUtil;
 import com.floreantpos.util.POSUtil;
+import java.awt.Color;
 import javax.swing.ButtonGroup;
+import javax.swing.border.LineBorder;
 
 /**
  * 
@@ -313,11 +315,11 @@ public class TicketView extends JPanel {
 	}
 
 	private void createPayButton() {
-            JPanel totalButtonPanel = new JPanel(new MigLayout("fillx,center"));
+            JPanel totalButtonPanel = new JPanel(new MigLayout("", "[]5[]"));
+            totalButtonPanel.setPreferredSize(PosUIManager.getSize(360, 60));
             ButtonGroup buttonGroup = new ButtonGroup();
 		btnTotal = new PosButton(POSConstants.TOTAL.toUpperCase());
 		btnTotal.setFont(btnTotal.getFont().deriveFont(Font.BOLD));
-                btnTotal.setSize(400, btnTotal.getHeight());
 
 		if (!Application.getInstance().getTerminal().isHasCashDrawer()) {
 			btnTotal.setEnabled(false);
@@ -345,25 +347,41 @@ public class TicketView extends JPanel {
 		});
 
                 buttonGroup.add(btnTotal);
-		totalButtonPanel.add(btnTotal, "grow");
+		totalButtonPanel.add(btnTotal, "w 300, h 60");
                 
 		PosButton btnTO = new PosButton("T.O");
 		btnTO.setFont(btnTO.getFont().deriveFont(Font.BOLD));
-
-		if (!Application.getInstance().getTerminal().isHasCashDrawer()) {
-			btnTO.setEnabled(false);
-		}
 
 		btnTO.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
                             System.out.println("T.O pressed.");
+//                            doTOSelection();
 			}
 		});
                 buttonGroup.add(btnTO);
-		totalButtonPanel.add(btnTO, "grow");
+		totalButtonPanel.add(btnTO, "east, h 60");
+//                LineBorder lborder = new LineBorder(Color.RED, 2);
+//                totalButtonPanel.setBorder(lborder);
 		add(totalButtonPanel, BorderLayout.SOUTH);
 	}
+
+    private void doTOSelection() {// GEN-FIRST:event_doDeleteSelection
+        Object object = ticketViewerTable.getSelected();
+
+        if (object == null) {
+            return;
+        }
+        if (object instanceof TicketItem) {
+            TicketItem ticketItem = (TicketItem) object;
+            if (!ticketItem.getName().contains("T.O")) {
+                ticketItem.setName("(T.O) " + ticketItem.getName());
+                ticketItem.setNameToPrinting("(T.O) " + ticketItem.getNameToPrinting());
+                updateView();
+            }
+        }
+
+    }
 
 	private void createTicketItemControlPanel() {
 		GridLayout gridLayout = new GridLayout(0, 1, 1, 3);

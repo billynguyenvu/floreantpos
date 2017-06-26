@@ -55,6 +55,7 @@ import com.floreantpos.model.KitchenTicketItem;
 import com.floreantpos.model.PaymentType;
 import com.floreantpos.model.PosTransaction;
 import com.floreantpos.model.Restaurant;
+import com.floreantpos.model.ShopTable;
 import com.floreantpos.model.Terminal;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketDiscount;
@@ -67,6 +68,7 @@ import com.floreantpos.model.dao.KitchenTicketDAO;
 import com.floreantpos.model.dao.KitchenTicketItemDAO;
 import com.floreantpos.model.dao.PosTransactionDAO;
 import com.floreantpos.model.dao.RestaurantDAO;
+import com.floreantpos.model.dao.ShopTableDAO;
 import com.floreantpos.model.dao.TerminalDAO;
 import com.floreantpos.model.dao.TicketDAO;
 import com.floreantpos.model.dao.TicketDiscountDAO;
@@ -273,6 +275,14 @@ public class DeleteAllTicketsWindow extends JFrame implements ActionListener {
                             }
                             TicketItemDAO.getInstance().delete(ti, session);
                         }
+                        
+                        // Set shop table un-server
+                        List<ShopTable> shopTables = ShopTableDAO.getInstance().getByNumbers(ticket.getTableNumbers());
+                        for (ShopTable shopTable: shopTables) {
+                            shopTable.setServing(false);
+                            ShopTableDAO.getInstance().update(shopTable);
+                        }
+                        
                         // Delete ticket
                         TicketDAO.getInstance().delete(ticket, session);
                     }
