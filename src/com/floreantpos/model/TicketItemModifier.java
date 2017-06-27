@@ -227,7 +227,7 @@ public class TicketItemModifier extends BaseTicketItemModifier implements ITicke
 
 	@Override
 	public Double getSubTotalAmountDisplay() {
-		return null;
+		return subTotalAmount;
 	}
 
 	@Override

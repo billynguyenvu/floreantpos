@@ -356,7 +356,7 @@ public class TicketView extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
                             System.out.println("T.O pressed.");
-//                            doTOSelection();
+                            doTOSelection();
 			}
 		});
                 buttonGroup.add(btnTO);
@@ -374,9 +374,14 @@ public class TicketView extends JPanel {
         }
         if (object instanceof TicketItem) {
             TicketItem ticketItem = (TicketItem) object;
-            if (!ticketItem.getName().contains("T.O")) {
+            if (!ticketItem.getName().startsWith("(T.O) ")) {
                 ticketItem.setName("(T.O) " + ticketItem.getName());
                 ticketItem.setNameToPrinting("(T.O) " + ticketItem.getNameToPrinting());
+                updateView();
+            }
+            else {
+                ticketItem.setName(ticketItem.getName().substring(6));
+                ticketItem.setNameToPrinting(ticketItem.getNameToPrinting().substring(6));
                 updateView();
             }
         }
