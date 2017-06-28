@@ -372,8 +372,12 @@ public class TicketView extends JPanel {
         if (object == null) {
             return;
         }
-        if (object instanceof TicketItem) {
-            TicketItem ticketItem = (TicketItem) object;
+        if (object instanceof ITicketItem) {
+            TicketItem ticketItem = null;
+            if (object instanceof TicketItem) ticketItem = (TicketItem) object;
+            else if (object instanceof TicketItemModifier) ticketItem = ((TicketItemModifier) object).getTicketItem();
+            else return;
+            
             if (!ticketItem.getName().startsWith("(T.O) ")) {
                 ticketItem.setName("(T.O) " + ticketItem.getName());
                 ticketItem.setNameToPrinting("(T.O) " + ticketItem.getNameToPrinting());

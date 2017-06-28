@@ -225,23 +225,25 @@ public class OrderView extends ViewPanel {
 
         public void actionPerformed(ActionEvent e) {
             ITicketItem iTicketItem = ticketView.getTicketViewerTable().getSelected();
-            if (iTicketItem instanceof TicketItem) {
-                TicketItem ticketItem = (TicketItem) ticketView.getTicketViewerTable().getSelected();
-                if (ticketItem == null) {
-                    POSMessageDialog.showMessage(POSUtil.getFocusedWindow(), "Please select ticket item before apply free addon!");
-                    return;
-                }
+            TicketItem ticketItem = null;
+            if (iTicketItem instanceof TicketItem) ticketItem = (TicketItem) iTicketItem;
+            else if (iTicketItem instanceof TicketItemModifier) ticketItem = ((TicketItemModifier) iTicketItem).getTicketItem();
+            else return;
 
-                TicketItemModifier ticketItemModifier = ticketItem.findTicketItemModifierFor(menuModifier);
-                if (ticketItemModifier == null) {
-                    OrderType type = ticketItem.getTicket().getOrderType();
-                    ticketItem.addTicketItemModifier(menuModifier, false);
-                } else {
-                    POSMessageDialog.showMessage(POSUtil.getFocusedWindow(), "Item already added!");
-                    return;
-                }
-                ticketView.updateView();
+            if (ticketItem == null) {
+                POSMessageDialog.showMessage(POSUtil.getFocusedWindow(), "Please select ticket item before apply free addon!");
+                return;
             }
+
+            TicketItemModifier ticketItemModifier = ticketItem.findTicketItemModifierFor(menuModifier);
+            if (ticketItemModifier == null) {
+                OrderType type = ticketItem.getTicket().getOrderType();
+                ticketItem.addTicketItemModifier(menuModifier, false);
+            } else {
+                POSMessageDialog.showMessage(POSUtil.getFocusedWindow(), "Item already added!");
+                return;
+            }
+            ticketView.updateView();
         }
     }
 
