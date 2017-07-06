@@ -542,6 +542,7 @@ public class TicketListView extends JPanel implements ITicketList {
 					return ticket.getDueAmount();
 
 				case 11:
+                                    if (!ticket.isClosed()) return 0;
 					return (ticket.getPrintedCustomerCopy() != null && ticket.getPrintedCustomerCopy())?2:1;
 
 			}
