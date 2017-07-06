@@ -121,6 +121,8 @@ public class TicketListView extends JPanel implements ITicketList {
 		columnModel.getColumn(1).setPreferredWidth(14);
 		columnModel.getColumn(2).setPreferredWidth(90);
 		columnModel.getColumn(3).setPreferredWidth(90);
+		columnModel.getColumn(8).setPreferredWidth(120);
+		columnModel.getColumn(11).setPreferredWidth(10);
 
 		if (isCustomerHistoryOpen) {
 			columnModel.getColumnExt((1)).setVisible(false);
@@ -436,7 +438,7 @@ public class TicketListView extends JPanel implements ITicketList {
 			super(new String[] { POSConstants.TICKET_LIST_COLUMN_ID, POSConstants.TICKET_LIST_COLUMN_TABLE, POSConstants.TICKET_LIST_COLUMN_SERVER,
 					POSConstants.TICKET_LIST_COLUMN_CREATE_DATE, POSConstants.TICKET_LIST_COLUMN_CUSTOMER, POSConstants.TICKET_LIST_COLUMN_DELIVERY_ADDRESS,
 					POSConstants.TICKET_LIST_COLUMN_DELIVERY_DATE, POSConstants.TICKET_LIST_COLUMN_TICKET_TYPE, POSConstants.TICKET_LIST_COLUMN_STATUS,
-					POSConstants.TICKET_LIST_COLUMN_TOTAL, POSConstants.TICKET_LIST_COLUMN_DUE });
+					POSConstants.TICKET_LIST_COLUMN_TOTAL, POSConstants.TICKET_LIST_COLUMN_DUE, "PRN" });
 
 		}
 
@@ -538,6 +540,9 @@ public class TicketListView extends JPanel implements ITicketList {
 
 				case 10:
 					return ticket.getDueAmount();
+
+				case 11:
+					return (ticket.getPrintedCustomerCopy() != null && ticket.getPrintedCustomerCopy())?2:1;
 
 			}
 
