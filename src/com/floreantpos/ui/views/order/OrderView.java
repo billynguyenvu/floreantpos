@@ -178,7 +178,10 @@ public class OrderView extends ViewPanel {
 //                        POSMessageDialog.showMessage(dialog.getValue());
 
 
-                TicketItem ticketItem = (TicketItem)ticketView.getTicketViewerTable().getSelected();
+            ITicketItem iTicketItem = ticketView.getTicketViewerTable().getSelected();
+            TicketItem ticketItem = null;
+            if (iTicketItem instanceof TicketItem) ticketItem = (TicketItem) iTicketItem;
+            else if (iTicketItem instanceof TicketItemModifier) ticketItem = ((TicketItemModifier) iTicketItem).getTicketItem();
             if (ticketItem == null) {
                 POSMessageDialog.showMessage(POSUtil.getFocusedWindow(), "Please select ticket item before apply free addon!");
                 return;
@@ -191,7 +194,9 @@ public class OrderView extends ViewPanel {
                 TicketItemModifier ticketItemModifier = ticketItem.findTicketItemModifierFor(menuModifier);
                 if (ticketItemModifier == null) {
                     OrderType type = ticketItem.getTicket().getOrderType();
-                    ticketItem.addTicketItemModifier(menuModifier, false);
+                    ticketItemModifier = ticketItem.addTicketItemModifier(menuModifier, false);
+                
+                    ticketItemModifier.setSectionName("WHOLE");
                 } else {
                     ticketItemModifier.setItemCount(ticketItemModifier.getItemCount() + 1);
                 }
@@ -238,7 +243,9 @@ public class OrderView extends ViewPanel {
             TicketItemModifier ticketItemModifier = ticketItem.findTicketItemModifierFor(menuModifier);
             if (ticketItemModifier == null) {
                 OrderType type = ticketItem.getTicket().getOrderType();
-                ticketItem.addTicketItemModifier(menuModifier, false);
+                ticketItemModifier = ticketItem.addTicketItemModifier(menuModifier, false);
+                
+                ticketItemModifier.setSectionName("WHOLE");
             } else {
                 POSMessageDialog.showMessage(POSUtil.getFocusedWindow(), "Item already added!");
                 return;

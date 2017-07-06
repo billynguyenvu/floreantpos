@@ -451,7 +451,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 
 		newTicketItem.setItemId(ticketItem.getItemId());
 		newTicketItem.setHasModifiers(ticketItem.isHasModifiers());
-		//newTicketItem.setTicketItemModifierGroups(new ArrayList<TicketItemModifierGroup>(ticketItem.getTicketItemModifierGroups()));
+//		newTicketItem.setTicketItemModifiers(new ArrayList<TicketItemModifier>(ticketItem.getTicketItemModifiers()));
 		newTicketItem.setName(ticketItem.getName());
 		newTicketItem.setNameToPrinting(ticketItem.getNameToPrinting());
 		newTicketItem.setGroupName(ticketItem.getGroupName());
@@ -480,8 +480,11 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 //				newGroup.setMinQuantity(modifierGroup.getMinQuantity());
 //				newGroup.setParent(newTicketItem);
 				List<TicketItemModifier> ticketItemModifiers = ticketItem.getTicketItemModifiers();
+                                System.out.println("ticketItemModifiers size: " + ticketItemModifiers.size());
+                                int count = 0;
 				if (ticketItemModifiers != null) {
 					for (TicketItemModifier ticketItemModifier : ticketItemModifiers) {
+                                System.out.println("modifier " + count + ", name = " + ticketItemModifier.getName());
 						TicketItemModifier newModifier = new TicketItemModifier();
 						newModifier.setModifierId(ticketItemModifier.getModifierId());
 						newModifier.setMenuItemModifierGroupId(ticketItemModifier.getMenuItemModifierGroupId());
@@ -494,14 +497,18 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 						newModifier.setPrintedToKitchen(ticketItemModifier.isPrintedToKitchen());
 						newModifier.setShouldPrintToKitchen(ticketItemModifier.isShouldPrintToKitchen());
 						newModifier.setTicketItem(newTicketItem);
+                                                newModifier.setSectionName(ticketItemModifier.getSectionName());
+                                                newTicketItem.addToticketItemModifiers(newModifier);
 					}
 				}
 //			}
 //		}
 
 		List<TicketItemModifier> addOnsList = ticketItem.getAddOns();
+                                System.out.println("addOnsList size: " + addOnsList.size());
 		if (addOnsList != null) {
 			for (TicketItemModifier addOns : ticketItem.getAddOns()) {
+                                System.out.println("modifier " + count + ", name = " + addOns.getName());
 				TicketItemModifier newAddOns = new TicketItemModifier();
 				newAddOns.setModifierId(addOns.getModifierId());
 				newAddOns.setMenuItemModifierGroupId(addOns.getMenuItemModifierGroupId());
@@ -515,6 +522,8 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 				newAddOns.setShouldPrintToKitchen(addOns.isShouldPrintToKitchen());
 				newAddOns.setTicketItem(newTicketItem);
 				newTicketItem.addToaddOns(newAddOns);
+                                                newAddOns.setSectionName(addOns.getSectionName());
+                                                newTicketItem.addToticketItemModifiers(newAddOns);
 			}
 		}
 
