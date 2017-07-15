@@ -70,7 +70,7 @@ public class DefaultCustomerListView extends CustomerSelector {
 	protected Customer selectedCustomer;
 	private PosButton btnRemoveCustomer;
 
-	private Ticket ticket;
+//	private Ticket ticket;
 	private PosButton btnCancel;
 	private QwertyKeyPad qwertyKeyPad;
 
@@ -177,11 +177,17 @@ public class DefaultCustomerListView extends CustomerSelector {
 		btnInfo = new PosButton(Messages.getString("CustomerSelectionDialog.23")); //$NON-NLS-1$
 		btnInfo.setFocusable(false);
 		panel.add(btnInfo, "grow"); //$NON-NLS-1$
-		btnInfo.setEnabled(false);
+//		btnInfo.setEnabled(false);
+                btnInfo.setVisible(false);
 
-		PosButton btnHistory = new PosButton(Messages.getString("CustomerSelectionDialog.24")); //$NON-NLS-1$
-		btnHistory.setEnabled(false);
-		panel.add(btnHistory, "grow"); //$NON-NLS-1$
+		PosButton btnEditCustomer = new PosButton("EDIT"); //$NON-NLS-1$
+		panel.add(btnEditCustomer, "grow"); //$NON-NLS-1$
+		btnEditCustomer.setFocusable(false);
+		btnEditCustomer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doEditCustomer();
+			}
+		});
 
 		btnCreateNewCustomer = new PosButton(Messages.getString("CustomerSelectionDialog.25")); //$NON-NLS-1$
 		btnCreateNewCustomer.setFocusable(false);
@@ -280,10 +286,13 @@ public class DefaultCustomerListView extends CustomerSelector {
 			return;
 		}
 
+                System.out.println("ticket customer: " + ticket.getCustomerId());
 		ticket.removeCustomer();
+                ticket.setCustomerId(null);
+                System.out.println("ticket customer: " + ticket.getCustomerId());
 		TicketDAO.getInstance().saveOrUpdate(ticket);
-		//setCanceled(false);
-		//dispose();
+                selectedCustomer = null;
+		closeDialog(false);
 	}
 
 	protected void doSearchCustomer() {
@@ -318,6 +327,32 @@ public class DefaultCustomerListView extends CustomerSelector {
 
 			CustomerListTableModel model = (CustomerListTableModel) customerTable.getModel();
 			model.addItem(selectedCustomer);
+		}
+	}
+
+	protected void doEditCustomer() {
+            selectedCustomer = customerTable.getSelectedCustomer();
+            if (selectedCustomer == null) {
+                POSMessageDialog.showMessage("Please select a customer to edit.");
+                return;
+            }
+		boolean setKeyPad = true;
+
+		QuickCustomerForm form = new QuickCustomerForm(setKeyPad);
+
+		//TODO: handle exception
+
+		form.enableCustomerFields(true);
+                form.setBean(selectedCustomer);
+		BeanEditorDialog dialog = new BeanEditorDialog(POSUtil.getBackOfficeWindow(), form);
+		dialog.setResizable(false);
+		dialog.open();
+
+		if (!dialog.isCanceled()) {
+//			selectedCustomer = (Customer) form.getBean();
+
+			CustomerListTableModel model = (CustomerListTableModel) customerTable.getModel();
+                        model.updateItem(customerTable.getSelectedRow());
 		}
 	}
 

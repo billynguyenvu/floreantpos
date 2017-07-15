@@ -720,12 +720,17 @@ public class OrderView extends ViewPanel {
 		CustomerSelectorDialog dialog = CustomerSelectorFactory.createCustomerSelectorDialog(currentTicket.getOrderType());
 		dialog.setCreateNewTicket(false);
 		if (currentTicket != null) {
+                        System.out.println("currentTicket customer: " + currentTicket.getCustomerId());
 			dialog.setTicket(currentTicket);
 		}
 		dialog.openUndecoratedFullScreen();
 
 		if (!dialog.isCanceled()) {
+                    if (dialog.getSelectedCustomer() != null)
 			currentTicket.setCustomer(dialog.getSelectedCustomer());
+                    else {
+                        System.out.println("currentTicket customer: " + currentTicket.getCustomerId());
+                    }
 		}
 	}
 
