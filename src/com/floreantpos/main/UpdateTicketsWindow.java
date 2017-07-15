@@ -23,18 +23,13 @@ import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
@@ -42,52 +37,33 @@ import javax.swing.plaf.FontUIResource;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.floreantpos.Database;
 import com.floreantpos.Messages;
 import com.floreantpos.PosLog;
-import com.floreantpos.bo.actions.DataImportAction;
-import com.floreantpos.config.AppConfig;
-import com.floreantpos.config.TerminalConfig;
 import com.floreantpos.model.Gratuity;
 import com.floreantpos.model.KitchenTicket;
 import com.floreantpos.model.KitchenTicketItem;
 import com.floreantpos.model.PaymentType;
 import com.floreantpos.model.PosTransaction;
-import com.floreantpos.model.Restaurant;
 import com.floreantpos.model.ShopTable;
-import com.floreantpos.model.Terminal;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketDiscount;
 import com.floreantpos.model.TicketItem;
-import com.floreantpos.model.TicketItemCookingInstruction;
 import com.floreantpos.model.TicketItemDiscount;
 import com.floreantpos.model.TicketItemModifier;
-import com.floreantpos.model.User;
 import com.floreantpos.model.dao.GratuityDAO;
 import com.floreantpos.model.dao.KitchenTicketDAO;
 import com.floreantpos.model.dao.KitchenTicketItemDAO;
 import com.floreantpos.model.dao.PosTransactionDAO;
-import com.floreantpos.model.dao.RestaurantDAO;
 import com.floreantpos.model.dao.ShopTableDAO;
-import com.floreantpos.model.dao.TerminalDAO;
 import com.floreantpos.model.dao.TicketDAO;
 import com.floreantpos.model.dao.TicketDiscountDAO;
 import com.floreantpos.model.dao.TicketItemDAO;
 import com.floreantpos.model.dao.TicketItemDiscountDAO;
 import com.floreantpos.model.dao.TicketItemModifierDAO;
-import com.floreantpos.model.dao._RootDAO;
-import com.floreantpos.swing.DoubleTextField;
-import com.floreantpos.swing.FixedLengthDocument;
-import com.floreantpos.swing.FixedLengthTextField;
-import com.floreantpos.swing.IntegerTextField;
-import com.floreantpos.swing.POSPasswordField;
 import com.floreantpos.swing.POSTextField;
 import com.floreantpos.swing.PosButton;
 import com.floreantpos.swing.PosUIManager;
 import com.floreantpos.ui.dialog.POSMessageDialog;
-import com.floreantpos.util.DatabaseConnectionException;
 import com.floreantpos.util.DatabaseUtil;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceBlue;
@@ -103,9 +79,6 @@ import java.util.Properties;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.tool.hbm2ddl.SchemaExport;
-import org.jdatepicker.JDatePicker;
 import org.jdatepicker.impl.DateComponentFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -274,38 +247,7 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
     }
 
     private void deleteTransactions(Date startDate, Date endDate, Float percentToDelete, Double amountToDelete, Double threshold) {
-//        Database selectedDb = Database.POSTGRES;
-//
-//        String databaseURL = AppConfig.getDatabaseHost();
-//
-//        String databasePort = AppConfig.getDatabasePort();
-//        if (StringUtils.isEmpty(databasePort)) {
-//            databasePort = selectedDb.getDefaultPort();
-//        }
-//
-//        final String providerName = selectedDb.getProviderName();
-//        final String databaseName = AppConfig.getDatabaseName();
-//        final String user = "postgres_admin";
-//        final String pass = "postgres_admin_1234";
-//
-//        final String connectionString = selectedDb.getConnectString(databaseURL, databasePort, databaseName);
-//        final String hibernateDialect = selectedDb.getHibernateDialect();
-//        final String driverClass = selectedDb.getHibernateConnectionDriverClass();
         try {
-//            Configuration configuration = _RootDAO.getNewConfiguration(null);
-//
-//            configuration = configuration.setProperty("hibernate.dialect", hibernateDialect);
-//            configuration = configuration.setProperty("hibernate.connection.driver_class", driverClass);
-//
-//            configuration = configuration.setProperty("hibernate.connection.url", connectionString);
-//            configuration = configuration.setProperty("hibernate.connection.username", user);
-//            configuration = configuration.setProperty("hibernate.connection.password", pass);
-//            configuration = configuration.setProperty("hibernate.hbm2ddl.auto", "create");
-//            configuration = configuration.setProperty("hibernate.c3p0.checkoutTimeout", "0"); //$NON-NLS-1$ //$NON-NLS-2$
-//
-////            SchemaExport schemaExport = new SchemaExport(configuration);
-////            schemaExport.create(true, true);
-//            _RootDAO.initialize();
             DatabaseUtil.initialize();
 
             Double totalAmount = 0.0d;
