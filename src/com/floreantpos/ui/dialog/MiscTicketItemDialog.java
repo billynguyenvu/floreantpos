@@ -155,6 +155,7 @@ public class MiscTicketItemDialog extends OkCancelOptionDialog {
 		ticketItem.setItemCount(1);
 		ticketItem.setUnitPrice(amount);
 		ticketItem.setName(itemName);
+		ticketItem.setNameToPrinting(itemName);
 		ticketItem.setCategoryName(com.floreantpos.POSConstants.MISC_BUTTON_TEXT);
 		ticketItem.setGroupName(com.floreantpos.POSConstants.MISC_BUTTON_TEXT);
 		ticketItem.setShouldPrintToKitchen(true);
