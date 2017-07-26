@@ -145,7 +145,7 @@ public class SwitchboardView extends ViewPanel implements ActionListener, ITicke
 	 */
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code
 	// <editor-fold defaultstate="collapsed"
-	// desc=" Generated Code ">//GEN-BEGIN:initComponents
+	// desc=" Generated Code ">                          
 	private void initComponents() {
 		setLayout(new java.awt.BorderLayout(10, 10));
 
@@ -560,7 +560,7 @@ public class SwitchboardView extends ViewPanel implements ActionListener, ITicke
 
 		OrderView.getInstance().setCurrentTicket(ticketToEdit);
 		RootView.getInstance().showView(OrderView.VIEW_NAME);
-		OrderView.getInstance().getTicketView().getTxtSearchItem().requestFocus();
+//		OrderView.getInstance().getTicketView().getTxtSearchItem().requestFocus();
 	}
 
 	//	public void doCreateNewTicket(final OrderType ticketType) {
@@ -686,7 +686,7 @@ public class SwitchboardView extends ViewPanel implements ActionListener, ITicke
 		ticketList.updateTicketList();
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
+	// Variables declaration - do not modify                     
 
 	//	private PosButton btnBarTab = new PosButton(POSConstants.BAR_TAB_BUTTON_TEXT);
 

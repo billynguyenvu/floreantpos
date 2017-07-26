@@ -134,7 +134,7 @@ public class BarTabSelectionView extends JPanel {
 
 		OrderView.getInstance().setCurrentTicket(ticketToEdit);
 		RootView.getInstance().showView(OrderView.VIEW_NAME);
-		OrderView.getInstance().getTicketView().getTxtSearchItem().requestFocus();
+//		OrderView.getInstance().getTicketView().getTxtSearchItem().requestFocus();
 		return true;
 	}
 

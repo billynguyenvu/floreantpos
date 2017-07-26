@@ -443,7 +443,7 @@ public class DefaultTableSelectionView extends TableSelector implements ActionLi
 
 		OrderView.getInstance().setCurrentTicket(ticketToEdit);
 		RootView.getInstance().showView(OrderView.VIEW_NAME);
-		OrderView.getInstance().getTicketView().getTxtSearchItem().requestFocus();
+//		OrderView.getInstance().getTicketView().getTxtSearchItem().requestFocus();
 		return true;
 	}
 

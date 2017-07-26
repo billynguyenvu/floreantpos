@@ -51,7 +51,7 @@ public class SalesDetailedReport {
 		if(data == null) {
 			data = new CreditCardData();
 			data.setCardName("CASH");
-			creditCardDatas.put(t.getCardType(), data);
+			creditCardDatas.put("CASH", data);
 		}
 		data.setSalesCount(data.getSalesCount() + 1);
 		data.setSalesAmount(data.getSalesAmount() + t.getAmount());

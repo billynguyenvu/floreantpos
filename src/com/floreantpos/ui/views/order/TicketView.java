@@ -65,6 +65,7 @@ import com.floreantpos.swing.PosUIManager;
 import com.floreantpos.ui.dialog.AutomatedWeightInputDialog;
 import com.floreantpos.ui.dialog.BasicWeightInputDialog;
 import com.floreantpos.ui.dialog.ItemSearchDialog;
+import com.floreantpos.ui.dialog.ItemSearchPopup;
 import com.floreantpos.ui.dialog.NumberSelectionDialog2;
 import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.ui.dialog.SeatSelectionDialog;
@@ -75,6 +76,9 @@ import com.floreantpos.util.DrawerUtil;
 import com.floreantpos.util.NumberUtil;
 import com.floreantpos.util.POSUtil;
 import java.awt.Color;
+import java.awt.Frame;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.ButtonGroup;
 import javax.swing.border.LineBorder;
 
@@ -94,7 +98,7 @@ public class TicketView extends JPanel {
 	private com.floreantpos.swing.PosButton btnScrollUp = new PosButton();
 	private com.floreantpos.swing.TransparentPanel ticketItemActionPanel;
 	private javax.swing.JScrollPane ticketScrollPane;
-	private PosButton btnTotal;
+	protected PosButton btnTotal;
 	private com.floreantpos.ui.ticket.TicketViewerTable ticketViewerTable;
 	private JPanel itemSearchPanel;
 	private JTextField txtSearchItem;
@@ -103,6 +107,7 @@ public class TicketView extends JPanel {
 	private boolean cancelable;
 	private boolean allowToLogOut;
 	public final static String VIEW_NAME = "TICKET_VIEW"; //$NON-NLS-1$
+        protected boolean isInFocus = false;
 
 	public TicketView() {
 		initComponents();
@@ -160,6 +165,39 @@ public class TicketView extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
+//				if (txtSearchItem.getText().equals("")) {
+//					POSMessageDialog.showMessage("Please enter item number or barcode ");
+//					return;
+//				}
+//
+//				if (!addMenuItemByBarcode(txtSearchItem.getText())) {
+//					addMenuItemBySortOrder(txtSearchItem.getText());
+////					addMenuItemByItemId(txtSearchItem.getText());
+//				}
+//				txtSearchItem.setText("");
+			}
+		});
+                txtSearchItem.addFocusListener(new FocusListener() {
+
+                    @Override
+                    public void focusGained(FocusEvent e) {
+                        if (isInFocus) {
+                            return;
+                        }
+                        isInFocus = true;
+                                    btnTotal.requestFocus();
+                                ItemSearchPopup dialog = new ItemSearchPopup((Frame)null, txtSearchItem);
+                                dialog.setLocation(110, 220);
+				dialog.setTitle("Input item number");
+				dialog.pack();
+				dialog.open();
+				if (dialog.isCanceled()) {
+                        isInFocus = false;
+					return;
+				}
+
+				//txtSearchItem.requestFocus();
+
 				if (txtSearchItem.getText().equals("")) {
 					POSMessageDialog.showMessage("Please enter item number or barcode ");
 					return;
@@ -170,12 +208,19 @@ public class TicketView extends JPanel {
 //					addMenuItemByItemId(txtSearchItem.getText());
 				}
 				txtSearchItem.setText("");
-			}
-		});
+                        isInFocus = false;
+                        
+                    }
+
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                    }
+                });
 
 		btnSearch.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+                            btnTotal.requestFocus();
 				ItemSearchDialog dialog = new ItemSearchDialog(Application.getPosWindow());
 				dialog.setTitle("Search item");
 				dialog.pack();
@@ -184,7 +229,7 @@ public class TicketView extends JPanel {
 					return;
 				}
 
-				txtSearchItem.requestFocus();
+//				txtSearchItem.requestFocus();
 
 				if (!addMenuItemByBarcode(dialog.getValue())) {
 					if (!addMenuItemBySortOrder(dialog.getValue())) {
@@ -319,6 +364,8 @@ public class TicketView extends JPanel {
             totalButtonPanel.setPreferredSize(PosUIManager.getSize(360, 60));
             ButtonGroup buttonGroup = new ButtonGroup();
 		btnTotal = new PosButton(POSConstants.TOTAL.toUpperCase());
+                btnTotal.setFocusable(true);
+                btnTotal.setFocusPainted(true);
 		btnTotal.setFont(btnTotal.getFont().deriveFont(Font.BOLD));
 
 		if (!Application.getInstance().getTerminal().isHasCashDrawer()) {

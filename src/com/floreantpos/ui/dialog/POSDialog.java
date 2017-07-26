@@ -30,14 +30,18 @@ import com.floreantpos.main.Application;
 
 public class POSDialog extends JDialog {
 	protected boolean canceled = true;
+        private Frame frameOwner = null;
+        private Window windowOwner = null;
 
 	public POSDialog() throws HeadlessException {
 		super(Application.getPosWindow(), true);
+                windowOwner = Application.getPosWindow();
 		initUI();
 	}
 	
 	public POSDialog(Frame owner, boolean modal) {
 		super(owner, modal);
+                frameOwner = owner;
 		
 		initUI();
 		setIconImage(Application.getPosWindow().getIconImage());
@@ -49,12 +53,14 @@ public class POSDialog extends JDialog {
 //
 	public POSDialog(Window owner, String title) {
 		this(owner, title, true);
+                windowOwner = owner;
 
 		initUI();
 	}
 	
 	public POSDialog(Window owner, String title, boolean modal) {
 		super(owner, title, modal ? ModalityType.APPLICATION_MODAL: ModalityType.MODELESS);
+                windowOwner = owner;
 		
 		initUI();
 	}
@@ -63,6 +69,7 @@ public class POSDialog extends JDialog {
 
 	public void open() {
 		canceled = true;
+                if (frameOwner != null || windowOwner != null) {
 		
 		if (isUndecorated()) {
 			Window owner = getOwner();
@@ -78,6 +85,7 @@ public class POSDialog extends JDialog {
 		else {
 			setLocationRelativeTo(getOwner());
 		}
+                }
 		setVisible(true);
 	}
 	

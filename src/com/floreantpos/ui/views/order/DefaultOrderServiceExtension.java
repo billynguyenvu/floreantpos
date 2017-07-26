@@ -96,7 +96,7 @@ public class DefaultOrderServiceExtension extends OrderServiceExtension {
 
 		OrderView.getInstance().setCurrentTicket(ticket);
 		RootView.getInstance().showView(OrderView.VIEW_NAME);
-		OrderView.getInstance().getTicketView().getTxtSearchItem().requestFocus();
+//		OrderView.getInstance().getTicketView().getTxtSearchItem().requestFocus();
 	}
 
 	@Override

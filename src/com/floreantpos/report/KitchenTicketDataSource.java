@@ -23,15 +23,19 @@ import java.util.Comparator;
 import com.floreantpos.config.TerminalConfig;
 import com.floreantpos.model.KitchenTicket;
 import com.floreantpos.model.KitchenTicketItem;
+import com.floreantpos.model.TicketItem;
+import com.floreantpos.model.TicketItemModifier;
+import com.floreantpos.model.dao.TicketItemDAO;
+import com.floreantpos.model.dao.TicketItemModifierDAO;
 
 public class KitchenTicketDataSource extends AbstractReportDataSource {
 
 	public KitchenTicketDataSource() {
-		super(new String[] { "groupName", "itemNo", "itemName", "itemQty" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		super(new String[] { "groupId", "groupName", "itemNo", "itemName", "itemQty", "itemSubTotal" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	public KitchenTicketDataSource(KitchenTicket ticket) {
-		super(new String[] { "groupId", "groupName", "itemNo", "itemName", "itemQty" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		super(new String[] { "groupId", "groupName", "itemNo", "itemName", "itemQty", "itemSubTotal" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		setTicket(ticket);
 	}
@@ -86,6 +90,16 @@ public class KitchenTicketDataSource extends AbstractReportDataSource {
 					return "";
 				}
 				return String.valueOf(item.getQuantity());
+
+			case 5:
+                            TicketItemModifier tim = TicketItemModifierDAO.getInstance().get(item.getTicketItemModifierId());
+                            if (tim != null) {
+                                System.out.println("Subtotal: " + String.valueOf(tim.getSubTotalAmount()));
+                                return String.valueOf(tim.getSubTotalAmount());
+                            }
+                            else {
+                                System.out.println("No modifier for kitchen item.");
+                            }
 		}
 		return null;
 	}
