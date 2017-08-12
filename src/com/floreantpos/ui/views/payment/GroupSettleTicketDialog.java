@@ -220,7 +220,19 @@ public class GroupSettleTicketDialog extends POSDialog implements CardInputListe
 
 		ticketDetailView.setTickets(tickets);
 
-	}
+        displayTotalOrderOnLCD(tfTotal.getText());
+    }
+    
+    private void displayTotalOrderOnLCD(String totalPrice) {
+        if (TerminalConfig.isActiveCustomerDisplay()) {
+            String total = "TOTAL (Order):";
+            String line1 = String.format("%-20s", total);
+            String line2 = String.format("%20s", CurrencyUtil.getCurrencySymbol() + totalPrice);
+            String msg = line1 + line2;
+            System.out.println("Send total value to customer display with text: \n" + line1 + "\n" + line2);
+            DrawerUtil.setItemDisplay(TerminalConfig.getCustomerDisplayPort(), msg);
+        }
+    }
 
 	private JPanel createTicketInfoPanel() {
 
