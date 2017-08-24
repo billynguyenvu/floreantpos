@@ -412,7 +412,7 @@ public class ReceiptPrintService {
 
 		map.put(TERMINAL, POSConstants.RECEIPT_REPORT_TERMINAL_LABEL + Application.getInstance().getTerminal().getId());
 		map.put(CHECK_NO, POSConstants.RECEIPT_REPORT_TICKET_NO_LABEL + ticket.getId());
-		map.put(TABLE_NO, POSConstants.RECEIPT_REPORT_TABLE_NO_LABEL + ticket.getTableNumbers());
+		map.put(TABLE_NO, ("" + ticket.getTableNumbers()).replace("[", "").replace("]", ""));
 		map.put(GUEST_COUNT, POSConstants.RECEIPT_REPORT_GUEST_NO_LABEL + ticket.getNumberOfGuests());
 		map.put(SERVER_NAME, POSConstants.RECEIPT_REPORT_SERVER_LABEL + ticket.getOwner());
 		map.put(REPORT_DATE, POSConstants.RECEIPT_REPORT_DATE_LABEL + Application.formatDate(new Date()));
@@ -567,7 +567,7 @@ public class ReceiptPrintService {
 		OrderType orderType = ticket.getOrderType();
 		if (orderType.isShowTableSelection() || orderType.isShowGuestSelection()) {//fix
 			beginRow(ticketHeaderBuilder);
-			addColumn(ticketHeaderBuilder, POSConstants.RECEIPT_REPORT_TABLE_NO_LABEL + ticket.getTableNumbers());
+			addColumn(ticketHeaderBuilder, ("" + ticket.getTableNumbers()).replace("[", "").replace("]", ""));
 			endRow(ticketHeaderBuilder);
 
 			beginRow(ticketHeaderBuilder);
@@ -825,7 +825,7 @@ public class ReceiptPrintService {
 		map.put(SHOW_HEADER_SEPARATOR, Boolean.TRUE);
 		map.put(CHECK_NO, POSConstants.RECEIPT_REPORT_TICKET_NO_LABEL + ticket.getTicketId());
 		if (ticket.getTableNumbers() != null && ticket.getTableNumbers().size() > 0) {
-			map.put(TABLE_NO, POSConstants.RECEIPT_REPORT_TABLE_NO_LABEL + ticket.getTableNumbers());
+			map.put(TABLE_NO, ("" + ticket.getTableNumbers()).replace("[", "").replace("]", ""));
 		}
 
 		if (StringUtils.isNotEmpty(ticket.getCustomerName())) {
@@ -857,7 +857,7 @@ public class ReceiptPrintService {
 		map.put(SHOW_HEADER_SEPARATOR, Boolean.TRUE);
 		map.put(CHECK_NO, POSConstants.RECEIPT_REPORT_TICKET_NO_LABEL + ticket.getTicketId() + "-" + ticket.getSequenceNumber());
 		if (ticket.getTableNumbers() != null && ticket.getTableNumbers().size() > 0) {
-			map.put(TABLE_NO, POSConstants.RECEIPT_REPORT_TABLE_NO_LABEL + ticket.getTableNumbers());
+			map.put(TABLE_NO, ("" + ticket.getTableNumbers()).replace("[", "").replace("]", ""));
 		}
 
 		if (StringUtils.isNotEmpty(ticket.getCustomerName())) {
