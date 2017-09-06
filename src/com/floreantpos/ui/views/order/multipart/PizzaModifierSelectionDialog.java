@@ -453,15 +453,15 @@ public class PizzaModifierSelectionDialog extends POSDialog implements ModifierS
 		if (!editMode) {
 			OrderView.getInstance().getTicketView().addTicketItem(ticketItem);
 
-			int showYesNoQuestionDialog = POSMessageDialog.showYesNoQuestionDialog(POSUtil.getFocusedWindow(), "Do you want to create more?",
-					"More Item With Multiple Sizes");
-			if (showYesNoQuestionDialog == 0) {
-				TicketItem newTicketItem = ticketItem.clone(ticketItem);
-				newTicketItem.setId(null);
-				this.ticketItem = newTicketItem;
-				reset();
-				return false;
-			}
+//			int showYesNoQuestionDialog = POSMessageDialog.showYesNoQuestionDialog(POSUtil.getFocusedWindow(), "Do you want to create more?",
+//					"More Item With Multiple Sizes");
+//			if (showYesNoQuestionDialog == 0) {
+//				TicketItem newTicketItem = ticketItem.clone(ticketItem);
+//				newTicketItem.setId(null);
+//				this.ticketItem = newTicketItem;
+//				reset();
+//				return false;
+//			}
 		}
 		return true;
 	}
