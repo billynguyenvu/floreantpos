@@ -340,31 +340,31 @@ public class ReceiptPrintService {
 			printProperties.setPrintCookingInstructions(false);
 			HashMap map = populateTicketProperties(ticket, printProperties, transaction);
 
-//			if (transaction != null && transaction.isCard()) {
-//				map.put("cardPayment", false); //$NON-NLS-1$
-//				map.put("copyType", Messages.getString("ReceiptPrintService.7")); //$NON-NLS-1$ //$NON-NLS-2$
-//
-//				JasperPrint jasperPrint = createPrint(ticket, map, transaction);
-//				jasperPrint.setName("Ticket-" + ticket.getId() + "-MerchantCopy"); //$NON-NLS-1$ //$NON-NLS-2$
-//				jasperPrint.setProperty(PROP_PRINTER_NAME, Application.getPrinters().getReceiptPrinter());
-//				printQuitely(jasperPrint);
-//
-//				if (printCustomerCopy) {
-//					map.put("copyType", Messages.getString("ReceiptPrintService.8")); //$NON-NLS-1$ //$NON-NLS-2$
-//
-//					jasperPrint = createPrint(ticket, map, transaction);
-//					jasperPrint.setName("Ticket-" + ticket.getId() + "-CustomerCopy"); //$NON-NLS-1$ //$NON-NLS-2$
-//					jasperPrint.setProperty(PROP_PRINTER_NAME, Application.getPrinters().getReceiptPrinter());
-//					printQuitely(jasperPrint);
-//				}
-//			}
-//			else {
+			if (transaction != null && transaction.isCard()) {
+				map.put("cardPayment", false); //$NON-NLS-1$
+				map.put("copyType", Messages.getString("ReceiptPrintService.7")); //$NON-NLS-1$ //$NON-NLS-2$
+
+				JasperPrint jasperPrint = createPrint(ticket, map, transaction);
+				jasperPrint.setName("Ticket-" + ticket.getId() + "-MerchantCopy"); //$NON-NLS-1$ //$NON-NLS-2$
+				jasperPrint.setProperty(PROP_PRINTER_NAME, Application.getPrinters().getReceiptPrinter());
+				printQuitely(jasperPrint);
+
+				if (printCustomerCopy) {
+					map.put("copyType", Messages.getString("ReceiptPrintService.8")); //$NON-NLS-1$ //$NON-NLS-2$
+
+					jasperPrint = createPrint(ticket, map, transaction);
+					jasperPrint.setName("Ticket-" + ticket.getId() + "-CustomerCopy"); //$NON-NLS-1$ //$NON-NLS-2$
+					jasperPrint.setProperty(PROP_PRINTER_NAME, Application.getPrinters().getReceiptPrinter());
+					printQuitely(jasperPrint);
+				}
+			}
+			else {
 				map.put("cardPayment", false); //$NON-NLS-1$
 				JasperPrint jasperPrint = createPrint(ticket, map, transaction);
 				jasperPrint.setName("Ticket-" + ticket.getId()); //$NON-NLS-1$
 				jasperPrint.setProperty(PROP_PRINTER_NAME, Application.getPrinters().getReceiptPrinter());
 				printQuitely(jasperPrint);
-//			}
+			}
 
 		} catch (Exception e) {
 			logger.error(com.floreantpos.POSConstants.PRINT_ERROR, e);

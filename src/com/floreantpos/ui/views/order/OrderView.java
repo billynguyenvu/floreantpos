@@ -82,6 +82,7 @@ import com.floreantpos.ui.views.CookingInstructionSelectionView;
 import com.floreantpos.util.POSUtil;
 import java.awt.Color;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 
 /**
  *
@@ -119,6 +120,8 @@ public class OrderView extends ViewPanel {
 	private PosButton btnCookingInstruction = new PosButton(IconFactory.getIcon("/ui_icons/", "cooking-instruction.png"));
 	//	private PosButton btnAddOn = new PosButton(POSConstants.ADD_ON);
 	private PosButton btnDiscount = new PosButton(Messages.getString("TicketView.43")); //$NON-NLS-1$
+        
+        private JCheckBox cbSaveCustomer = new JCheckBox("Save Customer?");
 
 	/** Creates new form OrderView */
 	private OrderView() {
@@ -422,6 +425,15 @@ public class OrderView extends ViewPanel {
 			}
 		});
 
+		cbSaveCustomer.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+                                                                if (currentTicket != null) {
+                                    currentTicket.setSavedCustomer(cbSaveCustomer.isSelected());
+                                                                }
+			}
+		});
+
 		btnCustomer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -510,6 +522,8 @@ public class OrderView extends ViewPanel {
 
 		actionButtonPanel.add(btnOrderType);
 		actionButtonPanel.add(btnCustomer);
+//                cbSaveCustomer.setPreferredSize(cbSaveCustomer.getSize().);
+                actionButtonPanel.add(cbSaveCustomer);
 		actionButtonPanel.add(btnTableNumber);
 		actionButtonPanel.add(btnGuestNo);
 		actionButtonPanel.add(btnSeatNo);
@@ -940,6 +954,7 @@ public class OrderView extends ViewPanel {
 	public void setCurrentTicket(Ticket currentTicket) {
 		this.currentTicket = currentTicket;
 		ticketView.setTicket(currentTicket);
+                if (currentTicket != null) this.cbSaveCustomer.setSelected((currentTicket.getSavedCustomer() == null)?false:currentTicket.getSavedCustomer());
 		actionUpdate();
 		resetView();
 	}
@@ -973,4 +988,8 @@ public class OrderView extends ViewPanel {
 	public String getViewName() {
 		return VIEW_NAME;
 	}
+        
+        public boolean isSavedCustomer() {
+            return this.cbSaveCustomer.isSelected();
+        }
 }

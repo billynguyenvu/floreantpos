@@ -113,6 +113,7 @@ public abstract class BaseTicket  implements Comparable, Serializable {
 		protected java.lang.String extraDeliveryInfo;
 		protected java.lang.String ticketType;
 		protected java.lang.Boolean printedCustomerCopy;
+		protected java.lang.Boolean savedCustomer;
 
 	// many to one
 	private com.floreantpos.model.Shift shift;
@@ -912,6 +913,23 @@ public abstract class BaseTicket  implements Comparable, Serializable {
 	 */
 	public void setPrintedCustomerCopy (Boolean printedCustomerCopy) {
 		this.printedCustomerCopy = printedCustomerCopy;
+	}
+
+
+
+	/**
+	 * Return the value associated with the column: SAVED_CUSTOMER
+	 */
+	public Boolean getSavedCustomer () {
+					return savedCustomer;
+			}
+
+	/**
+	 * Set the value related to the column: SAVED_CUSTOMER
+	 * @param savedCustomer the SAVED_CUSTOMER value
+	 */
+	public void setSavedCustomer (Boolean savedCustomer) {
+		this.savedCustomer = savedCustomer;
 	}
 
 
