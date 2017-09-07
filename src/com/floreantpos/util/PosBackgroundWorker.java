@@ -6,12 +6,15 @@
 package com.floreantpos.util;
 
 import com.floreantpos.model.Customer;
+import com.floreantpos.model.OrderType;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.dao.CustomerDAO;
 import com.floreantpos.model.dao.TicketDAO;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimerTask;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -20,6 +23,7 @@ import org.hibernate.Transaction;
  * @author TuanViet
  */
 public class PosBackgroundWorker extends TimerTask {
+    private static Log logger = LogFactory.getLog(PosBackgroundWorker.class);
 
     @Override
     public void run() {
@@ -30,7 +34,7 @@ public class PosBackgroundWorker extends TimerTask {
         startDate.add(Calendar.DAY_OF_YEAR, -2);
         Calendar endDate = Calendar.getInstance();
         List<Ticket> tickets = TicketDAO.getInstance().findClosedTickets(startDate.getTime(), endDate.getTime());
-        System.out.println("tickets size: " + tickets.size());
+        logger.debug("Check T.O customer tickets size: " + tickets.size());
 
         // Delete all ticket's related data
         Session session = null;
@@ -40,17 +44,19 @@ public class PosBackgroundWorker extends TimerTask {
             session = TicketDAO.getInstance().createNewSession();
             tx = session.beginTransaction();
             for (Ticket ticket : tickets) {
-                if (ticket.getCreateDate().before(gateDate.getTime()) && (ticket.getSavedCustomer() == null || !ticket.getSavedCustomer())) {
+                if (ticket.getOrderType().name().equals(OrderType.TAKE_OUT) && 
+                        ticket.getCreateDate().before(gateDate.getTime()) 
+                        && (ticket.getSavedCustomer() == null || !ticket.getSavedCustomer())) {
                     Integer customerId = ticket.getCustomerId();
                     if (customerId != null && customerId != 0) {
                         Customer customer = CustomerDAO.getInstance().findById(customerId);
                         if (customer != null) {
-                            System.out.println("Deleting customer: " + customer.getName());
+                            logger.debug("Deleting customer: " + customer.getName());
                             ticket.setCustomer(null);
                             ticket.setCustomerId(null);
                             TicketDAO.getInstance().saveOrUpdate(ticket, session);
                             CustomerDAO.getInstance().delete(customer, session);
-                            System.out.println("Deleted customer: " + customer.getName());
+                            logger.debug("Deleted customer: " + customer.getName());
                         }
                     }
                 }

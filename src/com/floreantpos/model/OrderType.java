@@ -8,6 +8,7 @@ public class OrderType extends BaseOrderType {
 	public static final String BAR_TAB = "BAR_TAB"; //$NON-NLS-1$
 	public static final String FOR_HERE="FOR HERE";  //$NON-NLS-1$
 	public static final String TO_GO="TO GO";  //$NON-NLS-1$
+        public static final String TAKE_OUT = "TAKE OUT";
 
 	public OrderType() {
 		super();

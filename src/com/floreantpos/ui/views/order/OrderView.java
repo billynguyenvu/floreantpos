@@ -523,7 +523,7 @@ public class OrderView extends ViewPanel {
 		actionButtonPanel.add(btnOrderType);
 		actionButtonPanel.add(btnCustomer);
 //                cbSaveCustomer.setPreferredSize(cbSaveCustomer.getSize().);
-                actionButtonPanel.add(cbSaveCustomer);
+                                    actionButtonPanel.add(cbSaveCustomer);
 		actionButtonPanel.add(btnTableNumber);
 		actionButtonPanel.add(btnGuestNo);
 		actionButtonPanel.add(btnSeatNo);
@@ -954,6 +954,12 @@ public class OrderView extends ViewPanel {
 	public void setCurrentTicket(Ticket currentTicket) {
 		this.currentTicket = currentTicket;
 		ticketView.setTicket(currentTicket);
+                if (currentTicket != null && OrderType.TAKE_OUT.equals(currentTicket.getOrderType().getName())) {
+                    cbSaveCustomer.setVisible(true);
+                }
+                else {
+                    cbSaveCustomer.setVisible(false);
+                }
                 if (currentTicket != null) this.cbSaveCustomer.setSelected((currentTicket.getSavedCustomer() == null)?false:currentTicket.getSavedCustomer());
 		actionUpdate();
 		resetView();
