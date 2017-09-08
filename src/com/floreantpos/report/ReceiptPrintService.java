@@ -147,6 +147,11 @@ public class ReceiptPrintService {
 		return createJasperPrint(ReportUtil.getReport("ticket-receipt"), map, new JRTableModelDataSource(dataSource)); //$NON-NLS-1$
 	}
 
+	public static JasperPrint createPrintForSplitBill(Ticket ticket, Map<String, String> map, PosTransaction transaction) throws Exception {
+		TicketDataSource dataSource = new TicketDataSource(ticket);
+		return createJasperPrint(ReportUtil.getReport("ticket-receipt-split"), map, new JRTableModelDataSource(dataSource)); //$NON-NLS-1$
+	}
+
 	/*public static void printTicket(Ticket ticket) {
 		try {
 
@@ -328,6 +333,54 @@ public class ReceiptPrintService {
 			logger.error(com.floreantpos.POSConstants.PRINT_ERROR, e);
 		}
 	}
+
+    public static void printTransaction(PosTransaction transaction, int numOfBills) {
+        if (numOfBills == 1) {
+            printTransaction(transaction);
+            return;
+        }
+        try {
+            Ticket ticket = transaction.getTicket();
+            double subAmount = ticket.getSubtotalAmount();
+            double taxAmount = ticket.getTaxAmount();
+            double gradAmount = ticket.getGratuityAmount();
+            double totalAmount = ticket.getTotalAmount();
+            double paidAmount = ticket.getPaidAmount();
+            double dueAmount = ticket.getDueAmount();
+
+            ticket.setSubtotalAmount(ticket.getSubtotalAmount() / numOfBills);
+            ticket.setTaxAmount(ticket.getTaxAmount() / numOfBills);
+            ticket.setGratuityAmount(ticket.getGratuityAmount() / numOfBills);
+            ticket.setTotalAmount(ticket.getTotalAmount() / numOfBills);
+            ticket.setPaidAmount(ticket.getPaidAmount()/ numOfBills);
+            ticket.setDueAmount(ticket.getDueAmount() / numOfBills);
+
+            for (int i = 0; i < numOfBills; i++) {
+                String receiptType = Messages.getString("ReceiptPrintService.3") + "\nPayment by: " + transaction.getPaymentType() + "\nBill: " + (i + 1) + "/" + numOfBills;
+
+                TicketPrintProperties printProperties = new TicketPrintProperties(receiptType, true, true, true); //$NON-NLS-1$
+                printProperties.setPrintCookingInstructions(false);
+                HashMap map = populateTicketProperties(ticket, printProperties, transaction);
+
+                map.put("cardPayment", false); //$NON-NLS-1$
+                JasperPrint jasperPrint = createPrintForSplitBill(ticket, map, transaction);
+                jasperPrint.setName("Ticket-" + ticket.getId()); //$NON-NLS-1$
+                jasperPrint.setProperty(PROP_PRINTER_NAME, Application.getPrinters().getReceiptPrinter());
+                printQuitely(jasperPrint);
+            }
+            
+            // Rollback
+            ticket.setSubtotalAmount(subAmount);
+            ticket.setTaxAmount(taxAmount);
+            ticket.setGratuityAmount(gradAmount);
+            ticket.setTotalAmount(totalAmount);
+            ticket.setPaidAmount(paidAmount);
+            ticket.setDueAmount(dueAmount);
+
+        } catch (Exception e) {
+            logger.error(com.floreantpos.POSConstants.PRINT_ERROR, e);
+        }
+    }
 
 	public static void printTransaction(PosTransaction transaction, boolean printCustomerCopy) {
 		try {

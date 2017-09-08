@@ -106,6 +106,10 @@ public class PaymentView extends JPanel {
 	private JTextField txtTenderedAmount;
 	private JTextField txtDueAmount;
 	private PosButton btnDiscount;
+        
+        JTextField txSplitNumber;
+        
+        private PosButton btnSplitByNumber;
 
 	private boolean clearPreviousAmount = true;
 
@@ -346,17 +350,37 @@ public class PaymentView extends JPanel {
 		btnClear.setFocusable(false);
 		calcButtonPanel.add(btnClear);
 
-		btnExactAmount.setAction(nextButtonAction);
-		btnExactAmount.setText(Messages.getString("PaymentView.20")); //$NON-NLS-1$
-		btnExactAmount.setActionCommand("exactAmount"); //$NON-NLS-1$
-		btnExactAmount.setFocusable(false);
-		calcButtonPanel.add(btnExactAmount, "span 2,grow"); //$NON-NLS-1$
+//		btnExactAmount.setAction(nextButtonAction);
+//		btnExactAmount.setText(Messages.getString("PaymentView.20")); //$NON-NLS-1$
+//		btnExactAmount.setActionCommand("exactAmount"); //$NON-NLS-1$
+//		btnExactAmount.setFocusable(false);
+//		calcButtonPanel.add(btnExactAmount, "span 2,grow"); //$NON-NLS-1$
+//
+//		btnNextAmount.setAction(nextButtonAction);
+//		btnNextAmount.setText(Messages.getString("PaymentView.23")); //$NON-NLS-1$
+//		btnNextAmount.setActionCommand("nextAmount"); //$NON-NLS-1$
+//		btnNextAmount.setFocusable(false);
+//		calcButtonPanel.add(btnNextAmount, "span 2,grow"); //$NON-NLS-1$
+                
+                txSplitNumber = new JTextField("1");
+                TransparentPanel splitBillPanel = new com.floreantpos.swing.TransparentPanel();
+		splitBillPanel.setLayout(new MigLayout("wrap 2,fill, ins 0", "sg, fill", "sg, fill")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		btnNextAmount.setAction(nextButtonAction);
-		btnNextAmount.setText(Messages.getString("PaymentView.23")); //$NON-NLS-1$
-		btnNextAmount.setActionCommand("nextAmount"); //$NON-NLS-1$
-		btnNextAmount.setFocusable(false);
-		calcButtonPanel.add(btnNextAmount, "span 2,grow"); //$NON-NLS-1$
+		btnSplitByNumber = new PosButton("SPLIT BY NUMBER PREVIEW");
+		btnSplitByNumber.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                            String num = txSplitNumber.getText();
+                            if (StringUtils.isNumeric(num)) {
+				settleTicketView.updateSplitTicketView(Integer.parseInt(num));
+                            }
+                            else {
+                                settleTicketView.updateSplitTicketView(1);
+                            }
+			}
+		});
+                splitBillPanel.add(txSplitNumber, "span 2,grow");
+                splitBillPanel.add(btnSplitByNumber, "span 2,grow");
+		calcButtonPanel.add(splitBillPanel, "span 2,grow"); //$NON-NLS-1$
 
 		btnGratuity = new PosButton(com.floreantpos.POSConstants.ADD_GRATUITY_TEXT);
 		btnGratuity.addActionListener(new ActionListener() {
@@ -525,6 +549,10 @@ public class PaymentView extends JPanel {
 
 	protected void doTaxExempt() {
 	}
+        
+        protected void doSplitBillByNumber() {
+            
+        }
 
 	private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
 		settleTicketView.setCanceled(true);
