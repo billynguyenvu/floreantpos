@@ -774,14 +774,16 @@ public class Ticket extends BaseTicket {
 
 		for (Iterator iterator = ticketItems.iterator(); iterator.hasNext();) {
 			TicketItem newItem = (TicketItem) iterator.next();
+                        String sizeId = "";
+                        if (newItem.getSizeModifier() != null) sizeId = "-" + newItem.getSizeModifier().getNameDisplay();
 
-			List<TicketItem> itemListInMap = itemMap.get(newItem.getItemId().toString());
+			List<TicketItem> itemListInMap = itemMap.get(newItem.getItemId().toString() + sizeId);
 
 			if (itemListInMap == null) {
 				List<TicketItem> list = new ArrayList<TicketItem>();
 				list.add(newItem);
 
-				itemMap.put(newItem.getItemId().toString(), list);
+				itemMap.put(newItem.getItemId().toString() + sizeId, list);
 			}
 			else {
 				boolean merged = false;

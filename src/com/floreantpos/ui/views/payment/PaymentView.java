@@ -56,6 +56,7 @@ import com.floreantpos.swing.PosButton;
 import com.floreantpos.swing.PosUIManager;
 import com.floreantpos.swing.TransparentPanel;
 import com.floreantpos.ui.dialog.MultiCurrencyTenderDialog;
+import com.floreantpos.ui.dialog.NumberSelectionDialog2;
 import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.util.CurrencyUtil;
 import com.floreantpos.util.NumberUtil;
@@ -362,25 +363,30 @@ public class PaymentView extends JPanel {
 //		btnNextAmount.setFocusable(false);
 //		calcButtonPanel.add(btnNextAmount, "span 2,grow"); //$NON-NLS-1$
                 
-                txSplitNumber = new JTextField("1");
-                TransparentPanel splitBillPanel = new com.floreantpos.swing.TransparentPanel();
-		splitBillPanel.setLayout(new MigLayout("wrap 2,fill, ins 0", "sg, fill", "sg, fill")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//                txSplitNumber = new JTextField("1");
+//                txSplitNumber.setHorizontalAlignment(JTextField.RIGHT);
+//                TransparentPanel splitBillPanel = new com.floreantpos.swing.TransparentPanel();
+//		splitBillPanel.setLayout(new MigLayout("wrap 2,fill, ins 0", "sg, fill", "sg, fill")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		btnSplitByNumber = new PosButton("SPLIT BY NUMBER PREVIEW");
+		btnSplitByNumber = new PosButton("SPLIT BY NUMBER");
 		btnSplitByNumber.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                            String num = txSplitNumber.getText();
-                            if (StringUtils.isNumeric(num)) {
-				settleTicketView.updateSplitTicketView(Integer.parseInt(num));
-                            }
-                            else {
-                                settleTicketView.updateSplitTicketView(1);
-                            }
+				NumberSelectionDialog2 dialog = new NumberSelectionDialog2();
+				dialog.setTitle("Enter number of bills");
+				dialog.setValue(settleTicketView.getCurrentNumberOfBills());
+				dialog.pack();
+				dialog.open();
+
+				if (dialog.isCanceled()) {
+					return;
+				}
+				int num = (int) dialog.getValue();
+                                settleTicketView.updateSplitTicketView(num);
 			}
 		});
-                splitBillPanel.add(txSplitNumber, "span 2,grow");
-                splitBillPanel.add(btnSplitByNumber, "span 2,grow");
-		calcButtonPanel.add(splitBillPanel, "span 2,grow"); //$NON-NLS-1$
+//                splitBillPanel.add(txSplitNumber, "span 2,grow");
+//                splitBillPanel.add(btnSplitByNumber, "span 2,grow");
+		calcButtonPanel.add(btnSplitByNumber, "span 2,grow"); //$NON-NLS-1$
 
 		btnGratuity = new PosButton(com.floreantpos.POSConstants.ADD_GRATUITY_TEXT);
 		btnGratuity.addActionListener(new ActionListener() {

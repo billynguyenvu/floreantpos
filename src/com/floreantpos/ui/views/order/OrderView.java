@@ -425,6 +425,7 @@ public class OrderView extends ViewPanel {
 			}
 		});
 
+                cbSaveCustomer.setSelected(true);
 		cbSaveCustomer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -960,7 +961,7 @@ public class OrderView extends ViewPanel {
                 else {
                     cbSaveCustomer.setVisible(false);
                 }
-                if (currentTicket != null) this.cbSaveCustomer.setSelected((currentTicket.getSavedCustomer() == null)?false:currentTicket.getSavedCustomer());
+                if (currentTicket != null) this.cbSaveCustomer.setSelected((currentTicket.getSavedCustomer() == null)?true:currentTicket.getSavedCustomer());
 		actionUpdate();
 		resetView();
 	}

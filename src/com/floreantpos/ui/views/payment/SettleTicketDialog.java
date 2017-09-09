@@ -347,7 +347,7 @@ public class SettleTicketDialog extends POSDialog implements CardInputListener {
 
             updateModel();
             ticketDetailView.repaint();
-            ticketDetailView.updateView(1);
+            ticketDetailView.updateView(numOfBills);
             updateView();
 
             OrderController.saveOrder(ticket);
@@ -594,6 +594,10 @@ public class SettleTicketDialog extends POSDialog implements CardInputListener {
         } catch (Exception e) {
             POSMessageDialog.showError(Application.getPosWindow(), e.getMessage(), e);
         }
+    }
+    
+    public static void printTicket(Ticket ticket, PosTransaction transaction) {
+        printTicket(ticket, transaction, 1);
     }
 
     public static void printTicket(Ticket ticket, PosTransaction transaction, int numOfBills) {
@@ -891,5 +895,9 @@ public class SettleTicketDialog extends POSDialog implements CardInputListener {
     public void setTicket(Ticket ticket) {
         this.ticket = ticket;
         paymentView.updateView();
+    }
+    
+    public int getCurrentNumberOfBills(){
+        return numOfBills;
     }
 }

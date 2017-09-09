@@ -124,8 +124,11 @@ public class TicketViewerTableModel extends AbstractTableModel {
 			if (ticketItem.getItemId() == 0) {// MISC item
 				return addTicketItemToTicket(ticketItem);
 			}
-
-			if (ticketItem.getItemId().equals(item.getItemId()) && !item.isPrintedToKitchen() && !item.isInventoryHandled()) {
+                        String sizeId1 = ticketItem.getItemId().toString();
+                        if (ticketItem.getSizeModifier() != null) sizeId1 += "-" + ticketItem.getSizeModifier().getNameDisplay();
+                        String sizeId2 = item.getItemId().toString();
+                        if (item.getSizeModifier() != null) sizeId2 += "-" + item.getSizeModifier().getNameDisplay();
+			if (sizeId1.equals(sizeId2) && !item.isPrintedToKitchen() && !item.isInventoryHandled()) {
 				if (ticketItem.isFractionalUnit()) {
 					item.setItemQuantity(previousFractionalItemQuantity + ticketItem.getItemQuantity());
 					previousFractionalItemQuantity = item.getItemQuantity();
