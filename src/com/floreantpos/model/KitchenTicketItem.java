@@ -21,6 +21,8 @@ import com.floreantpos.model.base.BaseKitchenTicketItem;
 
 public class KitchenTicketItem extends BaseKitchenTicketItem {
 	private static final long serialVersionUID = 1L;
+        
+        private double subTotal = 0;
 
 	/*[CONSTRUCTOR MARKER BEGIN]*/
 	public KitchenTicketItem () {
@@ -49,4 +51,12 @@ public class KitchenTicketItem extends BaseKitchenTicketItem {
 		}
 		return super.getMenuItemGroupName();
 	}
+        
+        public double getSubTotal() {
+            return subTotal;
+        }
+        
+        public void setSubTotal(double subTotal) {
+            this.subTotal = subTotal;
+        }
 }

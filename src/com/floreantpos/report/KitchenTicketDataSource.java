@@ -92,6 +92,9 @@ public class KitchenTicketDataSource extends AbstractReportDataSource {
 				return String.valueOf(item.getQuantity());
 
 			case 5:
+                            if (item.getMenuItemGroupName().equals("MISC.")) {
+                                return String.valueOf(item.getSubTotal());
+                            }
                             TicketItemModifier tim = TicketItemModifierDAO.getInstance().get(item.getTicketItemModifierId());
                             if (tim != null) {
                                 System.out.println("Subtotal: " + String.valueOf(tim.getSubTotalAmount()));

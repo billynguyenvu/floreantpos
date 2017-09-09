@@ -263,6 +263,7 @@ public class KitchenTicket extends BaseKitchenTicket {
 					item.setMenuItemGroupName("MISC."); //$NON-NLS-1$
 					item.setMenuItemGroupId(1001);
 					item.setSortOrder(10001);
+                                        item.setSubTotal(ticketItem.getSubTotalAmountDisplay());
 				}
 				else {
 					item.setMenuItemGroupName(ticketItem.getGroupName());
@@ -321,6 +322,7 @@ public class KitchenTicket extends BaseKitchenTicket {
 					item.setMenuItemGroupName("MISC."); //$NON-NLS-1$
 					item.setMenuItemGroupId(1001);
 					item.setSortOrder(10001);
+                                        item.setSubTotal(ticketItem.getSubTotalAmountDisplay());
 				}
 				else {
 					item.setMenuItemGroupName(ticketItem.getGroupName());
@@ -356,6 +358,7 @@ public class KitchenTicket extends BaseKitchenTicket {
 					item.setMenuItemGroupName("MISC."); //$NON-NLS-1$
 					item.setMenuItemGroupId(1001);
 					item.setSortOrder(10001);
+                                        item.setSubTotal(ticketItem.getSubTotalAmountDisplay());
 				}
 				else {
 					item.setMenuItemGroupName(ticketItem.getGroupName());
@@ -389,6 +392,7 @@ public class KitchenTicket extends BaseKitchenTicket {
 					item.setMenuItemGroupName("MISC."); //$NON-NLS-1$
 					item.setMenuItemGroupId(1001);
 					item.setSortOrder(10001);
+                                        item.setSubTotal(ticketItem.getSubTotalAmountDisplay());
 				}
 				else {
 					item.setMenuItemGroupName(ticketItem.getGroupName());
