@@ -36,11 +36,13 @@ import javax.swing.event.TableModelListener;
 
 import com.floreantpos.IconFactory;
 import com.floreantpos.Messages;
+import com.floreantpos.actions.SettleTicketAction;
 import com.floreantpos.main.Application;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketItem;
 import com.floreantpos.model.TicketItemDiscount;
 import com.floreantpos.model.TicketItemModifier;
+import com.floreantpos.model.dao.TicketDAO;
 import com.floreantpos.ui.views.SplitTicketDialog;
 import com.floreantpos.util.NumberUtil;
 import org.apache.commons.lang3.SerializationUtils;
@@ -308,10 +310,9 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 2;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.insets = new java.awt.Insets(2, 2, 0, 0);
+		gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 2);
 		jPanel5.add(btnSettleTicket, gridBagConstraints);
 
 		btnTransferToTicket3.setText("3"); //$NON-NLS-1$
@@ -323,12 +324,11 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 		});
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 2;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.insets = new java.awt.Insets(2, 2, 0, 0);
+		gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
 		jPanel5.add(btnTransferToTicket3, gridBagConstraints);
 
 		jPanel1.add(jPanel5, java.awt.BorderLayout.CENTER);
@@ -347,19 +347,25 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 
 	}// </editor-fold>//GEN-END:initComponents
 
-	private void btnSettleTicketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferToTicket3ActionPerformed
-		if (ticketView3 != null && ticketView3.isVisible()) {
-			int selectedRow = ticketViewerTable.getSelectedRow();
-			Object object = ticketViewerTable.get(selectedRow);
-
-			if (object instanceof TicketItem) {
-				transferTicketItem((TicketItem) object, ticketView3);
-			}
-		}
-	}//GEN-LAST:event_btnTransferToTicket3ActionPerformed
+    private void btnSettleTicketActionPerformed(java.awt.event.ActionEvent evt) {
+        splitTicketDialog.doFinishSplit(false);
+        splitTicketDialog.disableSplit();
+        if (ticket.getId() != null) {
+            System.out.println("Ticket id = " + ticket.getId());
+            new SettleTicketAction(ticket.getId()).execute();
+            if (ticket.isPaid()) {
+                btnSettleTicket.setEnabled(false);
+            } else {
+                Ticket ticket2 = TicketDAO.getInstance().get(ticket.getId());
+                if (ticket2.isPaid()) {
+                    btnSettleTicket.setEnabled(false);
+                }
+            }
+        }
+    }
 
 	private void btnTransferToTicket3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferToTicket3ActionPerformed
-		if (ticketView3 != null && ticketView3.isVisible()) {
+		if (ticketView3 != null && ticketView3.isVisible() && splitTicketDialog.allowSplit) {
 			int selectedRow = ticketViewerTable.getSelectedRow();
 			Object object = ticketViewerTable.get(selectedRow);
 
@@ -370,7 +376,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 	}//GEN-LAST:event_btnTransferToTicket3ActionPerformed
 
 	private void btnTransferToTicket2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferToTicket2ActionPerformed
-		if (ticketView2 != null && ticketView2.isVisible()) {
+		if (ticketView2 != null && ticketView2.isVisible() && splitTicketDialog.allowSplit) {
 			int selectedRow = ticketViewerTable.getSelectedRow();
 			Object object = ticketViewerTable.get(selectedRow);
 
@@ -381,7 +387,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 	}//GEN-LAST:event_btnTransferToTicket2ActionPerformed
 
 	private void btnTransferToTicket1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferToTicket1ActionPerformed
-		if (ticketView1 != null && ticketView1.isVisible()) {
+		if (ticketView1 != null && ticketView1.isVisible() && splitTicketDialog.allowSplit) {
 			int selectedRow = ticketViewerTable.getSelectedRow();
 			Object object = ticketViewerTable.get(selectedRow);
 

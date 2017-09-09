@@ -62,6 +62,8 @@ import com.floreantpos.ui.views.order.TicketForSplitView;
  */
 public class SplitTicketDialog extends POSDialog {
 	private Ticket ticket;
+        
+        public boolean allowSplit = true;
 
 	private com.floreantpos.swing.POSToggleButton btnSplitBySeat;
 	/** Creates new form SplitTicketView */
@@ -240,10 +242,14 @@ public class SplitTicketDialog extends POSDialog {
 	}//GEN-LAST:event_btnCancelActionPerformed
 
 	private synchronized void btnFinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishActionPerformed
-		doFinishSplit();
+		doFinishSplit(true);
 	}//GEN-LAST:event_btnFinishActionPerformed
 
-        public synchronized void doFinishSplit() {
+        public synchronized void doFinishSplit(boolean needDispose) {
+            if (!allowSplit) {
+                if (needDispose) dispose();
+                return;
+            }
             Session session = null;
 		Transaction tx = null;
 
@@ -262,7 +268,7 @@ public class SplitTicketDialog extends POSDialog {
 			//save the action
 			ActionHistoryDAO.getInstance().saveHistory(Application.getCurrentUser(), ActionHistory.SPLIT_CHECK, com.floreantpos.POSConstants.RECEIPT_REPORT_TICKET_NO_LABEL + ":"+mainTicketView.getTicket().getId()); //$NON-NLS-1$
 			
-			dispose();
+                        if (needDispose) dispose();
 		} catch (Exception e) {
 			try {
 				tx.rollback();
@@ -413,4 +419,9 @@ public class SplitTicketDialog extends POSDialog {
 			btnSplitBySeat.setVisible(ticket.getOrderType().isAllowSeatBasedOrder());
 		}
 	}
+        
+        public void disableSplit() {
+            allowSplit = false;
+            btnCancel.setEnabled(false);
+        }
 }

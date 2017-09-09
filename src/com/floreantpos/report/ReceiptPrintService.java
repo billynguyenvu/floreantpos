@@ -663,50 +663,50 @@ public class ReceiptPrintService {
 		}
 
 		//customer info section
-		if (orderType.isRequiredCustomerData()) {
+		if (orderType.getName().equals(OrderType.TAKE_OUT)) {
 
 			String customerName = ticket.getProperty(Ticket.CUSTOMER_NAME);
 			String customerMobile = ticket.getProperty(Ticket.CUSTOMER_MOBILE);
 
 			if (StringUtils.isNotEmpty(customerName)) {
-				beginRow(ticketHeaderBuilder);
-				addColumn(ticketHeaderBuilder, Messages.getString("ReceiptPrintService.9")); //$NON-NLS-1$
-				endRow(ticketHeaderBuilder);
+//				beginRow(ticketHeaderBuilder);
+//				addColumn(ticketHeaderBuilder, Messages.getString("ReceiptPrintService.9")); //$NON-NLS-1$
+//				endRow(ticketHeaderBuilder);
 
 				if (StringUtils.isNotEmpty(customerName)) {
 					beginRow(ticketHeaderBuilder);
-					addColumn(ticketHeaderBuilder, customerName);
+					addColumn(ticketHeaderBuilder, "Customer Name: " + customerName);
 					endRow(ticketHeaderBuilder);
 				}
 
-				if (StringUtils.isNotEmpty(ticket.getDeliveryAddress())) {
-					beginRow(ticketHeaderBuilder);
-					addColumn(ticketHeaderBuilder, ticket.getDeliveryAddress());
-					endRow(ticketHeaderBuilder);
-
-					if (StringUtils.isNotEmpty(ticket.getExtraDeliveryInfo())) {
-						beginRow(ticketHeaderBuilder);
-						addColumn(ticketHeaderBuilder, ticket.getExtraDeliveryInfo());
-						endRow(ticketHeaderBuilder);
-					}
-				}
-				else {
-					beginRow(ticketHeaderBuilder);
-					addColumn(ticketHeaderBuilder, Messages.getString("ReceiptPrintService.111")); //$NON-NLS-1$
-					endRow(ticketHeaderBuilder);
-				}
+//				if (StringUtils.isNotEmpty(ticket.getDeliveryAddress())) {
+//					beginRow(ticketHeaderBuilder);
+//					addColumn(ticketHeaderBuilder, ticket.getDeliveryAddress());
+//					endRow(ticketHeaderBuilder);
+//
+//					if (StringUtils.isNotEmpty(ticket.getExtraDeliveryInfo())) {
+//						beginRow(ticketHeaderBuilder);
+//						addColumn(ticketHeaderBuilder, ticket.getExtraDeliveryInfo());
+//						endRow(ticketHeaderBuilder);
+//					}
+//				}
+//				else {
+//					beginRow(ticketHeaderBuilder);
+//					addColumn(ticketHeaderBuilder, Messages.getString("ReceiptPrintService.111")); //$NON-NLS-1$
+//					endRow(ticketHeaderBuilder);
+//				}
 
 				if (StringUtils.isNotEmpty(customerMobile)) {
 					beginRow(ticketHeaderBuilder);
-					addColumn(ticketHeaderBuilder, "Tel: " + customerMobile); //$NON-NLS-1$
+					addColumn(ticketHeaderBuilder, "Customer Phone: " + customerMobile); //$NON-NLS-1$
 					endRow(ticketHeaderBuilder);
 				}
 
-				if (ticket.getDeliveryDate() != null) {
-					beginRow(ticketHeaderBuilder);
-					addColumn(ticketHeaderBuilder, "Delivery: " + reportDateFormat.format(ticket.getDeliveryDate())); //$NON-NLS-1$
-					endRow(ticketHeaderBuilder);
-				}
+//				if (ticket.getDeliveryDate() != null) {
+//					beginRow(ticketHeaderBuilder);
+//					addColumn(ticketHeaderBuilder, "Delivery: " + reportDateFormat.format(ticket.getDeliveryDate())); //$NON-NLS-1$
+//					endRow(ticketHeaderBuilder);
+//				}
 			}
 		}
 

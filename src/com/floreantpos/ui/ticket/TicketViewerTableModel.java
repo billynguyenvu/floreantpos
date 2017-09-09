@@ -108,17 +108,20 @@ public class TicketViewerTableModel extends AbstractTableModel {
 
 	public int addTicketItem(TicketItem ticketItem) {
 		if (ticketItem.isHasModifiers()) {
+//                    System.out.println("addTicketItem 1");
 			return addTicketItemToTicket(ticketItem);
 		}
 
 		Object[] values = tableRows.values().toArray();
 		if (values == null || values.length == 0) {
+//                    System.out.println("addTicketItem 2");
 			previousFractionalItemQuantity = ticketItem.getItemQuantity();
 			return addTicketItemToTicket(ticketItem);
 		}
 
 		Object object = values[values.length - 1];
 		if (object instanceof TicketItem) {
+//                    System.out.println("addTicketItem 3");
 			TicketItem item = (TicketItem) object;
 
 			if (ticketItem.getItemId() == 0) {// MISC item
@@ -128,6 +131,7 @@ public class TicketViewerTableModel extends AbstractTableModel {
                         if (ticketItem.getSizeModifier() != null) sizeId1 += "-" + ticketItem.getSizeModifier().getNameDisplay();
                         String sizeId2 = item.getItemId().toString();
                         if (item.getSizeModifier() != null) sizeId2 += "-" + item.getSizeModifier().getNameDisplay();
+//                    System.out.println("addTicketItem 4, sizeId1="+sizeId1+", sizeId2="+sizeId2+", item.isPrintedToKitchen()="+item.isPrintedToKitchen()+", item.isInventoryHandled()="+item.isInventoryHandled());
 			if (sizeId1.equals(sizeId2) && !item.isPrintedToKitchen() && !item.isInventoryHandled()) {
 				if (ticketItem.isFractionalUnit()) {
 					item.setItemQuantity(previousFractionalItemQuantity + ticketItem.getItemQuantity());
@@ -136,9 +140,11 @@ public class TicketViewerTableModel extends AbstractTableModel {
 				else {
 					item.setItemCount(item.getItemCount() + 1);
 				}
+//                    System.out.println("addTicketItem 5");
 				return values.length - 1;
 			}
 		}
+//                    System.out.println("addTicketItem 6");
 		previousFractionalItemQuantity = ticketItem.getItemQuantity();
 		return addTicketItemToTicket(ticketItem);
 	}
