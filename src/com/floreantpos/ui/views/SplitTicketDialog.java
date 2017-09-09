@@ -185,10 +185,10 @@ public class SplitTicketDialog extends POSDialog {
 	private void createTicketViewPanel() {
 		ticketPanel = new TransparentPanel(new MigLayout("fill, hidemode 3")); //$NON-NLS-1$
         
-		mainTicketView = new TicketForSplitView();
-        ticketView2 = new TicketForSplitView();
-        ticketView3 = new TicketForSplitView();
-        ticketView4 = new TicketForSplitView();
+		mainTicketView = new TicketForSplitView(this);
+        ticketView2 = new TicketForSplitView(this);
+        ticketView3 = new TicketForSplitView(this);
+        ticketView4 = new TicketForSplitView(this);
         
         ticketView3.setVisible(false);
 		ticketView4.setVisible(false);
@@ -240,7 +240,11 @@ public class SplitTicketDialog extends POSDialog {
 	}//GEN-LAST:event_btnCancelActionPerformed
 
 	private synchronized void btnFinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishActionPerformed
-		Session session = null;
+		doFinishSplit();
+	}//GEN-LAST:event_btnFinishActionPerformed
+
+        public synchronized void doFinishSplit() {
+            Session session = null;
 		Transaction tx = null;
 
 		try {
@@ -271,8 +275,7 @@ public class SplitTicketDialog extends POSDialog {
 			} catch (Exception x) {
 			}
 		}
-	}//GEN-LAST:event_btnFinishActionPerformed
-
+        }
 	private void doSplitBySeatNumber(java.awt.event.ActionEvent evt) {
 		List<TicketItem> ticketItems = ticket.getTicketItems();
 		Map<Integer, List<TicketItem>> itemMap = new HashMap<Integer, List<TicketItem>>();

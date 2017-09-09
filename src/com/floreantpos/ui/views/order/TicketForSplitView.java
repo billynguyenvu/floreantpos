@@ -41,7 +41,9 @@ import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketItem;
 import com.floreantpos.model.TicketItemDiscount;
 import com.floreantpos.model.TicketItemModifier;
+import com.floreantpos.ui.views.SplitTicketDialog;
 import com.floreantpos.util.NumberUtil;
+import org.apache.commons.lang3.SerializationUtils;
 
 /**
  *
@@ -57,8 +59,11 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 	private TicketForSplitView ticketView3;
 
 	private int viewNumber = 1;
+        
+        SplitTicketDialog splitTicketDialog;
 
-	public TicketForSplitView() {
+	public TicketForSplitView(SplitTicketDialog splitTicketDialog) {
+            this.splitTicketDialog = splitTicketDialog;
 		initComponents();
 
 		//ticketViewerTable.getColumnExt(1).setVisible(false);
@@ -117,6 +122,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 		btnScrollDown = new com.floreantpos.swing.PosButton();
 		btnTransferToTicket1 = new com.floreantpos.swing.PosButton();
 		btnTransferToTicket2 = new com.floreantpos.swing.PosButton();
+		btnSettleTicket = new com.floreantpos.swing.PosButton();
 		btnTransferToTicket3 = new com.floreantpos.swing.PosButton();
 		jPanel2 = new com.floreantpos.swing.TransparentPanel();
 		jScrollPane1 = new javax.swing.JScrollPane();
@@ -291,6 +297,23 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 		gridBagConstraints.weightx = 1.0;
 		jPanel5.add(btnTransferToTicket2, gridBagConstraints);
 
+		btnSettleTicket.setText("Settle"); //$NON-NLS-1$
+		btnSettleTicket.setPreferredSize(new java.awt.Dimension(60, 45));
+		btnSettleTicket.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				btnSettleTicketActionPerformed(evt);
+			}
+		});
+
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.gridwidth = 2;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.insets = new java.awt.Insets(2, 2, 0, 0);
+		jPanel5.add(btnSettleTicket, gridBagConstraints);
+
 		btnTransferToTicket3.setText("3"); //$NON-NLS-1$
 		btnTransferToTicket3.setPreferredSize(new java.awt.Dimension(60, 45));
 		btnTransferToTicket3.addActionListener(new java.awt.event.ActionListener() {
@@ -323,6 +346,17 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 		add(jPanel2, java.awt.BorderLayout.CENTER);
 
 	}// </editor-fold>//GEN-END:initComponents
+
+	private void btnSettleTicketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferToTicket3ActionPerformed
+		if (ticketView3 != null && ticketView3.isVisible()) {
+			int selectedRow = ticketViewerTable.getSelectedRow();
+			Object object = ticketViewerTable.get(selectedRow);
+
+			if (object instanceof TicketItem) {
+				transferTicketItem((TicketItem) object, ticketView3);
+			}
+		}
+	}//GEN-LAST:event_btnTransferToTicket3ActionPerformed
 
 	private void btnTransferToTicket3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferToTicket3ActionPerformed
 		if (ticketView3 != null && ticketView3.isVisible()) {
@@ -371,6 +405,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 	private com.floreantpos.swing.PosButton btnTransferToTicket1;
 	private com.floreantpos.swing.PosButton btnTransferToTicket2;
 	private com.floreantpos.swing.PosButton btnTransferToTicket3;
+	private com.floreantpos.swing.PosButton btnSettleTicket;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JLabel jLabel5;
@@ -480,7 +515,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 //				newGroup.setMinQuantity(modifierGroup.getMinQuantity());
 //				newGroup.setParent(newTicketItem);
 				List<TicketItemModifier> ticketItemModifiers = ticketItem.getTicketItemModifiers();
-                                System.out.println("ticketItemModifiers size: " + ticketItemModifiers.size());
+//                                System.out.println("ticketItemModifiers size: " + ticketItemModifiers.size());
                                 int count = 0;
 				if (ticketItemModifiers != null) {
 					for (TicketItemModifier ticketItemModifier : ticketItemModifiers) {
@@ -505,7 +540,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 //		}
 
 		List<TicketItemModifier> addOnsList = ticketItem.getAddOns();
-                                System.out.println("addOnsList size: " + addOnsList.size());
+//                                System.out.println("addOnsList size: " + addOnsList.size());
 		if (addOnsList != null) {
 			for (TicketItemModifier addOns : ticketItem.getAddOns()) {
                                 System.out.println("modifier " + count + ", name = " + addOns.getName());
@@ -526,6 +561,12 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
                                                 newTicketItem.addToticketItemModifiers(newAddOns);
 			}
 		}
+                
+                if (ticketItem.getSizeModifier() != null) {
+                    System.out.println("transfer modifier: " + ticketItem.getSizeModifier().getNameDisplay());
+                    TicketItemModifier cloneSizeModifier = SerializationUtils.clone(ticketItem.getSizeModifier());
+                    newTicketItem.setSizeModifier(cloneSizeModifier);
+                }
 
 		newTicketItem.setTaxRate(ticketItem.getTaxRate());
 		newTicketItem.setBeverage(ticketItem.isBeverage());
