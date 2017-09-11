@@ -53,6 +53,8 @@ import com.floreantpos.swing.PosButton;
 import com.floreantpos.swing.PosUIManager;
 import com.floreantpos.ui.views.order.actions.ItemSelectionListener;
 import com.floreantpos.util.CurrencyUtil;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * 
@@ -107,8 +109,15 @@ public class MenuItemView extends SelectionView {
 				newMenuItem.setParent(menuGroup);
 				items.add(newMenuItem);
 			}
-			// filterItemsByOrderType(items);
+                    // filterItemsByOrderType(items);
+                    Collections.sort(items, new Comparator() {
+                        @Override
+                        public int compare(Object i1, Object i2) {
+                            return ((MenuItem) i1).getDisplayName().compareTo(((MenuItem) i2).getDisplayName());
+                        }
+                    });
 			setItems(items);
+
 		} catch (PosException e) {
 			PosLog.error(getClass(), e);
 		}

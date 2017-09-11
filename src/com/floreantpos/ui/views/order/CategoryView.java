@@ -52,6 +52,8 @@ import com.floreantpos.model.dao.MenuGroupDAO;
 import com.floreantpos.swing.POSToggleButton;
 import com.floreantpos.swing.PosUIManager;
 import com.floreantpos.ui.views.order.actions.CategorySelectionListener;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  *
@@ -110,6 +112,12 @@ public class CategoryView extends SelectionView implements ActionListener {
 				}
 			}
 		}
+                    Collections.sort(categories, new Comparator() {
+                        @Override
+                        public int compare(Object i1, Object i2) {
+                            return ((MenuCategory) i1).getDisplayName().compareTo(((MenuCategory) i2).getDisplayName());
+                        }
+                    });
 		setItems(categories);
 
 		CategoryButton categoryButton = null;

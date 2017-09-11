@@ -47,6 +47,8 @@ import com.floreantpos.swing.MessageDialog;
 import com.floreantpos.swing.POSToggleButton;
 import com.floreantpos.swing.PosUIManager;
 import com.floreantpos.ui.views.order.actions.GroupSelectionListener;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  *
@@ -112,7 +114,14 @@ public class GroupView extends SelectionView {
 					}
 				}
 			}
-			setItems(groups);
+
+                    Collections.sort(groups, new Comparator() {
+                        @Override
+                        public int compare(Object i1, Object i2) {
+                            return ((MenuGroup) i1).getDisplayName().compareTo(((MenuGroup) i2).getDisplayName());
+                        }
+                    });
+                    setItems(groups);
 
 			if (!RootView.getInstance().isMaintenanceMode() && groups.size() <= 1) {
 				setVisible(false);
