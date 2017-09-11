@@ -571,6 +571,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
                 if (ticketItem.getSizeModifier() != null) {
                     System.out.println("transfer modifier: " + ticketItem.getSizeModifier().getNameDisplay());
                     TicketItemModifier cloneSizeModifier = SerializationUtils.clone(ticketItem.getSizeModifier());
+                    cloneSizeModifier.setId(null);
                     newTicketItem.setSizeModifier(cloneSizeModifier);
                 }
 

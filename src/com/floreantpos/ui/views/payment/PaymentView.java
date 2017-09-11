@@ -386,7 +386,7 @@ public class PaymentView extends JPanel {
 		});
 //                splitBillPanel.add(txSplitNumber, "span 2,grow");
 //                splitBillPanel.add(btnSplitByNumber, "span 2,grow");
-		calcButtonPanel.add(btnSplitByNumber, "span 2,grow"); //$NON-NLS-1$
+		calcButtonPanel.add(btnSplitByNumber, "span 4,grow"); //$NON-NLS-1$
 
 		btnGratuity = new PosButton(com.floreantpos.POSConstants.ADD_GRATUITY_TEXT);
 		btnGratuity.addActionListener(new ActionListener() {

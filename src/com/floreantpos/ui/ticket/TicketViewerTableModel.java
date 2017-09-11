@@ -127,12 +127,13 @@ public class TicketViewerTableModel extends AbstractTableModel {
 			if (ticketItem.getItemId() == 0) {// MISC item
 				return addTicketItemToTicket(ticketItem);
 			}
+                        boolean needConsolidate = ticketItem.getTicketItemModifiers() == null && item.getTicketItemModifiers() == null;
                         String sizeId1 = ticketItem.getItemId().toString();
                         if (ticketItem.getSizeModifier() != null) sizeId1 += "-" + ticketItem.getSizeModifier().getNameDisplay();
                         String sizeId2 = item.getItemId().toString();
                         if (item.getSizeModifier() != null) sizeId2 += "-" + item.getSizeModifier().getNameDisplay();
 //                    System.out.println("addTicketItem 4, sizeId1="+sizeId1+", sizeId2="+sizeId2+", item.isPrintedToKitchen()="+item.isPrintedToKitchen()+", item.isInventoryHandled()="+item.isInventoryHandled());
-			if (sizeId1.equals(sizeId2) && !item.isPrintedToKitchen() && !item.isInventoryHandled()) {
+			if (needConsolidate && sizeId1.equals(sizeId2) && !item.isPrintedToKitchen() && !item.isInventoryHandled()) {
 				if (ticketItem.isFractionalUnit()) {
 					item.setItemQuantity(previousFractionalItemQuantity + ticketItem.getItemQuantity());
 					previousFractionalItemQuantity = item.getItemQuantity();
