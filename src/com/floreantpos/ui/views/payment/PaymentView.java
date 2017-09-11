@@ -373,7 +373,8 @@ public class PaymentView extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				NumberSelectionDialog2 dialog = new NumberSelectionDialog2();
 				dialog.setTitle("Enter number of bills");
-				dialog.setValue(settleTicketView.getCurrentNumberOfBills());
+//				dialog.setValue(settleTicketView.getCurrentNumberOfBills());
+				dialog.setValue(0);
 				dialog.pack();
 				dialog.open();
 
