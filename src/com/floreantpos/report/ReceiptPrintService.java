@@ -979,6 +979,27 @@ public class ReceiptPrintService {
 		}
 	}
 
+	public static void printTOToKitchen(Ticket ticket) {
+		try {
+			List<KitchenTicket> kitchenTickets = KitchenTicket.fromTOTicket(ticket);
+
+			for (KitchenTicket kitchenTicket : kitchenTickets) {
+				Printer printer = kitchenTicket.getPrinter();//
+				String deviceName = printer.getDeviceName();
+
+				JasperPrint jasperPrint = createKitchenPrint(printer.getVirtualPrinter().getName(), kitchenTicket, deviceName);
+
+				jasperPrint.setName("FP_KitchenReceipt_" + ticket.getId() + "_" + kitchenTicket.getSequenceNumber()); //$NON-NLS-1$ //$NON-NLS-2$ 
+				jasperPrint.setProperty(PROP_PRINTER_NAME, deviceName);
+
+				printQuitely(jasperPrint);
+			}
+
+		} catch (Exception e) {
+			logger.error(com.floreantpos.POSConstants.PRINT_ERROR, e);
+		}
+	}
+
 	public static void printQuitely(JasperPrint jasperPrint) throws JRException {
 		try {
 			JRPrintServiceExporter exporter = new JRPrintServiceExporter();
