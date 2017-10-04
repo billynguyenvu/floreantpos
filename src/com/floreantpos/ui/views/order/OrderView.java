@@ -731,23 +731,23 @@ public class OrderView extends ViewPanel {
 		}
 	}// GEN-LAST:event_doInsertMisc
 
-	protected void doAddEditCustomer() {
-		CustomerSelectorDialog dialog = CustomerSelectorFactory.createCustomerSelectorDialog(currentTicket.getOrderType());
-		dialog.setCreateNewTicket(false);
-		if (currentTicket != null) {
-                        System.out.println("currentTicket customer: " + currentTicket.getCustomerId());
-			dialog.setTicket(currentTicket);
-		}
-		dialog.openUndecoratedFullScreen();
+    protected void doAddEditCustomer() {
+        CustomerSelectorDialog dialog = CustomerSelectorFactory.createCustomerSelectorDialog(currentTicket.getOrderType(), currentTicket);
+        dialog.setCreateNewTicket(false);
+        if (currentTicket != null) {
+            System.out.println("currentTicket customer: " + currentTicket.getCustomerId());
+            dialog.setTicket(currentTicket);
+        }
+        dialog.openUndecoratedFullScreen();
 
-		if (!dialog.isCanceled()) {
-                    if (dialog.getSelectedCustomer() != null)
-			currentTicket.setCustomer(dialog.getSelectedCustomer());
-                    else {
-                        System.out.println("currentTicket customer: " + currentTicket.getCustomerId());
-                    }
-		}
-	}
+        if (!dialog.isCanceled()) {
+            if (dialog.getSelectedCustomer() != null) {
+                currentTicket.setCustomer(dialog.getSelectedCustomer());
+            } else {
+                System.out.println("currentTicket customer: " + currentTicket.getCustomerId());
+            }
+        }
+    }
 
 	protected void addDiscount() {
 		Object selectedObject = (ITicketItem) ticketView.getTicketViewerTable().getSelected();

@@ -58,6 +58,8 @@ import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.ui.forms.QuickCustomerForm;
 import com.floreantpos.util.POSUtil;
 import com.floreantpos.util.TicketAlreadyExistsException;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class DefaultCustomerListView extends CustomerSelector {
 
@@ -237,7 +239,18 @@ public class DefaultCustomerListView extends CustomerSelector {
 		add(qwertyKeyPad, "cell 0 3,grow"); //$NON-NLS-1$
 	}
 
-	private void loadCustomerFromTicket() {
+	public void loadCustomerFromTicket() {
+            if (ticket == null || ticket.getCustomerId() == null || ticket.getCustomerId() == 0) {
+			List<Customer> list = CustomerDAO.getInstance().findAll();
+                        Collections.sort(list, new Comparator() {
+                        @Override
+                        public int compare(Object i1, Object i2) {
+                            return ((Customer) i1).getAutoId().compareTo(((Customer) i2).getAutoId());
+                        }
+                    });
+                customerTable.setModel(new CustomerListTableModel(list));
+                return;
+            }
 		String customerIdString = ticket.getProperty(Ticket.CUSTOMER_ID);
 		if (StringUtils.isNotEmpty(customerIdString)) {
 			int customerId = Integer.parseInt(customerIdString);
@@ -302,11 +315,23 @@ public class DefaultCustomerListView extends CustomerSelector {
 
 		if (StringUtils.isEmpty(mobile) && StringUtils.isEmpty(loyalty) && StringUtils.isEmpty(name)) {
 			List<Customer> list = CustomerDAO.getInstance().findAll();
+                        Collections.sort(list, new Comparator() {
+                        @Override
+                        public int compare(Object i1, Object i2) {
+                            return ((Customer) i1).getAutoId().compareTo(((Customer) i2).getAutoId());
+                        }
+                    });
 			customerTable.setModel(new CustomerListTableModel(list));
 			return;
 		}
 
 		List<Customer> list = CustomerDAO.getInstance().findBy(mobile, loyalty, name);
+                        Collections.sort(list, new Comparator() {
+                        @Override
+                        public int compare(Object i1, Object i2) {
+                            return ((Customer) i1).getAutoId().compareTo(((Customer) i2).getAutoId());
+                        }
+                    });
 		customerTable.setModel(new CustomerListTableModel(list));
 	}
 

@@ -668,7 +668,7 @@ public class ReceiptPrintService {
 			String customerName = ticket.getProperty(Ticket.CUSTOMER_NAME);
 			String customerMobile = ticket.getProperty(Ticket.CUSTOMER_MOBILE);
 
-			if (StringUtils.isNotEmpty(customerName)) {
+//			if (StringUtils.isNotEmpty(customerName)) {
 //				beginRow(ticketHeaderBuilder);
 //				addColumn(ticketHeaderBuilder, Messages.getString("ReceiptPrintService.9")); //$NON-NLS-1$
 //				endRow(ticketHeaderBuilder);
@@ -707,7 +707,7 @@ public class ReceiptPrintService {
 //					addColumn(ticketHeaderBuilder, "Delivery: " + reportDateFormat.format(ticket.getDeliveryDate())); //$NON-NLS-1$
 //					endRow(ticketHeaderBuilder);
 //				}
-			}
+//			}
 		}
 
 		ticketHeaderBuilder.append("</html>"); //$NON-NLS-1$
@@ -979,15 +979,15 @@ public class ReceiptPrintService {
 		}
 	}
 
-	public static void printTOToKitchen(Ticket ticket) {
+	public static void printTOToKitchen(Ticket ticket, boolean printAll) {
 		try {
-			List<KitchenTicket> kitchenTickets = KitchenTicket.fromTOTicket(ticket);
+                    String receiptPrinter = Application.getPrinters().getReceiptPrinter();
+			List<KitchenTicket> kitchenTickets = KitchenTicket.fromTOTicket(ticket, printAll);
 
 			for (KitchenTicket kitchenTicket : kitchenTickets) {
-				Printer printer = kitchenTicket.getPrinter();//
-				String deviceName = printer.getDeviceName();
+				String deviceName = receiptPrinter;
 
-				JasperPrint jasperPrint = createKitchenPrint(printer.getVirtualPrinter().getName(), kitchenTicket, deviceName);
+				JasperPrint jasperPrint = createKitchenPrint("Receipt", kitchenTicket, deviceName);
 
 				jasperPrint.setName("FP_KitchenReceipt_" + ticket.getId() + "_" + kitchenTicket.getSequenceNumber()); //$NON-NLS-1$ //$NON-NLS-2$ 
 				jasperPrint.setProperty(PROP_PRINTER_NAME, deviceName);

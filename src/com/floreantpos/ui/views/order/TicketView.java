@@ -516,7 +516,6 @@ public class TicketView extends JPanel {
 		saveTicketIfNeeded();
 		if (ticket.getOrderType().isShouldPrintToKitchen()) {
 			if (ticket.needsKitchenPrint()) {
-                                ReceiptPrintService.printTOToKitchen(ticket);
 				ReceiptPrintService.printToKitchen(ticket);
 				TicketDAO.getInstance().refresh(ticket);
 				setCancelable(false);
