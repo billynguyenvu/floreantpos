@@ -43,6 +43,7 @@ import com.floreantpos.actions.UpdateAction;
 import com.floreantpos.bo.actions.AttendanceHistoryAction;
 import com.floreantpos.bo.actions.CashReportAction;
 import com.floreantpos.bo.actions.CategoryExplorerAction;
+import com.floreantpos.bo.actions.ChangePaymentMethodAction;
 import com.floreantpos.bo.actions.ConfigureRestaurantAction;
 import com.floreantpos.bo.actions.CookingInstructionExplorerAction;
 import com.floreantpos.bo.actions.CouponExplorerAction;
@@ -214,6 +215,7 @@ public class BackOfficeWindow extends javax.swing.JFrame {
 		reportMenu.add(new SalesDetailReportAction());
 		//reportMenu.add(new PurchaseReportAction());
 		//reportMenu.add(new InventoryOnHandReportAction());
+		reportMenu.add(new ChangePaymentMethodAction());
 		menuBar.add(reportMenu);
 	}
 

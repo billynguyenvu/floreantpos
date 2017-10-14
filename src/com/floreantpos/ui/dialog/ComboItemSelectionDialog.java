@@ -71,6 +71,10 @@ public class ComboItemSelectionDialog extends OkCancelOptionDialog {
 		setTitle(title); //$NON-NLS-1$
 		initComponents();
 	}
+        
+        public void allowAddNewItem(boolean allow) {
+            btnNew.setEnabled(allow);
+        }
 
 	public void setFirstItem(String firstItem) {
 

@@ -18,6 +18,9 @@
 package com.floreantpos.model;
 
 import com.floreantpos.config.CardConfig;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public enum PaymentType {
 	CUSTOM_PAYMENT("CUSTOM PAYMENT"), CASH("CASH"), //$NON-NLS-1$ //$NON-NLS-2$
@@ -38,6 +41,41 @@ public enum PaymentType {
 		this.displayString = display;
 		this.imageFile = image;
 	}
+        
+        public static List<PaymentType> getPaymentTypes() {
+            List<PaymentType> list = new ArrayList<>();
+            list.add(CASH);
+            list.add(CREDIT_VISA);
+            list.add(CREDIT_MASTER_CARD);
+            list.add(CREDIT_AMEX);
+            list.add(CREDIT_DISCOVERY);
+            list.add(DEBIT_CARD);
+            list.add(GIFT_CERTIFICATE);
+            
+            return list;
+        }
+        
+        public static PaymentType getPaymentType(String pt) {
+            if (PaymentType.GIFT_CERTIFICATE.getDisplayString().equals(pt)) {
+                return GIFT_CERTIFICATE;
+            } else if (PaymentType.CREDIT_AMEX.getDisplayString().equals(pt)) {
+                return CREDIT_AMEX;
+            } else if (PaymentType.CREDIT_DISCOVERY.getDisplayString().equals(pt)) {
+                return CREDIT_DISCOVERY;
+            } else if (PaymentType.CREDIT_MASTER_CARD.getDisplayString().equals(pt)) {
+                return CREDIT_MASTER_CARD;
+            } else if (PaymentType.CREDIT_VISA.getDisplayString().equals(pt)) {
+                return CREDIT_VISA;
+            } else if (PaymentType.DEBIT_CARD.getDisplayString().equals(pt)) {
+                return DEBIT_CARD;
+            } else if (PaymentType.DEBIT_MASTER_CARD.getDisplayString().equals(pt)) {
+                return DEBIT_MASTER_CARD;
+            } else if (PaymentType.DEBIT_VISA.getDisplayString().equals(pt)) {
+                return DEBIT_VISA;
+            } else {
+                return CASH;
+            }
+        }
 
 	@Override
 	public String toString() {

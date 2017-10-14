@@ -656,6 +656,25 @@ public class TicketDAO extends BaseTicketDAO {
 		}
 	}
 
+	public List<Ticket> findClosedTickets(Date startDate, Date endDate, User user) {
+		Session session = null;
+
+		try {
+			session = createNewSession();
+			Criteria criteria = session.createCriteria(getReferenceClass());
+			criteria.add(Restrictions.eq(Ticket.PROP_CLOSED, Boolean.TRUE));
+			if (startDate != null && endDate != null) {
+				criteria.add(Restrictions.ge(Ticket.PROP_CREATE_DATE, startDate));
+				criteria.add(Restrictions.le(Ticket.PROP_CREATE_DATE, endDate));
+                                if (user != null) criteria.add(Restrictions.eq(Ticket.PROP_OWNER, user));
+			}
+			List list = criteria.list();
+			return list;
+		} finally {
+			closeSession(session);
+		}
+	}
+
 	public void closeOrder(Ticket ticket) {
 
 		Session session = null;
