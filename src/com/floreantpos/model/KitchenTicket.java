@@ -336,6 +336,10 @@ public class KitchenTicket extends BaseKitchenTicket {
 
         KitchenTicket kitchenTicket = null;
         for (TicketItem ticketItem : ticketItems) {
+            if (ticketItem.isPrintedToKitchen() || !ticketItem.isShouldPrintToKitchen()) {
+                continue;
+            }
+
             if (printAll || ticketItem.getName().startsWith("(T.O) ")) {
 
                 if (kitchenTicket == null) {

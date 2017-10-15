@@ -99,6 +99,7 @@ public class TicketView extends JPanel {
 	private com.floreantpos.swing.TransparentPanel ticketItemActionPanel;
 	private javax.swing.JScrollPane ticketScrollPane;
 	protected PosButton btnTotal;
+        protected PosButton btnTO;
 	private com.floreantpos.ui.ticket.TicketViewerTable ticketViewerTable;
 	private JPanel itemSearchPanel;
 	private JTextField txtSearchItem;
@@ -396,7 +397,7 @@ public class TicketView extends JPanel {
                 buttonGroup.add(btnTotal);
 		totalButtonPanel.add(btnTotal, "w 300, h 60");
                 
-		PosButton btnTO = new PosButton("T.O");
+		btnTO = new PosButton("T.O");
 		btnTO.setFont(btnTO.getFont().deriveFont(Font.BOLD));
 
 		btnTO.addActionListener(new ActionListener() {
@@ -516,7 +517,13 @@ public class TicketView extends JPanel {
 		saveTicketIfNeeded();
 		if (ticket.getOrderType().isShouldPrintToKitchen()) {
 			if (ticket.needsKitchenPrint()) {
-				ReceiptPrintService.printToKitchen(ticket);
+
+            if (ticket.getOrderType().getName().equals(OrderType.TAKE_OUT)) {
+                ReceiptPrintService.printTOToKitchen(ticket, true);
+            }
+            else {
+                ReceiptPrintService.printTOToKitchen(ticket, false);
+            }				ReceiptPrintService.printToKitchen(ticket);
 				TicketDAO.getInstance().refresh(ticket);
 				setCancelable(false);
 				setAllowToLogOut(false);
@@ -717,6 +724,13 @@ public class TicketView extends JPanel {
 		updateView();
 		setCancelable(true);
 		setAllowToLogOut(true);
+
+            if (ticket != null && ticket.getOrderType().getName().equals(OrderType.TAKE_OUT)) {
+                btnTO.setEnabled(false);
+            }
+            else {
+                btnTO.setEnabled(true);
+            }
 	}
 
 	public void addTicketItem(TicketItem ticketItem) {

@@ -56,7 +56,6 @@ import com.floreantpos.model.CashTransaction;
 import com.floreantpos.model.Discount;
 import com.floreantpos.model.GiftCertificateTransaction;
 import com.floreantpos.model.Gratuity;
-import com.floreantpos.model.OrderType;
 import com.floreantpos.model.PaymentType;
 import com.floreantpos.model.PosTransaction;
 import com.floreantpos.model.Restaurant;
@@ -610,12 +609,6 @@ public class SettleTicketDialog extends POSDialog implements CardInputListener {
             }
 
             ReceiptPrintService.printTransaction(transaction, numOfBills);
-            if (ticket.getOrderType().getName().equals(OrderType.TAKE_OUT)) {
-                ReceiptPrintService.printTOToKitchen(ticket, true);
-            }
-            else {
-                ReceiptPrintService.printTOToKitchen(ticket, false);
-            }
 
             if (transaction instanceof CashTransaction) {
                 DrawerUtil.kickDrawer();
