@@ -7,6 +7,7 @@
 			<generator class="identity" />
 		</id>
 		
+		<property column="CREATE_DATE" index="customerCreateDate" length="10" name="createDate" type="java.util.Date" />
 		<property name="loyaltyNo" column="LOYALTY_NO" length="30" type="string" />
 		<property name="loyaltyPoint" column="LOYALTY_POINT" type="java.lang.Integer" />
 		<property name="socialSecurityNumber" column="SOCIAL_SECURITY_NUMBER" length="60" type="string" />

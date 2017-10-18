@@ -15,6 +15,7 @@ import java.io.Serializable;
 public abstract class BaseCustomer  implements Comparable, Serializable {
 
 	public static String REF = "Customer";
+	public static String PROP_CREATE_DATE = "createDate"; //$NON-NLS-1$
 	public static String PROP_PICTURE = "picture";
 	public static String PROP_SOCIAL_SECURITY_NUMBER = "socialSecurityNumber";
 	public static String PROP_WORK_PHONE_NO = "workPhoneNo";
@@ -65,6 +66,7 @@ public abstract class BaseCustomer  implements Comparable, Serializable {
 	private java.lang.Integer autoId;
 
 	// fields
+		protected java.util.Date createDate;
 		protected java.lang.String loyaltyNo;
 		protected java.lang.Integer loyaltyPoint;
 		protected java.lang.String socialSecurityNumber;
@@ -114,6 +116,23 @@ public abstract class BaseCustomer  implements Comparable, Serializable {
 	public void setAutoId (java.lang.Integer autoId) {
 		this.autoId = autoId;
 		this.hashCode = Integer.MIN_VALUE;
+	}
+
+
+
+	/**
+	 * Return the value associated with the column: CREATE_DATE
+	 */
+	public java.util.Date getCreateDate () {
+					return createDate;
+			}
+
+	/**
+	 * Set the value related to the column: CREATE_DATE
+	 * @param createDate the CREATE_DATE value
+	 */
+	public void setCreateDate (java.util.Date createDate) {
+		this.createDate = createDate;
 	}
 
 

@@ -53,6 +53,7 @@ import com.floreantpos.swing.QwertyKeyPad;
 import com.floreantpos.ui.BeanEditor;
 import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.util.POSUtil;
+import java.util.Calendar;
 
 public class QuickCustomerForm extends BeanEditor<Customer> {
 	static MyOwnFocusTraversalPolicy newPolicy;
@@ -292,6 +293,8 @@ public class QuickCustomerForm extends BeanEditor<Customer> {
 		//TODO: 
 		customer.setZipCode(tfZip.getText());
 		customer.setMobileNo(tfCellPhone.getText());
+		Calendar currentTime = Calendar.getInstance();
+		customer.setCreateDate(currentTime.getTime());
 
 		return true;
 	}

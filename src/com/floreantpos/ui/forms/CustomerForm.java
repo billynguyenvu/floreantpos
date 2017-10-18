@@ -61,6 +61,7 @@ import com.floreantpos.ui.BeanEditor;
 import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.util.POSUtil;
 import com.floreantpos.util.PosGuiUtil;
+import java.util.Calendar;
 
 public class CustomerForm extends BeanEditor<Customer> {
 	static MyOwnFocusTraversalPolicy newPolicy;
@@ -521,6 +522,8 @@ public class CustomerForm extends BeanEditor<Customer> {
 		customer.setMobileNo(tfMobile.getText());
 		customer.setSocialSecurityNumber(tfSocialSecurityNumber.getText());
 		customer.setWorkPhoneNo(tfWorkPhone.getText());
+		Calendar currentTime = Calendar.getInstance();
+		customer.setCreateDate(currentTime.getTime());
 
 		if (image != null) {
 			try {

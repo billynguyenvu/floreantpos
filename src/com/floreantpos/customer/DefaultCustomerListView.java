@@ -245,7 +245,7 @@ public class DefaultCustomerListView extends CustomerSelector {
                         Collections.sort(list, new Comparator() {
                         @Override
                         public int compare(Object i1, Object i2) {
-                            return ((Customer) i1).getAutoId().compareTo(((Customer) i2).getAutoId());
+                            return ((Customer) i2).getCreateDate().compareTo(((Customer) i1).getCreateDate());
                         }
                     });
                 customerTable.setModel(new CustomerListTableModel(list));
@@ -329,7 +329,7 @@ public class DefaultCustomerListView extends CustomerSelector {
                         Collections.sort(list, new Comparator() {
                         @Override
                         public int compare(Object i1, Object i2) {
-                            return ((Customer) i1).getAutoId().compareTo(((Customer) i2).getAutoId());
+                            return ((Customer) i2).getCreateDate().compareTo(((Customer) i1).getCreateDate());
                         }
                     });
 		customerTable.setModel(new CustomerListTableModel(list));
