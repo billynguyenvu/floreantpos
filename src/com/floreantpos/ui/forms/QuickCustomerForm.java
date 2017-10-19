@@ -281,6 +281,8 @@ public class QuickCustomerForm extends BeanEditor<Customer> {
 
 		if (customer == null) {
 			customer = new Customer();
+		Calendar currentTime = Calendar.getInstance();
+		customer.setCreateDate(currentTime.getTime());
 			setBean(customer, false);
 		}
 		customer.setName(name);
@@ -293,8 +295,6 @@ public class QuickCustomerForm extends BeanEditor<Customer> {
 		//TODO: 
 		customer.setZipCode(tfZip.getText());
 		customer.setMobileNo(tfCellPhone.getText());
-		Calendar currentTime = Calendar.getInstance();
-		customer.setCreateDate(currentTime.getTime());
 
 		return true;
 	}

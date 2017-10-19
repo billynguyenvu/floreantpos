@@ -11,6 +11,7 @@ import com.floreantpos.model.OrderType;
 import com.floreantpos.model.ShopTable;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.util.TicketAlreadyExistsException;
+import javax.swing.JTabbedPane;
 
 public abstract class CustomerSelector extends JPanel {
 	protected OrderType orderType;
@@ -76,4 +77,16 @@ public abstract class CustomerSelector extends JPanel {
 	public String getCallerId() {
 		return callerId;
 	}
+	
+        protected boolean filterTodayCustomer = false;
+	public void setFilterTodayCustomer(boolean todayOnly) {
+		filterTodayCustomer = todayOnly;
+	}
+	
+	public boolean getFilterTodayCustomer() {
+		return filterTodayCustomer;
+	}
+	
+	public abstract void loadCustomerFromTicket();
+	public abstract void setTabbedPane(JTabbedPane tabbedPane);
 }

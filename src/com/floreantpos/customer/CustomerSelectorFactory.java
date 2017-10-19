@@ -6,41 +6,66 @@ import com.floreantpos.model.OrderType;
 import com.floreantpos.model.Ticket;
 
 public class CustomerSelectorFactory {
-	private static CustomerSelector customerSelector;
+	private static CustomerSelector todayCustomerSelector;
+	private static CustomerSelector allCustomerSelector;
 
 	public static CustomerSelectorDialog createCustomerSelectorDialog(OrderType orderType) {
 		OrderServiceExtension orderServicePlugin = (OrderServiceExtension) ExtensionManager.getPlugin(OrderServiceExtension.class);
-		if (customerSelector == null) {
+		if (todayCustomerSelector == null) {
 			if (orderServicePlugin == null) {
-				customerSelector = new DefaultCustomerListView();
+				todayCustomerSelector = new DefaultCustomerListView();
 			}
 			else {
-				customerSelector = orderServicePlugin.createNewCustomerSelector();
+				todayCustomerSelector = orderServicePlugin.createNewCustomerSelector();
 			}
 		}
-		customerSelector.setOrderType(orderType);
-		customerSelector.redererCustomers();
+		todayCustomerSelector.setOrderType(orderType);
+		todayCustomerSelector.redererCustomers();
+		if (allCustomerSelector == null) {
+			if (orderServicePlugin == null) {
+				allCustomerSelector = new DefaultCustomerListView();
+			}
+			else {
+				allCustomerSelector = orderServicePlugin.createNewCustomerSelector();
+			}
+		}
+		allCustomerSelector.setOrderType(orderType);
+		allCustomerSelector.redererCustomers();
 
-		return new CustomerSelectorDialog(customerSelector);
+		return new CustomerSelectorDialog(todayCustomerSelector, allCustomerSelector);
 	}
 
 	public static CustomerSelectorDialog createCustomerSelectorDialog(OrderType orderType, Ticket ticket) {
 		OrderServiceExtension orderServicePlugin = (OrderServiceExtension) ExtensionManager.getPlugin(OrderServiceExtension.class);
-		if (customerSelector == null) {
+		if (todayCustomerSelector == null) {
 			if (orderServicePlugin == null) {
-				customerSelector = new DefaultCustomerListView(ticket);
+				todayCustomerSelector = new DefaultCustomerListView(ticket, true);
 			}
 			else {
-				customerSelector = orderServicePlugin.createNewCustomerSelector();
+				todayCustomerSelector = orderServicePlugin.createNewCustomerSelector();
 			}
 		}
                 else {
-                    customerSelector.setTicket(ticket);
-                    ((DefaultCustomerListView)customerSelector).loadCustomerFromTicket();
+                    todayCustomerSelector.setTicket(ticket);
+                    ((DefaultCustomerListView)todayCustomerSelector).loadCustomerFromTicket();
                 }
-		customerSelector.setOrderType(orderType);
-		customerSelector.redererCustomers();
+		todayCustomerSelector.setOrderType(orderType);
+		todayCustomerSelector.redererCustomers();
+		if (allCustomerSelector == null) {
+			if (orderServicePlugin == null) {
+				allCustomerSelector = new DefaultCustomerListView(ticket, false);
+			}
+			else {
+				allCustomerSelector = orderServicePlugin.createNewCustomerSelector();
+			}
+		}
+                else {
+                    allCustomerSelector.setTicket(ticket);
+                    ((DefaultCustomerListView)allCustomerSelector).loadCustomerFromTicket();
+                }
+		allCustomerSelector.setOrderType(orderType);
+		allCustomerSelector.redererCustomers();
 
-		return new CustomerSelectorDialog(customerSelector);
+		return new CustomerSelectorDialog(todayCustomerSelector, allCustomerSelector);
 	}
 }

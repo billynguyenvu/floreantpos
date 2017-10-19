@@ -58,8 +58,11 @@ import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.ui.forms.QuickCustomerForm;
 import com.floreantpos.util.POSUtil;
 import com.floreantpos.util.TicketAlreadyExistsException;
+import java.awt.Component;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import javax.swing.JTabbedPane;
 
 public class DefaultCustomerListView extends CustomerSelector {
 
@@ -75,14 +78,17 @@ public class DefaultCustomerListView extends CustomerSelector {
 //	private Ticket ticket;
 	private PosButton btnCancel;
 	private QwertyKeyPad qwertyKeyPad;
+        
+        JTabbedPane tabbedPane = null;
 
 	public DefaultCustomerListView() {
 		initUI();
 	}
 
-	public DefaultCustomerListView(Ticket ticket) {
+	public DefaultCustomerListView(Ticket ticket, boolean todayOnly) {
 		this.ticket = ticket;
 		initUI();
+		setFilterTodayCustomer(todayOnly);
 		loadCustomerFromTicket();
 	}
 
@@ -239,28 +245,73 @@ public class DefaultCustomerListView extends CustomerSelector {
 		add(qwertyKeyPad, "cell 0 3,grow"); //$NON-NLS-1$
 	}
 
-	public void loadCustomerFromTicket() {
-            if (ticket == null || ticket.getCustomerId() == null || ticket.getCustomerId() == 0) {
-			List<Customer> list = CustomerDAO.getInstance().findAll();
-                        Collections.sort(list, new Comparator() {
-                        @Override
-                        public int compare(Object i1, Object i2) {
-                            return ((Customer) i2).getCreateDate().compareTo(((Customer) i1).getCreateDate());
-                        }
-                    });
-                customerTable.setModel(new CustomerListTableModel(list));
-                return;
-            }
-		String customerIdString = ticket.getProperty(Ticket.CUSTOMER_ID);
-		if (StringUtils.isNotEmpty(customerIdString)) {
-			int customerId = Integer.parseInt(customerIdString);
-			Customer customer = CustomerDAO.getInstance().get(customerId);
+    private List<Customer> getAllCustomers() {
 
-			List<Customer> list = new ArrayList<Customer>();
-			list.add(customer);
-			customerTable.setModel(new CustomerListTableModel(list));
-		}
-	}
+        List<Customer> list;
+        if (filterTodayCustomer) {
+            Calendar date = Calendar.getInstance();
+            date.set(Calendar.HOUR_OF_DAY, 0);
+            date.set(Calendar.MINUTE, 0);
+            date.set(Calendar.SECOND, 0);
+            list = CustomerDAO.getInstance().findBy(date.getTime());
+        }
+        else
+            list = CustomerDAO.getInstance().findAll();
+        
+        Collections.sort(list, new Comparator() {
+            @Override
+            public int compare(Object i1, Object i2) {
+                return ((Customer) i2).getCreateDate().compareTo(((Customer) i1).getCreateDate());
+            }
+        });
+        return list;
+    }
+
+    private List<Customer> searchCustomers(String mobile, String loyalty, String name) {
+
+        List<Customer> list;
+        if (filterTodayCustomer) {
+            Calendar date = Calendar.getInstance();
+            date.set(Calendar.HOUR_OF_DAY, 0);
+            date.set(Calendar.MINUTE, 0);
+            date.set(Calendar.SECOND, 0);
+            list = CustomerDAO.getInstance().findBy(mobile, loyalty, name, date.getTime());
+        }
+        else
+            list = CustomerDAO.getInstance().findBy(mobile, loyalty, name);
+        
+        Collections.sort(list, new Comparator() {
+            @Override
+            public int compare(Object i1, Object i2) {
+                return ((Customer) i2).getCreateDate().compareTo(((Customer) i1).getCreateDate());
+            }
+        });
+        return list;
+    }
+
+    @Override
+    public void loadCustomerFromTicket() {
+        if (ticket == null || ticket.getCustomerId() == null || ticket.getCustomerId() == 0) {
+            List<Customer> list = getAllCustomers();
+            customerTable.setModel(new CustomerListTableModel(list));
+            return;
+        }
+        String customerIdString = ticket.getProperty(Ticket.CUSTOMER_ID);
+        if (StringUtils.isNotEmpty(customerIdString)) {
+            int customerId = Integer.parseInt(customerIdString);
+            Customer customer = CustomerDAO.getInstance().get(customerId);
+
+            List<Customer> list = new ArrayList<>();
+            Calendar date = Calendar.getInstance();
+            date.set(Calendar.HOUR_OF_DAY, 0);
+            date.set(Calendar.MINUTE, 0);
+            date.set(Calendar.SECOND, 0);
+            if (customer.getCreateDate().after(date.getTime()) || !filterTodayCustomer) {
+                list.add(customer);
+            }
+            customerTable.setModel(new CustomerListTableModel(list));
+        }
+    }
 
 	private void closeDialog(boolean canceled) {
 		Window windowAncestor = SwingUtilities.getWindowAncestor(DefaultCustomerListView.this);
@@ -304,6 +355,7 @@ public class DefaultCustomerListView extends CustomerSelector {
                 ticket.setCustomerId(null);
                 System.out.println("ticket customer: " + ticket.getCustomerId());
 		TicketDAO.getInstance().saveOrUpdate(ticket);
+                        reloadOtherTab();
                 selectedCustomer = null;
 		closeDialog(false);
 	}
@@ -314,24 +366,12 @@ public class DefaultCustomerListView extends CustomerSelector {
 		String loyalty = tfLoyaltyNo.getText();
 
 		if (StringUtils.isEmpty(mobile) && StringUtils.isEmpty(loyalty) && StringUtils.isEmpty(name)) {
-			List<Customer> list = CustomerDAO.getInstance().findAll();
-                        Collections.sort(list, new Comparator() {
-                        @Override
-                        public int compare(Object i1, Object i2) {
-                            return ((Customer) i1).getAutoId().compareTo(((Customer) i2).getAutoId());
-                        }
-                    });
+			List<Customer> list = getAllCustomers();
 			customerTable.setModel(new CustomerListTableModel(list));
 			return;
 		}
 
-		List<Customer> list = CustomerDAO.getInstance().findBy(mobile, loyalty, name);
-                        Collections.sort(list, new Comparator() {
-                        @Override
-                        public int compare(Object i1, Object i2) {
-                            return ((Customer) i2).getCreateDate().compareTo(((Customer) i1).getCreateDate());
-                        }
-                    });
+		List<Customer> list = searchCustomers(mobile, loyalty, name);
 		customerTable.setModel(new CustomerListTableModel(list));
 	}
 
@@ -353,6 +393,7 @@ public class DefaultCustomerListView extends CustomerSelector {
 			CustomerListTableModel model = (CustomerListTableModel) customerTable.getModel();
 			model.addItem(selectedCustomer);
 		}
+                reloadAllTabs();
 	}
 
 	protected void doEditCustomer() {
@@ -378,6 +419,7 @@ public class DefaultCustomerListView extends CustomerSelector {
 
 			CustomerListTableModel model = (CustomerListTableModel) customerTable.getModel();
                         model.updateItem(customerTable.getSelectedRow());
+                        reloadOtherTab();
 		}
 	}
 
@@ -408,4 +450,31 @@ public class DefaultCustomerListView extends CustomerSelector {
 	public void redererCustomers() {
 
 	}
+	
+	@Override
+	public void setFilterTodayCustomer(boolean todayOnly) {
+		filterTodayCustomer = todayOnly;
+	}
+	
+	@Override
+	public void setTabbedPane(JTabbedPane tabbedPane) {
+		this.tabbedPane = tabbedPane;
+	}
+        
+        private void reloadAllTabs() {
+                ((DefaultCustomerListView)tabbedPane.getComponentAt(0)).loadCustomerFromTicket();
+                ((DefaultCustomerListView)tabbedPane.getComponentAt(1)).loadCustomerFromTicket();
+        }
+        
+        private void reloadOtherTab() {
+                int selectedIndex = tabbedPane.getSelectedIndex();
+                int otherIndex = (selectedIndex==0)?1:0;
+                Component component = tabbedPane.getComponentAt(otherIndex);
+                if (component != null) {
+                    ((DefaultCustomerListView)component).loadCustomerFromTicket();
+                }
+                else {
+                    System.out.println("component="+component);
+                }
+        }
 }

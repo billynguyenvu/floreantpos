@@ -714,6 +714,41 @@ public class ReceiptPrintService {
 		return ticketHeaderBuilder;
 	}
 
+	private static StringBuilder buildKitchenTicketHeader(Ticket ticket) {
+
+		StringBuilder ticketHeaderBuilder = new StringBuilder();
+		ticketHeaderBuilder.append("<html>"); //$NON-NLS-1$
+
+		OrderType orderType = ticket.getOrderType();
+		//customer info section
+		if (orderType.getName().equals(OrderType.TAKE_OUT)) {
+
+			String customerName = ticket.getProperty(Ticket.CUSTOMER_NAME);
+			String customerMobile = ticket.getProperty(Ticket.CUSTOMER_MOBILE);
+                        if (StringUtils.isNotEmpty(customerName) || StringUtils.isNotEmpty(customerMobile)) {
+			beginRow(ticketHeaderBuilder);
+			addColumn(ticketHeaderBuilder, ""); //$NON-NLS-1$
+			endRow(ticketHeaderBuilder);
+                        
+                        }
+
+				if (StringUtils.isNotEmpty(customerName)) {
+					beginRow(ticketHeaderBuilder);
+					addColumn(ticketHeaderBuilder, "Customer Name: " + customerName);
+					endRow(ticketHeaderBuilder);
+				}
+
+				if (StringUtils.isNotEmpty(customerMobile)) {
+					beginRow(ticketHeaderBuilder);
+					addColumn(ticketHeaderBuilder, "Customer Phone: " + customerMobile); //$NON-NLS-1$
+					endRow(ticketHeaderBuilder);
+				}
+		}
+
+		ticketHeaderBuilder.append("</html>"); //$NON-NLS-1$
+		return ticketHeaderBuilder;
+	}
+
 	private static StringBuilder buildMultiCurrencyTotalAmount(Ticket ticket, TicketPrintProperties printProperties) {
 		DecimalFormat decimalFormat = new DecimalFormat("0.00"); //$NON-NLS-1$
 
@@ -873,7 +908,7 @@ public class ReceiptPrintService {
 		return txt;
 	}
 
-	public static JasperPrint createKitchenPrint(KitchenTicket ticket) throws Exception {
+	public static JasperPrint createKitchenPrint(KitchenTicket ticket, Ticket orginalTicket) throws Exception {
 		HashMap map = new HashMap();
 
 		map.put(HEADER_LINE1, Application.getInstance().getRestaurant().getName());
@@ -893,7 +928,8 @@ public class ReceiptPrintService {
 		map.put(SERVER_NAME, POSConstants.RECEIPT_REPORT_SERVER_LABEL + ticket.getServerName());
 		map.put(REPORT_DATE, Messages.getString("ReceiptPrintService.119") + reportDateFormat.format(new Date())); //$NON-NLS-1$
 
-		map.put("ticketHeader", Messages.getString("ReceiptPrintService.10")); //$NON-NLS-1$ //$NON-NLS-2$
+		StringBuilder ticketHeaderBuilder = buildKitchenTicketHeader(orginalTicket);
+		map.put("ticketHeader", ticketHeaderBuilder.toString()); //$NON-NLS-1$
 		String ticketType = ticket.getTicketType();
 		if (StringUtils.isNotEmpty(ticketType)) {
 			ticketType = ticketType.replaceAll("_", " "); //$NON-NLS-1$ //$NON-NLS-2$
@@ -905,7 +941,7 @@ public class ReceiptPrintService {
 		return createJasperPrint(ReportUtil.getReport("kitchen-receipt"), map, new JRTableModelDataSource(dataSource)); //$NON-NLS-1$
 	}
 
-	public static JasperPrint createKitchenPrint(String virtualPrinterName, KitchenTicket ticket, String deviceName) throws Exception {
+	public static JasperPrint createKitchenPrint(String virtualPrinterName, KitchenTicket ticket, String deviceName, Ticket orginalTicket) throws Exception {
 		HashMap map = new HashMap();
 
 		map.put(HEADER_LINE1, Application.getInstance().getRestaurant().getName());
@@ -926,7 +962,8 @@ public class ReceiptPrintService {
 
 		map.put(REPORT_DATE, Messages.getString("ReceiptPrintService.119") + DateUtil.getReportDate()); //$NON-NLS-1$
 
-		map.put("ticketHeader", Messages.getString("ReceiptPrintService.10")); //$NON-NLS-1$ //$NON-NLS-2$
+		StringBuilder ticketHeaderBuilder = buildKitchenTicketHeader(orginalTicket);
+		map.put("ticketHeader", ticketHeaderBuilder.toString()); //$NON-NLS-1$
 		String ticketType = ticket.getTicketType();
 		if (StringUtils.isNotEmpty(ticketType)) {
 			ticketType = ticketType.replaceAll("_", " "); //$NON-NLS-1$ //$NON-NLS-2$
@@ -958,7 +995,7 @@ public class ReceiptPrintService {
 				Printer printer = kitchenTicket.getPrinter();//
 				String deviceName = printer.getDeviceName();
 
-				JasperPrint jasperPrint = createKitchenPrint(printer.getVirtualPrinter().getName(), kitchenTicket, deviceName);
+				JasperPrint jasperPrint = createKitchenPrint(printer.getVirtualPrinter().getName(), kitchenTicket, deviceName, ticket);
 
 				jasperPrint.setName("FP_KitchenReceipt_" + ticket.getId() + "_" + kitchenTicket.getSequenceNumber()); //$NON-NLS-1$ //$NON-NLS-2$ 
 				jasperPrint.setProperty(PROP_PRINTER_NAME, deviceName);
@@ -987,7 +1024,7 @@ public class ReceiptPrintService {
 			for (KitchenTicket kitchenTicket : kitchenTickets) {
 				String deviceName = receiptPrinter;
 
-				JasperPrint jasperPrint = createKitchenPrint("Receipt", kitchenTicket, deviceName);
+				JasperPrint jasperPrint = createKitchenPrint("Receipt", kitchenTicket, deviceName, ticket);
 
 				jasperPrint.setName("FP_KitchenReceipt_" + ticket.getId() + "_" + kitchenTicket.getSequenceNumber()); //$NON-NLS-1$ //$NON-NLS-2$ 
 				jasperPrint.setProperty(PROP_PRINTER_NAME, deviceName);

@@ -502,6 +502,8 @@ public class CustomerForm extends BeanEditor<Customer> {
 
 		if (customer == null) {
 			customer = new Customer();
+		Calendar currentTime = Calendar.getInstance();
+		customer.setCreateDate(currentTime.getTime());
 			setBean(customer, false);
 		}
 		customer.setSalutation(cbSalutation.getSelectedItem().toString());
@@ -522,8 +524,6 @@ public class CustomerForm extends BeanEditor<Customer> {
 		customer.setMobileNo(tfMobile.getText());
 		customer.setSocialSecurityNumber(tfSocialSecurityNumber.getText());
 		customer.setWorkPhoneNo(tfWorkPhone.getText());
-		Calendar currentTime = Calendar.getInstance();
-		customer.setCreateDate(currentTime.getTime());
 
 		if (image != null) {
 			try {

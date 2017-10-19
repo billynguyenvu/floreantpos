@@ -28,6 +28,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.floreantpos.model.Customer;
+import java.util.Date;
 
 public class CustomerDAO extends BaseCustomerDAO {
 
@@ -68,6 +69,56 @@ public class CustomerDAO extends BaseCustomerDAO {
 				closeSession(session);
 			}
 		}
+	}
+
+	public List<Customer> findBy(String mobile, String loyalty, String name, Date createDate) {
+		Session session = null;
+
+		try {
+			session = getSession();
+			Criteria criteria = session.createCriteria(getReferenceClass());
+			Disjunction disjunction = Restrictions.disjunction();
+
+			if (StringUtils.isNotEmpty(mobile))
+				disjunction.add(Restrictions.like(Customer.PROP_MOBILE_NO, "%" + mobile + "%")); //$NON-NLS-1$ //$NON-NLS-2$
+
+			if (StringUtils.isNotEmpty(loyalty))
+				disjunction.add(Restrictions.like(Customer.PROP_LOYALTY_NO, "%" + loyalty + "%")); //$NON-NLS-1$ //$NON-NLS-2$
+
+			if (StringUtils.isNotEmpty(name))
+				disjunction.add(Restrictions.like(Customer.PROP_FIRST_NAME, "%" + name + "%")); //$NON-NLS-1$ //$NON-NLS-2$
+                        
+			if (createDate != null) 
+				criteria.add(Restrictions.ge(Customer.PROP_CREATE_DATE, createDate));
+
+			criteria.add(disjunction);
+
+			return criteria.list();
+
+		} finally {
+			if (session != null) {
+				closeSession(session);
+			}
+		}
+	}
+
+	public List<Customer> findBy(Date createDate) {
+		Session session = null;
+
+		try {
+			session = getSession();
+			Criteria criteria = session.createCriteria(getReferenceClass());
+
+			if (createDate != null) 
+				criteria.add(Restrictions.ge(Customer.PROP_CREATE_DATE, createDate));
+
+			return criteria.list();
+		} finally {
+			if (session != null) {
+				closeSession(session);
+			}
+		}
+
 	}
 
 	public List<Customer> findBy(String searchString) {

@@ -27,20 +27,29 @@ import com.floreantpos.model.Customer;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.ui.TitlePanel;
 import com.floreantpos.ui.dialog.POSDialog;
+import javax.swing.JTabbedPane;
 
 public class CustomerSelectorDialog extends POSDialog {
 
-	private final CustomerSelector customerSelector;
+	private final CustomerSelector todayCustomerSelector;
+        private final CustomerSelector allCustomerSelector;
+        private JTabbedPane tabbedPane = new JTabbedPane();
 
-	public CustomerSelectorDialog(CustomerSelector customerSelector) throws HeadlessException {
+	public CustomerSelectorDialog(CustomerSelector todayCustomerSelector, CustomerSelector allCustomerSelector) throws HeadlessException {
 		super(Application.getPosWindow(), true);
-		this.customerSelector = customerSelector;
+		this.todayCustomerSelector = todayCustomerSelector;
+		this.allCustomerSelector = allCustomerSelector;
 
 		TitlePanel titlePane = new TitlePanel();
 		titlePane.setTitle(Messages.getString("CustomerSelectorDialog.0")); //$NON-NLS-1$
 
 		getContentPane().add(titlePane, BorderLayout.NORTH);
-		getContentPane().add(customerSelector);
+                getContentPane().add(tabbedPane);
+                tabbedPane.addTab("Today Customers", todayCustomerSelector);
+                tabbedPane.addTab("All Customers", allCustomerSelector);
+                tabbedPane.setSelectedComponent(todayCustomerSelector);
+		this.todayCustomerSelector.setTabbedPane(tabbedPane);
+		this.allCustomerSelector.setTabbedPane(tabbedPane);
 
 		PosWindow window = Application.getPosWindow();
 		setSize(window.getSize());
@@ -48,26 +57,31 @@ public class CustomerSelectorDialog extends POSDialog {
 	}
 
 	public void setCreateNewTicket(boolean createNewTicket) {
-		customerSelector.setCreateNewTicket(createNewTicket);
+		todayCustomerSelector.setCreateNewTicket(createNewTicket);
+		allCustomerSelector.setCreateNewTicket(createNewTicket);
 	}
 
 	public void updateView(boolean update) {
-		customerSelector.updateView(update);
+		todayCustomerSelector.updateView(update);
+		allCustomerSelector.updateView(update);
 	}
 
 	public Customer getSelectedCustomer() {
-		return customerSelector.getSelectedCustomer();
+		return ((CustomerSelector)tabbedPane.getSelectedComponent()).getSelectedCustomer();
 	}
 
 	public void setTicket(Ticket thisTicket) {
-		customerSelector.setTicket(thisTicket);
+		todayCustomerSelector.setTicket(thisTicket);
+		allCustomerSelector.setTicket(thisTicket);
 	}
 
 	public void setCustomer(Customer customer) {
-		customerSelector.setCustomer(customer); 
+		todayCustomerSelector.setCustomer(customer); 
+		allCustomerSelector.setCustomer(customer); 
 	}
 
 	public void setCallerId(String callerId) {
-		customerSelector.setCallerId(callerId); 
+		todayCustomerSelector.setCallerId(callerId); 
+		allCustomerSelector.setCallerId(callerId); 
 	}
 }
