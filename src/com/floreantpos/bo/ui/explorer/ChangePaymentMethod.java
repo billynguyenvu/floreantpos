@@ -58,6 +58,7 @@ import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.ui.util.UiUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Predicate;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -66,8 +67,8 @@ import org.hibernate.Transaction;
 public class ChangePaymentMethod extends TransparentPanel {
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM,dd  hh:mm a"); //$NON-NLS-1$
-    private JXDatePicker fromDatePicker = UiUtil.getCurrentMonthStart();
-    private JXDatePicker toDatePicker = UiUtil.getCurrentMonthEnd();
+    private JXDatePicker fromDatePicker = UiUtil.getCurrentDate();
+    private JXDatePicker toDatePicker = UiUtil.getCurrentDate();
     private JButton btnGo = new JButton(com.floreantpos.POSConstants.GO);
     private JButton btnChangePayment = new JButton("Change Payment Method"); //$NON-NLS-1$
     private JXTable table;
@@ -245,6 +246,12 @@ public class ChangePaymentMethod extends TransparentPanel {
 
             TicketDAO dao = new TicketDAO();
             List<Ticket> ticketList = dao.findClosedTickets(fromDate, toDate, user);
+            ticketList.removeIf(new Predicate<Ticket>(){
+                @Override
+                public boolean test(Ticket ticket){
+                    return ticket.getTransactions().isEmpty();
+                }
+            });
             TicketTableModel model = (TicketTableModel) table.getModel();
             model.setRows(ticketList);
         } catch (Exception e) {
@@ -297,7 +304,10 @@ public class ChangePaymentMethod extends TransparentPanel {
 
                 case 5:
 
-                    return ticket.getTransactions().iterator().next().getPaymentType();
+                    if (!ticket.getTransactions().isEmpty()) {
+                        return ticket.getTransactions().iterator().next().getPaymentType();
+                    }
+                    else return "";
 
                 case 6:
 

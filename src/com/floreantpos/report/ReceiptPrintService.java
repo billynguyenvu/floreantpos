@@ -187,6 +187,7 @@ public class ReceiptPrintService {
 			for (TerminalPrinters terminalPrinters2 : terminalPrinters) {
 
 				int printerType = terminalPrinters2.getVirtualPrinter().getType();
+                            logger.debug("terminalPrinters2: "+terminalPrinters2.getPrinterName()+", type: " + printerType);
 
 				if (printerType == VirtualPrinter.RECEIPT) {
 
@@ -196,6 +197,7 @@ public class ReceiptPrintService {
 			}
 
 			if (activeReceiptPrinters == null || activeReceiptPrinters.isEmpty()) {
+                            logger.debug("activeReceiptPrinters EMPTY");
 
 				JasperPrint jasperPrint = createPrint(ticket, map, null);
 				jasperPrint.setName(ORDER_ + ticket.getId());
@@ -204,6 +206,7 @@ public class ReceiptPrintService {
 
 			}
 			else {
+                            logger.debug("activeReceiptPrinters size: " + activeReceiptPrinters.size());
 
 				for (Printer activeReceiptPrinter : activeReceiptPrinters) {
 

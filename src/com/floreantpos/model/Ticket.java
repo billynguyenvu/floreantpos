@@ -829,6 +829,70 @@ public class Ticket extends BaseTicket {
 		calculatePrice();
 	}
 
+	public void consolidateTicketItemsForKitchen() {
+		List<TicketItem> ticketItems = getTicketItems();
+
+		Map<String, List<TicketItem>> itemMap = new LinkedHashMap<String, List<TicketItem>>();
+
+		for (Iterator iterator = ticketItems.iterator(); iterator.hasNext();) {
+			TicketItem newItem = (TicketItem) iterator.next();
+                        String sizeId = "";
+                        if (newItem.getSizeModifier() != null) sizeId = "-" + newItem.getSizeModifier().getNameDisplay();
+                        if (newItem.isPrintedToKitchen() != null) sizeId = "-isPrinted:" + newItem.isPrintedToKitchen();
+
+                        System.out.println("item key=" + newItem.getItemId().toString() + sizeId);
+			List<TicketItem> itemListInMap = itemMap.get(newItem.getItemId().toString() + sizeId);
+
+			if (itemListInMap == null) {
+				List<TicketItem> list = new ArrayList<TicketItem>();
+				list.add(newItem);
+
+				itemMap.put(newItem.getItemId().toString() + sizeId, list);
+			}
+			else {
+				boolean merged = false;
+				for (TicketItem itemInMap : itemListInMap) {
+					if (itemInMap.isMergable(newItem, false)) {
+						itemInMap.merge(newItem);
+						merged = true;
+						break;
+					}
+				}
+
+				if (!merged) {
+					itemListInMap.add(newItem);
+				}
+			}
+		}
+
+		getTicketItems().clear();
+		Collection<List<TicketItem>> values = itemMap.values();
+		for (List<TicketItem> list : values) {
+			if (list != null) {
+				getTicketItems().addAll(list);
+			}
+		}
+		List<TicketItem> ticketItemList = getTicketItems();
+		if (getOrderType().isAllowSeatBasedOrder()) {
+			Collections.sort(ticketItemList, new Comparator<TicketItem>() {
+
+				@Override
+				public int compare(TicketItem o1, TicketItem o2) {
+					return o1.getId() - o2.getId();
+				}
+			});
+			Collections.sort(ticketItemList, new Comparator<TicketItem>() {
+
+				@Override
+				public int compare(TicketItem o1, TicketItem o2) {
+					return o1.getSeatNumber() - o2.getSeatNumber();
+				}
+
+			});
+		}
+		calculatePrice();
+	}
+
 	/**
 	 * Mark ticket items, modifiers, add-ons as printed to kitchen
 	 */
