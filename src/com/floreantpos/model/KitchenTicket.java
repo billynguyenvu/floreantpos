@@ -190,7 +190,7 @@ public class KitchenTicket extends BaseKitchenTicket {
 
         Ticket clonedTicket = (Ticket) SerializationUtils.clone(ticket);
         clonedTicket.setGlobalId(GlobalIdGenerator.generate());
-        clonedTicket.consolidateTicketItems();
+        clonedTicket.consolidateTicketItemsForKitchen();
         List<TicketItem> ticketItems = clonedTicket.getTicketItems();
         if (ticketItems == null) {
             return kitchenTickets;
@@ -215,6 +215,9 @@ public class KitchenTicket extends BaseKitchenTicket {
         }
 
         for (TicketItem ticketItem : ticketItems) {
+//            System.out.println("ticketItem: " + ticketItem.getNameDisplay());
+//            System.out.println("isPrintedToKitchen: " + ticketItem.isPrintedToKitchen());
+//            System.out.println("isShouldPrintToKitchen: " + ticketItem.isShouldPrintToKitchen());
             if (ticketItem.isPrintedToKitchen() || !ticketItem.isShouldPrintToKitchen()) {
                 continue;
             }
@@ -310,7 +313,7 @@ public class KitchenTicket extends BaseKitchenTicket {
 
         Ticket clonedTicket = (Ticket) SerializationUtils.clone(ticket);
         clonedTicket.setGlobalId(GlobalIdGenerator.generate());
-        clonedTicket.consolidateTicketItems();
+        clonedTicket.consolidateTicketItemsForKitchen();
         List<TicketItem> ticketItems = clonedTicket.getTicketItems();
         if (ticketItems == null) {
             return kitchenTickets;
@@ -397,15 +400,17 @@ public class KitchenTicket extends BaseKitchenTicket {
             }
         }
 
-        kitchenTickets.add(kitchenTicket);
-        String kitchenTicketNumber = ticket.getProperty("KITCHEN_TICKET_NUMBER"); //$NON-NLS-1$
-        if (kitchenTicketNumber == null) {
-            kitchenTicketNumber = "1"; //$NON-NLS-1$
-        } else {
-            kitchenTicketNumber = String.valueOf(Integer.valueOf(kitchenTicketNumber) + 1);
+        if (kitchenTicket != null) {
+            kitchenTickets.add(kitchenTicket);
+            String kitchenTicketNumber = ticket.getProperty("KITCHEN_TICKET_NUMBER"); //$NON-NLS-1$
+            if (kitchenTicketNumber == null) {
+                kitchenTicketNumber = "1"; //$NON-NLS-1$
+            } else {
+                kitchenTicketNumber = String.valueOf(Integer.valueOf(kitchenTicketNumber) + 1);
+            }
+            ticket.addProperty("KITCHEN_TICKET_NUMBER", kitchenTicketNumber); //$NON-NLS-1$
+            kitchenTicket.setSequenceNumber(Integer.valueOf(kitchenTicketNumber));
         }
-        ticket.addProperty("KITCHEN_TICKET_NUMBER", kitchenTicketNumber); //$NON-NLS-1$
-        kitchenTicket.setSequenceNumber(Integer.valueOf(kitchenTicketNumber));
         return kitchenTickets;
     }
 

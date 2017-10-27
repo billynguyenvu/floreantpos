@@ -42,6 +42,15 @@ public class UiUtil {
 		
 		return datePicker;
 	}
+
+	public static JXDatePicker getCurrentDate() {
+		Locale locale = Locale.getDefault();
+		
+		Calendar c = Calendar.getInstance(locale);
+		JXDatePicker datePicker = new JXDatePicker(c.getTime(), locale);
+		
+		return datePicker;
+	}
 	
 	public static JXDatePicker getDeafultDate() {
 

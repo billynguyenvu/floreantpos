@@ -1,13 +1,13 @@
--- Column: public.ticket.create_date
+-- Column: public.customer.create_date
 
--- ALTER TABLE public.ticket DROP COLUMN create_date;
+-- ALTER TABLE public.customer DROP COLUMN create_date;
 
 ALTER TABLE public.customer
     ADD COLUMN create_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP;
 
--- Index: ticketcreatedate
+-- Index: customercreatedate
 
--- DROP INDEX public.ticketcreatedate;
+-- DROP INDEX public.customercreatedate;
 
 CREATE INDEX customercreatedate
     ON public.customer USING btree
