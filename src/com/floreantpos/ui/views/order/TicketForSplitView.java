@@ -583,12 +583,16 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 		newTicketItem.setPrintedToKitchen(ticketItem.isPrintedToKitchen());
 
 		int itemCount = ticketItem.getItemCount();
+                System.out.println("itemCount=" + itemCount + ", fullTicketItem="+fullTicketItem +", ticketItem.isHasModifiers()="+ticketItem.isHasModifiers());
 
 		toTicketView.ticketViewerTable.addTicketItem(newTicketItem);
+                System.out.println("itemCount=" + itemCount + ", fullTicketItem="+fullTicketItem +", ticketItem.isHasModifiers()="+ticketItem.isHasModifiers());
 		if (itemCount > 1 && !fullTicketItem && !ticketItem.isHasModifiers()) {
+                System.out.println("set item count --");
 			ticketItem.setItemCount(--itemCount);
 		}
 		else {
+                System.out.println("set item count full");
 			ticketViewerTable.delete(ticketItem.getTableRowNum());
 		}
 		repaint();

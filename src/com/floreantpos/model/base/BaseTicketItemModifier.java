@@ -188,7 +188,7 @@ public abstract class BaseTicketItemModifier  implements Comparable, Serializabl
 	public void setNameToPrinting (java.lang.String name) {
 		this.nameToPrinting = name;
                 
-                System.out.println("setNameToPrinting = " + getNameToPrinting());
+//                System.out.println("setNameToPrinting = " + getNameToPrinting());
 	}
 
 
