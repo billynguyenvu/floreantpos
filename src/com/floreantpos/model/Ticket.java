@@ -840,7 +840,7 @@ public class Ticket extends BaseTicket {
                         if (newItem.getSizeModifier() != null) sizeId += "-" + newItem.getSizeModifier().getNameDisplay();
                         if (newItem.isPrintedToKitchen() != null) sizeId += "-isPrinted:" + newItem.isPrintedToKitchen();
 
-                        System.out.println("item key=" + newItem.getItemId().toString() + sizeId);
+//                        System.out.println("item key=" + newItem.getItemId().toString() + sizeId);
 			List<TicketItem> itemListInMap = itemMap.get(newItem.getItemId().toString() + sizeId);
 
 			if (itemListInMap == null) {

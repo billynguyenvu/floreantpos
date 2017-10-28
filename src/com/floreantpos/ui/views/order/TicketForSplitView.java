@@ -529,7 +529,16 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 						TicketItemModifier newModifier = new TicketItemModifier();
 						newModifier.setModifierId(ticketItemModifier.getModifierId());
 						newModifier.setMenuItemModifierGroupId(ticketItemModifier.getMenuItemModifierGroupId());
-						newModifier.setItemCount(ticketItemModifier.getItemCount());
+                                                int itemCount = ticketItemModifier.getItemCount();
+		if (!fullTicketItem) {
+                System.out.println("set modifier item count --");
+                newModifier.setItemCount(1);
+			ticketItemModifier.setItemCount(--itemCount);
+		}
+		else {
+                System.out.println("set modifier item count full");
+			newModifier.setItemCount(ticketItemModifier.getItemCount());
+		}
 						newModifier.setName(ticketItemModifier.getName());
 						newModifier.setNameToPrinting(ticketItemModifier.getNameToPrinting());
 						newModifier.setUnitPrice(ticketItemModifier.getUnitPrice());
@@ -539,6 +548,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 						newModifier.setShouldPrintToKitchen(ticketItemModifier.isShouldPrintToKitchen());
 						newModifier.setTicketItem(newTicketItem);
                                                 newModifier.setSectionName(ticketItemModifier.getSectionName());
+//                                                newModifier.calculatePrice();
                                                 newTicketItem.addToticketItemModifiers(newModifier);
 					}
 				}
@@ -549,7 +559,7 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 //                                System.out.println("addOnsList size: " + addOnsList.size());
 		if (addOnsList != null) {
 			for (TicketItemModifier addOns : ticketItem.getAddOns()) {
-                                System.out.println("modifier " + count + ", name = " + addOns.getName());
+                                System.out.println("addon " + count + ", name = " + addOns.getName());
 				TicketItemModifier newAddOns = new TicketItemModifier();
 				newAddOns.setModifierId(addOns.getModifierId());
 				newAddOns.setMenuItemModifierGroupId(addOns.getMenuItemModifierGroupId());
@@ -583,16 +593,17 @@ public class TicketForSplitView extends com.floreantpos.swing.TransparentPanel i
 		newTicketItem.setPrintedToKitchen(ticketItem.isPrintedToKitchen());
 
 		int itemCount = ticketItem.getItemCount();
-                System.out.println("itemCount=" + itemCount + ", fullTicketItem="+fullTicketItem +", ticketItem.isHasModifiers()="+ticketItem.isHasModifiers());
+//                System.out.println("itemCount=" + itemCount + ", fullTicketItem="+fullTicketItem +", ticketItem.isHasModifiers()="+ticketItem.isHasModifiers());
 
 		toTicketView.ticketViewerTable.addTicketItem(newTicketItem);
                 System.out.println("itemCount=" + itemCount + ", fullTicketItem="+fullTicketItem +", ticketItem.isHasModifiers()="+ticketItem.isHasModifiers());
-		if (itemCount > 1 && !fullTicketItem && !ticketItem.isHasModifiers()) {
-                System.out.println("set item count --");
+//		if (itemCount > 1 && !fullTicketItem && !ticketItem.isHasModifiers()) {
+		if (itemCount > 1 && !fullTicketItem) {
+//                System.out.println("set item count --");
 			ticketItem.setItemCount(--itemCount);
 		}
 		else {
-                System.out.println("set item count full");
+//                System.out.println("set item count full");
 			ticketViewerTable.delete(ticketItem.getTableRowNum());
 		}
 		repaint();
