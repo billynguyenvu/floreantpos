@@ -1,18 +1,15 @@
 /**
  * ************************************************************************
- * * The contents of this file are subject to the MRPL 1.2
- * * (the  "License"),  being   the  Mozilla   Public  License
- * * Version 1.1  with a permitted attribution clause; you may not  use this
- * * file except in compliance with the License. You  may  obtain  a copy of
- * * the License at http://www.floreantpos.org/license.html
- * * Software distributed under the License  is  distributed  on  an "AS IS"
- * * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * * License for the specific  language  governing  rights  and  limitations
- * * under the License.
- * * The Original Code is FLOREANT POS.
- * * The Initial Developer of the Original Code is OROCUBE LLC
- * * All portions are Copyright (C) 2015 OROCUBE LLC
- * * All Rights Reserved.
+ * * The contents of this file are subject to the MRPL 1.2 * (the "License"),
+ * being the Mozilla Public License * Version 1.1 with a permitted attribution
+ * clause; you may not use this * file except in compliance with the License.
+ * You may obtain a copy of * the License at
+ * http://www.floreantpos.org/license.html * Software distributed under the
+ * License is distributed on an "AS IS" * basis, WITHOUT WARRANTY OF ANY KIND,
+ * either express or implied. See the * License for the specific language
+ * governing rights and limitations * under the License. * The Original Code is
+ * FLOREANT POS. * The Initial Developer of the Original Code is OROCUBE LLC *
+ * All portions are Copyright (C) 2015 OROCUBE LLC * All Rights Reserved.
  * ************************************************************************
  */
 package com.floreantpos.main;
@@ -39,6 +36,7 @@ import net.miginfocom.swing.MigLayout;
 
 import com.floreantpos.Messages;
 import com.floreantpos.PosLog;
+import com.floreantpos.model.Customer;
 import com.floreantpos.model.Gratuity;
 import com.floreantpos.model.KitchenTicket;
 import com.floreantpos.model.KitchenTicketItem;
@@ -50,6 +48,7 @@ import com.floreantpos.model.TicketDiscount;
 import com.floreantpos.model.TicketItem;
 import com.floreantpos.model.TicketItemDiscount;
 import com.floreantpos.model.TicketItemModifier;
+import com.floreantpos.model.dao.CustomerDAO;
 import com.floreantpos.model.dao.GratuityDAO;
 import com.floreantpos.model.dao.KitchenTicketDAO;
 import com.floreantpos.model.dao.KitchenTicketItemDAO;
@@ -68,7 +67,10 @@ import com.floreantpos.util.DatabaseUtil;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceBlue;
 import com.jidesoft.swing.JideScrollPane;
+import com.orocube.tablebooking.model.base.BaseCustomerDAO;
 import java.awt.Color;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,6 +78,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimerTask;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -105,6 +108,8 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
 
     private boolean connectionSuccess;
     private boolean isDeleteOnAmount = false;
+    private JCheckBox chkExportDeletedTickets; //$NON-NLS-1$
+    private JCheckBox chkExportUndeletedTickets; //$NON-NLS-1$
 
     public UpdateTicketsWindow() throws HeadlessException {
         setLookAndFeel();
@@ -134,7 +139,7 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
     public void setupSizeAndLocation() {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setSize(PosUIManager.getSize(450, 300));
+        setSize(PosUIManager.getSize(550, 320));
     }
 
     protected void initUI() {
@@ -186,9 +191,15 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
         lblEndDate = new JLabel("End Date" + ":"); //$NON-NLS-1$ //$NON-NLS-2$
         transactionsPanel.add(lblEndDate);
         transactionsPanel.add(tfEndDate, "wrap");
+
+        chkExportDeletedTickets = new JCheckBox("Export deleted tickets"); //$NON-NLS-1$
+        chkExportUndeletedTickets = new JCheckBox("Export undeleted tickets"); //$NON-NLS-1$
+        transactionsPanel.add(chkExportDeletedTickets); //$NON-NLS-1$
+        transactionsPanel.add(chkExportUndeletedTickets, "wrap"); //$NON-NLS-1$
+
         lblStatus = new JLabel("Please select data to delete ...");
         lblStatus.setForeground(Color.GREEN);
-        transactionsPanel.add(lblStatus, "wrap"); //$NON-NLS-1$
+        transactionsPanel.add(lblStatus); //$NON-NLS-1$
 
         btnSave = new PosButton("DELETE"); //$NON-NLS-1$
         btnSave.setActionCommand(SAVE);
@@ -262,7 +273,9 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
             // Calculate total amount of tickets
             lblStatus.setText("Calculating ticket to delete ... ");
             for (Ticket ticket : dbTickets) {
-                if (ticket.getTransactions().isEmpty()) continue;
+                if (ticket.getTransactions().isEmpty()) {
+                    continue;
+                }
 //                if (ticket.getTransactions().iterator().next().getTransactionTime())
                 totalAmount += ticket.getTotalAmount();
                 System.out.println("printed customer copy: " + ticket.getPrintedCustomerCopy());
@@ -290,9 +303,11 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
             // Get tickets need to be deleted
             MatchData finalData = getMatchTickets(amountToDelete, tickets, 0, threshAmount);
             for (int i = 1; i < tickets.size(); i++) {
-                lblStatus.setText("Calculating ticket to delete. Round "+i+" ... ");
+                lblStatus.setText("Calculating ticket to delete. Round " + i + " ... ");
                 MatchData matchData = getMatchTickets(amountToDelete, tickets, i, threshAmount);
-                if (matchData.diff < finalData.diff || finalData.recentTickets.isEmpty()) finalData = matchData;
+                if (matchData.diff < finalData.diff || finalData.recentTickets.isEmpty()) {
+                    finalData = matchData;
+                }
             }
             realAmountToDelete = finalData.realAmountToDelete;
             deleteTickets = finalData.recentTickets;
@@ -309,127 +324,149 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                 Transaction tx = null;
 
                 try {
-                    
+
                     session = TicketDAO.getInstance().createNewSession();
                     tx = session.beginTransaction();
-                    if (deleteTickets != null)
-                    for (Ticket ticket : deleteTickets) {
-                        System.out.println("Deleting ticket " + ticket.getId());
-                        lblStatus.setText("Deleting ticket " + ticket.getId());
-                        // Delete kitchen data
-                        List<KitchenTicket> kts = KitchenTicketDAO.getInstance().findByParentId(ticket.getId());
-                        if (kts != null)
-                        for (KitchenTicket kt : kts) {
-                            lblStatus.setText("Deleting kitchen ticket ... ");
-                            lblStatus.repaint();
-                            if (kt.getTicketItems() != null)
-                            for (KitchenTicketItem kti : kt.getTicketItems()) {
-                                KitchenTicketItemDAO.getInstance().delete(kti, session);
-                            }
-                            KitchenTicketDAO.getInstance().delete(kt, session);
-                        }
-
-                        if (ticket.getDiscounts() != null)
-                        for (TicketDiscount td : ticket.getDiscounts()) {
-                            lblStatus.setText("Deleting discount ticket ... ");
-                            TicketDiscountDAO.getInstance().delete(td, session);
-                        }
-                        if (ticket.getTransactions() != null)
-                        for (PosTransaction postx : ticket.getTransactions()) {
-                            lblStatus.setText("Deleting transaction ... ");
-                            PosTransactionDAO.getInstance().delete(postx, session);
-                        }
-                        // Delete ticket items
-                        if (ticket.getTicketItems() != null)
-                        for (TicketItem ti : ticket.getTicketItems()) {
-                            lblStatus.setText("Deleting ticket item ... ");
-                            System.out.println("Deleting ticket item id: " + ti.getId());
-                            
-                            List<TicketItemModifier> tims = TicketItemModifierDAO.getInstance().findByTicket(ti);                            
-                            if (tims.size() > 0) {
-                                for (TicketItemModifier tim : tims) {
-                                    boolean needDelete = true;
-                                    if (ti.getSizeModifier() != null) {
-                                        System.out.println("Ticket item size modifier id: " + ti.getSizeModifier().getId());
-                                    }
-                                    if (ti.getSizeModifier() != null && tim.getId().equals(ti.getSizeModifier().getId())) needDelete = false;
-                                    else {
-                                        if (ti.getTicketItemModifiers() != null)
-                                        for (TicketItemModifier tim2 : ti.getTicketItemModifiers())
-                                            if (tim.getId().equals(tim2.getId())) {
-                                                needDelete = false;
-                                                break;
-                                            }
-                                        if (needDelete && ti.getAddOns() != null) {
-                                            for (TicketItemModifier tim2 : ti.getAddOns())
-                                                if (tim.getId().equals(tim2.getId())) {
-                                                    needDelete = false;
-                                                    break;
-                                                }
+                    if (deleteTickets != null) {
+                        for (Ticket ticket : deleteTickets) {
+                            System.out.println("Deleting ticket " + ticket.getId());
+                            lblStatus.setText("Deleting ticket " + ticket.getId());
+                            // Delete kitchen data
+                            List<KitchenTicket> kts = KitchenTicketDAO.getInstance().findByParentId(ticket.getId());
+                            if (kts != null) {
+                                for (KitchenTicket kt : kts) {
+                                    lblStatus.setText("Deleting kitchen ticket ... ");
+                                    lblStatus.repaint();
+                                    if (kt.getTicketItems() != null) {
+                                        for (KitchenTicketItem kti : kt.getTicketItems()) {
+                                            KitchenTicketItemDAO.getInstance().delete(kti, session);
                                         }
                                     }
-                                    if (needDelete) {
-                                        System.out.println("Deleting orphan ticket item modifier: " + tim.getId());
+                                    KitchenTicketDAO.getInstance().delete(kt, session);
+                                }
+                            }
+
+                            if (ticket.getDiscounts() != null) {
+                                for (TicketDiscount td : ticket.getDiscounts()) {
+                                    lblStatus.setText("Deleting discount ticket ... ");
+                                    TicketDiscountDAO.getInstance().delete(td, session);
+                                }
+                            }
+                            if (ticket.getTransactions() != null) {
+                                for (PosTransaction postx : ticket.getTransactions()) {
+                                    lblStatus.setText("Deleting transaction ... ");
+                                    PosTransactionDAO.getInstance().delete(postx, session);
+                                }
+                            }
+                            // Delete ticket items
+                            if (ticket.getTicketItems() != null) {
+                                for (TicketItem ti : ticket.getTicketItems()) {
+                                    lblStatus.setText("Deleting ticket item ... ");
+                                    System.out.println("Deleting ticket item id: " + ti.getId());
+
+                                    List<TicketItemModifier> tims = TicketItemModifierDAO.getInstance().findByTicket(ti);
+                                    if (tims != null) {
+                                        for (TicketItemModifier tim : tims) {
+                                            boolean needDelete = true;
+                                            if (ti.getSizeModifier() != null) {
+                                                System.out.println("Ticket item size modifier id: " + ti.getSizeModifier().getId());
+                                            }
+                                            if (ti.getSizeModifier() != null && tim.getId().equals(ti.getSizeModifier().getId())) {
+                                                needDelete = false;
+                                            } else {
+                                                if (ti.getTicketItemModifiers() != null) {
+                                                    for (TicketItemModifier tim2 : ti.getTicketItemModifiers()) {
+                                                        if (tim.getId() != null && tim.getId().equals(tim2.getId())) {
+                                                            needDelete = false;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                if (needDelete && ti.getAddOns() != null) {
+                                                    for (TicketItemModifier tim2 : ti.getAddOns()) {
+                                                        if (tim.getId() != null && tim.getId().equals(tim2.getId())) {
+                                                            needDelete = false;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (needDelete) {
+                                                System.out.println("Deleting orphan ticket item modifier: " + tim.getId());
+                                                TicketItemModifierDAO.getInstance().delete(tim, session);
+                                            }
+                                        }
+                                    }
+
+                                    if (ti.getSizeModifier() != null) {
+                                        System.out.println("Deleting ticket item size modifier id: " + ti.getSizeModifier().getId());
+                                        TicketItemModifier tim = ti.getSizeModifier();
                                         TicketItemModifierDAO.getInstance().delete(tim, session);
+                                    }
+
+                                    if (ti.getTicketItemModifiers() != null) {
+                                        for (TicketItemModifier tim : ti.getTicketItemModifiers()) {
+                                            System.out.println("Deleting ticket item modifier: " + tim.getId());
+                                            TicketItemModifierDAO.getInstance().delete(tim, session);
+                                        }
+                                    }
+
+                                    if (ti.getAddOns() != null) {
+                                        for (TicketItemModifier tim : ti.getAddOns()) {
+                                            System.out.println("Deleting ticket item addon: " + tim.getId());
+                                            TicketItemModifierDAO.getInstance().delete(tim, session);
+                                        }
+                                    }
+
+                                    if (ti.getDiscounts() != null) {
+                                        for (TicketItemDiscount tid : ti.getDiscounts()) {
+                                            TicketItemDiscountDAO.getInstance().delete(tid, session);
+                                        }
+                                    }
+                                    TicketItemDAO.getInstance().delete(ti, session);
+                                }
+                            }
+
+                            // Set shop table un-server
+                            List<ShopTable> shopTables = ShopTableDAO.getInstance().getByNumbers(ticket.getTableNumbers());
+                            if (shopTables != null) {
+                                for (ShopTable shopTable : shopTables) {
+                                    shopTable.setServing(false);
+                                    ShopTableDAO.getInstance().update(shopTable);
+                                }
+                            }
+
+                            // Gratuity deletion
+                            List<Gratuity> gratuities = GratuityDAO.getInstance().findByTicket(ticket);
+                            if (gratuities != null) {
+                                for (Gratuity gratuity : gratuities) {
+                                    if (ticket.getGratuity() == null || !ticket.getGratuity().getId().equals(gratuity.getId())) {
+                                        System.out.println("Deleting orphan gratuity id: " + gratuity.getId());
+                                        GratuityDAO.getInstance().delete(gratuity, session);
                                     }
                                 }
                             }
-                            
-                            if (ti.getSizeModifier() != null) {
-                                System.out.println("Deleting ticket item size modifier id: " + ti.getSizeModifier().getId());
-                                TicketItemModifier tim = ti.getSizeModifier();
-                                TicketItemModifierDAO.getInstance().delete(tim, session);
-                            }
-                            
-                            if (ti.getTicketItemModifiers() != null) {
-                                for (TicketItemModifier tim : ti.getTicketItemModifiers()) {
-                                    System.out.println("Deleting ticket item modifier: " + tim.getId());
-                                    TicketItemModifierDAO.getInstance().delete(tim, session);
-                                }
-                            }
-                            
-                            if (ti.getAddOns() != null) {
-                                for (TicketItemModifier tim : ti.getAddOns()) {
-                                    System.out.println("Deleting ticket item addon: " + tim.getId());
-                                    TicketItemModifierDAO.getInstance().delete(tim, session);
-                                }
-                            }
-                            
-                            if (ti.getDiscounts() != null)
-                            for (TicketItemDiscount tid : ti.getDiscounts()) {
-                                TicketItemDiscountDAO.getInstance().delete(tid, session);
-                            }
-                            TicketItemDAO.getInstance().delete(ti, session);
-                        }
-                        
-                        // Set shop table un-server
-                        List<ShopTable> shopTables = ShopTableDAO.getInstance().getByNumbers(ticket.getTableNumbers());
-                        if (shopTables != null)
-                        for (ShopTable shopTable: shopTables) {
-                            shopTable.setServing(false);
-                            ShopTableDAO.getInstance().update(shopTable);
-                        }
-                        
-                        // Gratuity deletion
-                        List<Gratuity> gratuities = GratuityDAO.getInstance().findByTicket(ticket);
-                        if (gratuities != null) {
-                            for (Gratuity gratuity: gratuities) {
-                                if (ticket.getGratuity() == null || !ticket.getGratuity().getId().equals(gratuity.getId())) {
-                                    System.out.println("Deleting orphan gratuity id: " + gratuity.getId());
-                                    GratuityDAO.getInstance().delete(gratuity, session);
-                                }
-                            }
-                        }
 
-                        if (ticket.getGratuity() != null) {
-                            System.out.println("Deleting gratuity id: " + ticket.getGratuity().getId());
-                            GratuityDAO.getInstance().delete(ticket.getGratuity(), session);
+                            if (ticket.getGratuity() != null) {
+                                System.out.println("Deleting gratuity id: " + ticket.getGratuity().getId());
+                                GratuityDAO.getInstance().delete(ticket.getGratuity(), session);
+                            }
+
+                            // Delete ticket
+                            TicketDAO.getInstance().delete(ticket, session);
                         }
-                        
-                        // Delete ticket
-                        TicketDAO.getInstance().delete(ticket, session);
                     }
                     tx.commit();
+
+                    // Export to CSV
+                    if (chkExportDeletedTickets.isSelected()) {
+                        writeToCSV(deleteTickets, true);
+                    }
+
+                    if (chkExportUndeletedTickets.isSelected()) {
+                        tickets.removeAll(deleteTickets);
+                        writeToCSV(tickets, false);
+                    }
                 } catch (Exception e) {
                     if (tx != null) {
                         tx.rollback();
@@ -453,13 +490,49 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
             setCursor(Cursor.getDefaultCursor());
         }
     }
-    
+
     private class MatchData {
+
         List<Ticket> recentTickets = null;
         Double diff = null;
         Double realAmountToDelete = 0.00d;
     }
-    
+
+    // ID,TABLE,SERVER,CREATED,TRANSACTIONDATE,CUSTOMER,TYPE,TOTAL,DUE
+    private void writeToCSV(List<Ticket> tickets, boolean isDeleted) throws IOException {
+        String csvFile = (isDeleted ? "ticket-deleted-" : "ticket-not-deleted-") + System.currentTimeMillis() + ".csv";
+        FileWriter writer = new FileWriter(csvFile);
+        writer.append("ID\tTABLE\tSERVER\tCREATED DATE\tPAYMENT TYPE\tTRANSACTION DATE\tCUSTOMER\tORDER TYPE\tTOTAL AMOUNT\tDUE AMOUNT\n");
+        for (Ticket ticket : tickets) {
+            writer.append(convertToCSVLine(ticket));
+        }
+        writer.flush();
+        writer.close();
+    }
+
+    private String convertToCSVLine(Ticket ticket) {
+        Customer customer = (ticket.getCustomerId() == null) ? null : CustomerDAO.getInstance().get(ticket.getCustomerId());
+        StringBuilder sb = new StringBuilder();
+        sb.append(ticket.getId()).append("\t")
+                .append(ticket.getTableNumbers()).append("\t")
+                .append(ticket.getOwner().getFullName()).append("\t")
+                .append(ticket.getCreateDate()).append("\t")
+                .append(!ticket.getTransactions().isEmpty() ? ticket.getTransactions().iterator().next().getPaymentType(): "").append("\t")
+                .append(!ticket.getTransactions().isEmpty() ? ticket.getTransactions().iterator().next().getTransactionTime() : "").append("\t")
+                .append((customer == null) ? "Guest" : (customer.getFirstName() + " " + customer.getLastName())).append("\t")
+                .append(ticket.getOrderType()).append("\t")
+                .append(ticket.getTotalAmount()).append("\t")
+                .append(ticket.getDueAmount()).append("\n");
+        return sb.toString();
+    }
+
+//    private class UpdateTxWorker extends TimerTask {
+//
+//        @Override
+//        public void run() {
+//
+//        }
+//    }
     private MatchData getMatchTickets(Double amountToDelete, List<Ticket> tickets, int index, Double threshAmount) {
         List<Ticket> deleteTickets = new ArrayList<>();
         Double realAmountToDelete = 0.00d;
@@ -469,7 +542,7 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
             if (realAmountToDelete + ticket.getTotalAmount() > amountToDelete) {
                 System.out.println("startDiff = " + diff);
                 List<Ticket> recentTickets = new ArrayList<>();
-                for (int j = i; j< tickets.size(); j++) {
+                for (int j = i; j < tickets.size(); j++) {
                     MatchData matchData = getOtherTickets(amountToDelete, realAmountToDelete, tickets.get(j).getTotalAmount(), tickets, j, threshAmount);
                     System.out.println("index: " + j + ", newDiff = " + matchData.diff + ", size = " + matchData.recentTickets.size());
                     if (matchData.diff < diff && !matchData.recentTickets.isEmpty()) {
@@ -480,10 +553,11 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                 }
                 System.out.println("final recentTickets size=" + recentTickets.size());
                 deleteTickets.addAll(recentTickets);
-                for (Ticket t: recentTickets) realAmountToDelete += t.getTotalAmount();
+                for (Ticket t : recentTickets) {
+                    realAmountToDelete += t.getTotalAmount();
+                }
                 break;
-            }
-            else {
+            } else {
                 diff = amountToDelete - realAmountToDelete - ticket.getTotalAmount();
             }
             deleteTickets.add(ticket);
@@ -493,16 +567,16 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
         data.diff = diff;
         data.recentTickets = deleteTickets;
         data.realAmountToDelete = realAmountToDelete;
-        
+
         return data;
     }
-    
+
     private MatchData getOtherTickets(Double amountToDelete, Double totalAmountToDelete, Double currentAmount, List<Ticket> tickets, int index, Double threshAmount) {
         MatchData data = new MatchData();
         List<Ticket> recentTickets = new ArrayList<Ticket>();
         Double otherAmountToDelete = totalAmountToDelete;
         Double diff = Math.abs(totalAmountToDelete - amountToDelete);
-        
+
         for (int i = tickets.size() - 1; i > index; i--) {
             Double newDiff = otherAmountToDelete + tickets.get(i).getTotalAmount() - amountToDelete;
             if (Math.abs(newDiff) < diff) {
@@ -512,10 +586,12 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                     diff = Math.abs(newDiff);
                 }
             }
-            if (newDiff > 0) break;
+            if (newDiff > 0) {
+                break;
+            }
         }
-        
-            System.out.println("diff 1 = " + diff);
+
+        System.out.println("diff 1 = " + diff);
         if ((totalAmountToDelete + currentAmount < threshAmount) && (Math.abs(totalAmountToDelete + currentAmount - amountToDelete) < diff)) {
             diff = Math.abs(totalAmountToDelete + currentAmount - amountToDelete);
             recentTickets.clear();
@@ -523,18 +599,20 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
             System.out.println("diff 2 = " + diff);
             System.out.println("recentTickets size = " + recentTickets.size() + ", data: " + recentTickets.get(0).getTotalAmount());
         }
-        
+
         for (int i = tickets.size() - 1; i > index; i--) {
             Double newDiff = totalAmountToDelete + tickets.get(i).getTotalAmount() - amountToDelete;
             if (Math.abs(newDiff) < diff && (totalAmountToDelete + tickets.get(i).getTotalAmount() < threshAmount)) {
                 recentTickets.clear();
                 recentTickets.add(tickets.get(i));
                 diff = Math.abs(newDiff);
-            System.out.println("diff 3 = " + diff);
+                System.out.println("diff 3 = " + diff);
             }
-            if (newDiff > 0) break;
+            if (newDiff > 0) {
+                break;
+            }
         }
-        
+
         data.recentTickets = recentTickets;
         data.diff = diff;
         return data;
@@ -573,9 +651,9 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                     Double value = Double.parseDouble(tfAmountOrPercent.getText());
                     if (!(value.equals(0.00d) || value.equals(0d))) {
                         if (chkDeleteOnAmount.isSelected()) {
-                            deleteTransactions(getDate(tfStartDate, true), getDate(tfEndDate, false), null, value, threshold/100);
+                            deleteTransactions(getDate(tfStartDate, true), getDate(tfEndDate, false), null, value, threshold / 100);
                         } else {
-                            deleteTransactions(getDate(tfStartDate, true), getDate(tfEndDate, false), value.floatValue()/100, null, threshold/100);
+                            deleteTransactions(getDate(tfStartDate, true), getDate(tfEndDate, false), value.floatValue() / 100, null, threshold / 100);
                         }
                     } else {
                         POSMessageDialog.showMessage(this, "The input number must greater than zero.");
