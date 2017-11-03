@@ -312,29 +312,35 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                     
                     session = TicketDAO.getInstance().createNewSession();
                     tx = session.beginTransaction();
+                    if (deleteTickets != null)
                     for (Ticket ticket : deleteTickets) {
                         System.out.println("Deleting ticket " + ticket.getId());
                         lblStatus.setText("Deleting ticket " + ticket.getId());
                         // Delete kitchen data
                         List<KitchenTicket> kts = KitchenTicketDAO.getInstance().findByParentId(ticket.getId());
+                        if (kts != null)
                         for (KitchenTicket kt : kts) {
                             lblStatus.setText("Deleting kitchen ticket ... ");
-                        lblStatus.repaint();
+                            lblStatus.repaint();
+                            if (kt.getTicketItems() != null)
                             for (KitchenTicketItem kti : kt.getTicketItems()) {
                                 KitchenTicketItemDAO.getInstance().delete(kti, session);
                             }
                             KitchenTicketDAO.getInstance().delete(kt, session);
                         }
 
+                        if (ticket.getDiscounts() != null)
                         for (TicketDiscount td : ticket.getDiscounts()) {
                             lblStatus.setText("Deleting discount ticket ... ");
                             TicketDiscountDAO.getInstance().delete(td, session);
                         }
+                        if (ticket.getTransactions() != null)
                         for (PosTransaction postx : ticket.getTransactions()) {
                             lblStatus.setText("Deleting transaction ... ");
                             PosTransactionDAO.getInstance().delete(postx, session);
                         }
                         // Delete ticket items
+                        if (ticket.getTicketItems() != null)
                         for (TicketItem ti : ticket.getTicketItems()) {
                             lblStatus.setText("Deleting ticket item ... ");
                             System.out.println("Deleting ticket item id: " + ti.getId());
@@ -348,12 +354,13 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                                     }
                                     if (ti.getSizeModifier() != null && tim.getId().equals(ti.getSizeModifier().getId())) needDelete = false;
                                     else {
+                                        if (ti.getTicketItemModifiers() != null)
                                         for (TicketItemModifier tim2 : ti.getTicketItemModifiers())
                                             if (tim.getId().equals(tim2.getId())) {
                                                 needDelete = false;
                                                 break;
                                             }
-                                        if (needDelete) {
+                                        if (needDelete && ti.getAddOns() != null) {
                                             for (TicketItemModifier tim2 : ti.getAddOns())
                                                 if (tim.getId().equals(tim2.getId())) {
                                                     needDelete = false;
@@ -374,20 +381,21 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                                 TicketItemModifierDAO.getInstance().delete(tim, session);
                             }
                             
-                            if (ti.getTicketItemModifiers().size() > 0) {
+                            if (ti.getTicketItemModifiers() != null) {
                                 for (TicketItemModifier tim : ti.getTicketItemModifiers()) {
                                     System.out.println("Deleting ticket item modifier: " + tim.getId());
                                     TicketItemModifierDAO.getInstance().delete(tim, session);
                                 }
                             }
                             
-                            if (ti.getAddOns().size() > 0) {
+                            if (ti.getAddOns() != null) {
                                 for (TicketItemModifier tim : ti.getAddOns()) {
                                     System.out.println("Deleting ticket item addon: " + tim.getId());
                                     TicketItemModifierDAO.getInstance().delete(tim, session);
                                 }
                             }
                             
+                            if (ti.getDiscounts() != null)
                             for (TicketItemDiscount tid : ti.getDiscounts()) {
                                 TicketItemDiscountDAO.getInstance().delete(tid, session);
                             }
@@ -396,6 +404,7 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                         
                         // Set shop table un-server
                         List<ShopTable> shopTables = ShopTableDAO.getInstance().getByNumbers(ticket.getTableNumbers());
+                        if (shopTables != null)
                         for (ShopTable shopTable: shopTables) {
                             shopTable.setServing(false);
                             ShopTableDAO.getInstance().update(shopTable);
