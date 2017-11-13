@@ -392,8 +392,15 @@ public class UpdateTicketsWindow extends JFrame implements ActionListener {
                                                 }
                                             }
                                             if (needDelete) {
-                                                System.out.println("Deleting orphan ticket item modifier: " + tim.getId());
-                                                TicketItemModifierDAO.getInstance().delete(tim, session);
+                                                if (tim.getTicketItem() != null) {
+                                                    System.out.println("Updating orphan ticket item modifier: " + tim.getId());
+                                                    tim.setTicketItem(null);
+                                                    TicketItemModifierDAO.getInstance().update(tim);
+                                                }
+                                                else {
+                                                    System.out.println("Deleting orphan ticket item modifier: " + tim.getId());
+                                                    TicketItemModifierDAO.getInstance().delete(tim, session);
+                                                }
                                             }
                                         }
                                     }
