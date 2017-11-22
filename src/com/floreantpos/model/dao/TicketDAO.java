@@ -341,7 +341,7 @@ public class TicketDAO extends BaseTicketDAO {
 		}
 	}
 
-	public List<Ticket> findTickets(PaginatedTableModel tableModel) {
+	public List<Ticket> findTickets(PaginatedTableModel tableModel, String... onlyCurrentDate) {
 		Session session = null;
 		Criteria criteria = null;
 
@@ -349,6 +349,24 @@ public class TicketDAO extends BaseTicketDAO {
 			session = createNewSession();
 			criteria = session.createCriteria(getReferenceClass());
 			updateCriteriaFilters(criteria);
+                        
+                        if (onlyCurrentDate != null) {
+                            
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.HOUR, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			Date startDate = calendar.getTime();
+
+			calendar.set(Calendar.HOUR, 23);
+			calendar.set(Calendar.MINUTE, 59);
+			calendar.set(Calendar.SECOND, 59);
+			Date endDate = calendar.getTime();
+                            
+                                                     criteria.add(Restrictions.ge(Ticket.PROP_CREATE_DATE, startDate));
+                                                     criteria.add(Restrictions.le(Ticket.PROP_CREATE_DATE, endDate));
+                        }
 
 			criteria.setFirstResult(0);
 			criteria.setMaxResults(tableModel.getPageSize());
@@ -371,7 +389,7 @@ public class TicketDAO extends BaseTicketDAO {
 		}
 	}
 
-	public List<Ticket> findNextTickets(PaginatedTableModel tableModel) {
+	public List<Ticket> findNextTickets(PaginatedTableModel tableModel, String... onlyCurrentDate) {
 		Session session = null;
 		Criteria criteria = null;
 
@@ -381,6 +399,25 @@ public class TicketDAO extends BaseTicketDAO {
 			session = createNewSession();
 			criteria = session.createCriteria(getReferenceClass());
 			updateCriteriaFilters(criteria);
+                        
+                        if (onlyCurrentDate != null) {
+                            
+
+			Calendar calendar = Calendar.getInstance();
+
+			calendar.set(Calendar.HOUR, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			Date startDate = calendar.getTime();
+
+			calendar.set(Calendar.HOUR, 23);
+			calendar.set(Calendar.MINUTE, 59);
+			calendar.set(Calendar.SECOND, 59);
+			Date endDate = calendar.getTime();
+                            
+                                                     criteria.add(Restrictions.ge(Ticket.PROP_CREATE_DATE, startDate));
+                                                     criteria.add(Restrictions.le(Ticket.PROP_CREATE_DATE, endDate));
+                        }
 
 			criteria.setFirstResult(nextIndex);
 			criteria.setMaxResults(tableModel.getPageSize());
@@ -403,7 +440,7 @@ public class TicketDAO extends BaseTicketDAO {
 		}
 	}
 
-	public List<Ticket> findPreviousTickets(PaginatedTableModel tableModel) {
+	public List<Ticket> findPreviousTickets(PaginatedTableModel tableModel, String... onlyCurrentDate) {
 		Session session = null;
 		Criteria criteria = null;
 		try {
@@ -413,6 +450,25 @@ public class TicketDAO extends BaseTicketDAO {
 			session = createNewSession();
 			criteria = session.createCriteria(getReferenceClass());
 			updateCriteriaFilters(criteria);
+                        
+                        if (onlyCurrentDate != null) {
+                            
+
+			Calendar calendar = Calendar.getInstance();
+
+			calendar.set(Calendar.HOUR, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			Date startDate = calendar.getTime();
+
+			calendar.set(Calendar.HOUR, 23);
+			calendar.set(Calendar.MINUTE, 59);
+			calendar.set(Calendar.SECOND, 59);
+			Date endDate = calendar.getTime();
+                            
+                                                     criteria.add(Restrictions.ge(Ticket.PROP_CREATE_DATE, startDate));
+                                                     criteria.add(Restrictions.le(Ticket.PROP_CREATE_DATE, endDate));
+                        }
 
 			criteria.setFirstResult(previousIndex);
 			criteria.setMaxResults(tableModel.getPageSize());
@@ -435,7 +491,7 @@ public class TicketDAO extends BaseTicketDAO {
 		}
 	}
 
-	public List<Ticket> findCustomerTickets(Integer customerId, PaginatedTableModel tableModel) {
+	public List<Ticket> findCustomerTickets(Integer customerId, PaginatedTableModel tableModel, String... onlyCurrentDate) {
 		Session session = null;
 		Criteria criteria = null;
 
@@ -443,6 +499,25 @@ public class TicketDAO extends BaseTicketDAO {
 			session = createNewSession();
 			criteria = session.createCriteria(getReferenceClass());
 			criteria.add(Restrictions.eq(Ticket.PROP_CUSTOMER_ID, customerId));
+                        
+                        if (onlyCurrentDate != null) {
+                            
+
+			Calendar calendar = Calendar.getInstance();
+
+			calendar.set(Calendar.HOUR, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			Date startDate = calendar.getTime();
+
+			calendar.set(Calendar.HOUR, 23);
+			calendar.set(Calendar.MINUTE, 59);
+			calendar.set(Calendar.SECOND, 59);
+			Date endDate = calendar.getTime();
+                            
+                                                     criteria.add(Restrictions.ge(Ticket.PROP_CREATE_DATE, startDate));
+                                                     criteria.add(Restrictions.le(Ticket.PROP_CREATE_DATE, endDate));
+                        }
 
 			/*if (filter.equals(PaymentStatusFilter.OPEN.toString())) {
 				criteria.add(Restrictions.eq(Ticket.PROP_PAID, Boolean.FALSE));
