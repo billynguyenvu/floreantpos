@@ -266,14 +266,16 @@
 		</dependency>
 
 		<dependency>
+                                                    <groupId>org.apache.poi</groupId>
+                                                    <artifactId>poi</artifactId>
+                                                    <version>3.6</version>
+		</dependency>
+
+		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>4.0.1</version>
 			<exclusions>
-				<exclusion>
-					<artifactId>itext</artifactId>
-					<groupId>com.lowagie</groupId>
-				</exclusion>
 				<exclusion>
 					<artifactId>commons-collections</artifactId>
 					<groupId>commons-collections</groupId>
