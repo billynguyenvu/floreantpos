@@ -158,7 +158,11 @@ public class OrderView extends ViewPanel {
         ButtonGroup group = new ButtonGroup();
         if (modifierList != null) {
             for (MenuModifier modifier : modifierList) {
-                if (!modifier.getModifierGroup().getName().equalsIgnoreCase("FREE ADDON") || (selectedCategory != null && selectedCategory.getTranslatedName() != null && selectedCategory.getTranslatedName().equalsIgnoreCase(specialCategory))) {
+                if (modifier.getModifierGroup() == null 
+                        || modifier.getModifierGroup().getName() == null 
+                        || !modifier.getModifierGroup().getName().equalsIgnoreCase("FREE ADDON") 
+                        || (selectedCategory != null && selectedCategory.getTranslatedName() != null 
+                        && selectedCategory.getTranslatedName().equalsIgnoreCase(specialCategory))) {
                     continue;
                 }
                 ModifierButton btnModifier = new ModifierButton(modifier);
