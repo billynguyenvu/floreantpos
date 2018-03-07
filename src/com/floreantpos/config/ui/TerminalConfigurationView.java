@@ -71,6 +71,7 @@ import com.floreantpos.ui.views.SwitchboardView;
 public class TerminalConfigurationView extends ConfigurationView {
 	private IntegerTextField tfTerminalNumber;
 	private IntegerTextField tfSecretKeyLength;
+	private IntegerTextField tfOpenTicketDays;
 
 	private JTextArea taTerminalLocation;
 
@@ -128,6 +129,10 @@ public class TerminalConfigurationView extends ConfigurationView {
 		contentPanel.add(new JLabel(Messages.getString("TerminalConfigurationView.9"))); //$NON-NLS-1$
 		tfSecretKeyLength = new IntegerTextField(3);
 		contentPanel.add(tfSecretKeyLength, "wrap"); //$NON-NLS-1$
+
+		contentPanel.add(new JLabel("Number of days need to load open ticket ")); //$NON-NLS-1$
+		tfOpenTicketDays = new IntegerTextField(3);
+		contentPanel.add(tfOpenTicketDays, "wrap"); //$NON-NLS-1$
 
 		contentPanel.add(cbShowDbConfiguration, "spanx 3"); //$NON-NLS-1$
 
@@ -266,8 +271,11 @@ public class TerminalConfigurationView extends ConfigurationView {
 		if (defaultPassLen == 0)
 			defaultPassLen = 4;
 
+		int openTicketDays = tfOpenTicketDays.getInteger();
+
 		TerminalConfig.setTerminalId(terminalNumber);
 		TerminalConfig.setDefaultPassLen(defaultPassLen);
+		TerminalConfig.setOpenTicketDays(openTicketDays);
 		TerminalConfig.setFullscreenMode(cbFullscreenMode.isSelected());
 		TerminalConfig.setShowDbConfigureButton(cbShowDbConfiguration.isSelected());
 		TerminalConfig.setUseTranslatedName(cbTranslatedName.isSelected());
@@ -327,6 +335,7 @@ public class TerminalConfigurationView extends ConfigurationView {
 
 		tfTerminalNumber.setText(String.valueOf(TerminalConfig.getTerminalId()));
 		tfSecretKeyLength.setText(String.valueOf(TerminalConfig.getDefaultPassLen()));
+		tfOpenTicketDays.setText(String.valueOf(TerminalConfig.getOpenTicketDays()));
 		cbFullscreenMode.setSelected(TerminalConfig.isFullscreenMode());
 		cbShowDbConfiguration.setSelected(TerminalConfig.isShowDbConfigureButton());
 		cbUseSettlementPrompt.setSelected(TerminalConfig.isUseSettlementPrompt());

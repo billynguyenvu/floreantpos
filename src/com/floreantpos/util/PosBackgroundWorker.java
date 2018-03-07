@@ -33,8 +33,9 @@ public class PosBackgroundWorker extends TimerTask {
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.DAY_OF_YEAR, -2);
         Calendar endDate = Calendar.getInstance();
+        logger.debug(String.format("Check T.O customer from '%s' to '%s'.", startDate.getTime(), endDate.getTime()));
         List<Ticket> tickets = TicketDAO.getInstance().findClosedTickets(startDate.getTime(), endDate.getTime());
-        logger.debug("Check T.O customer tickets size: " + tickets.size());
+        logger.debug(String.format("T.O customer tickets size: %s", tickets.size()));
 
         // Delete all ticket's related data
         Session session = null;

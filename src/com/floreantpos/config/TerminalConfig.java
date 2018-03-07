@@ -56,6 +56,8 @@ public class TerminalConfig {
 
 	private static final String DEFAULT_PASS_LEN = "DEFAULT_PASS_LEN"; //$NON-NLS-1$
 
+	private static final String LOAD_OPEN_TICKET_DAYS = "LOAD_OPEN_TICKET_DAYS"; //$NON-NLS-1$
+
 	private static final String TOUCH_FONT_SIZE = "TOUCH_FONT_SIZE";//$NON-NLS-1$
 
 	private static final String SCREEN_COMPONENT_SIZE_RATIO = "SCREEN_COMPONENT_SIZE_RATIO";//$NON-NLS-1$
@@ -196,6 +198,14 @@ public class TerminalConfig {
 
 	public static int getDefaultPassLen() {
 		return config.getInt(DEFAULT_PASS_LEN, 4);
+	}
+
+	public static void setOpenTicketDays(int openTicketDays) {
+		config.setProperty(LOAD_OPEN_TICKET_DAYS, openTicketDays);
+	}
+
+	public static int getOpenTicketDays() {
+		return config.getInt(LOAD_OPEN_TICKET_DAYS, 1);
 	}
 
 	public static boolean isAutoLogoffEnable() {
