@@ -24,12 +24,7 @@ import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -43,6 +38,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import com.floreantpos.config.TerminalConfig;
 import net.miginfocom.swing.MigLayout;
 
 import com.floreantpos.IconFactory;
@@ -241,7 +237,12 @@ public class DefaultTableSelectionView extends TableSelector implements ActionLi
 	}
 
 	private void rendererTablesTicket() {
-		List<Ticket> openTickets = TicketDAO.getInstance().findOpenTickets();
+		Calendar startDate = Calendar.getInstance();
+		Calendar endDate = Calendar.getInstance();
+		int openTicketDays = TerminalConfig.getOpenTicketDays();
+		startDate.add(Calendar.HOUR_OF_DAY, openTicketDays * -24);
+		List<Ticket> openTickets = TicketDAO.getInstance().findOpenTickets(startDate.getTime(), endDate.getTime());
+		System.out.print(String.format("Load %s open tickets for %s days.", openTickets.size(), openTicketDays));
 		for (Ticket ticket : openTickets) {
 			for (ShopTableButton shopTableButton : tableButtonMap.values()) {
 				if (shopTableButton.getShopTable().getId() == null)

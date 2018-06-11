@@ -223,7 +223,7 @@ public class MenuItemView extends SelectionView {
 				}
 				else
 					setText("<html><body><center>"
-							+ menuItem.getName()
+							+ menuItem.getDisplayName()
 							+ (!showPrice ? "" : "<br><h4>" + "<span style='color:white;background-color:green;margin:1;'>" + "&nbsp;" + "&nbsp;" + "&nbsp;"
 									+ CurrencyUtil.getCurrencySymbol() + menuItem.getPrice() + "&nbsp;" + "&nbsp;" + "&nbsp;" + "</span>")
 							+ "&nbsp;"
