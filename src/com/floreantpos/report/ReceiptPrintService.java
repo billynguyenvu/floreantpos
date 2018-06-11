@@ -613,13 +613,13 @@ public class ReceiptPrintService {
 		StringBuilder ticketHeaderBuilder = new StringBuilder();
 		ticketHeaderBuilder.append("<html>"); //$NON-NLS-1$
 
-		beginRow(ticketHeaderBuilder);
-		addColumn(ticketHeaderBuilder, "*" + ticket.getOrderType() + "*"); //$NON-NLS-1$ //$NON-NLS-2$
-		endRow(ticketHeaderBuilder);
-
-		beginRow(ticketHeaderBuilder);
-		addColumn(ticketHeaderBuilder, POSConstants.RECEIPT_REPORT_TERMINAL_LABEL + Application.getInstance().getTerminal().getId());
-		endRow(ticketHeaderBuilder);
+//		beginRow(ticketHeaderBuilder);
+//		addColumn(ticketHeaderBuilder, "*" + ticket.getOrderType() + "*"); //$NON-NLS-1$ //$NON-NLS-2$
+//		endRow(ticketHeaderBuilder);
+//
+//		beginRow(ticketHeaderBuilder);
+//		addColumn(ticketHeaderBuilder, POSConstants.RECEIPT_REPORT_TERMINAL_LABEL + Application.getInstance().getTerminal().getId());
+//		endRow(ticketHeaderBuilder);
 
 		beginRow(ticketHeaderBuilder);
 		addColumn(ticketHeaderBuilder, POSConstants.RECEIPT_REPORT_TICKET_NO_LABEL + ticket.getId());
@@ -630,15 +630,15 @@ public class ReceiptPrintService {
 			beginRow(ticketHeaderBuilder);
 			addColumn(ticketHeaderBuilder, ("" + ticket.getTableNumbers()).replace("[", "").replace("]", ""));
 			endRow(ticketHeaderBuilder);
-
-			beginRow(ticketHeaderBuilder);
-			addColumn(ticketHeaderBuilder, POSConstants.RECEIPT_REPORT_GUEST_NO_LABEL + ticket.getNumberOfGuests());
-			endRow(ticketHeaderBuilder);
+//
+//			beginRow(ticketHeaderBuilder);
+//			addColumn(ticketHeaderBuilder, POSConstants.RECEIPT_REPORT_GUEST_NO_LABEL + ticket.getNumberOfGuests());
+//			endRow(ticketHeaderBuilder);
 		}
-
-		beginRow(ticketHeaderBuilder);
-		addColumn(ticketHeaderBuilder, POSConstants.RECEIPT_REPORT_SERVER_LABEL + ticket.getOwner());
-		endRow(ticketHeaderBuilder);
+//
+//		beginRow(ticketHeaderBuilder);
+//		addColumn(ticketHeaderBuilder, POSConstants.RECEIPT_REPORT_SERVER_LABEL + ticket.getOwner());
+//		endRow(ticketHeaderBuilder);
 
 		beginRow(ticketHeaderBuilder);
 		addColumn(ticketHeaderBuilder, POSConstants.RECEIPT_REPORT_DATE_LABEL + reportDateFormat.format(new Date()));

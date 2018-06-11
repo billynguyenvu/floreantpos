@@ -23,6 +23,7 @@ public class KitchenTicketItem extends BaseKitchenTicketItem {
 	private static final long serialVersionUID = 1L;
         
         private double subTotal = 0;
+        private String sizeShortName = "";
 
 	/*[CONSTRUCTOR MARKER BEGIN]*/
 	public KitchenTicketItem () {
@@ -58,5 +59,15 @@ public class KitchenTicketItem extends BaseKitchenTicketItem {
         
         public void setSubTotal(double subTotal) {
             this.subTotal = subTotal;
+        }
+        
+        public String getSizeShortName() {
+            return sizeShortName;
+        }
+        
+        public void setSizeShortName(String name) {
+            if (name != null && name.length() > 0) {
+                this.sizeShortName = "x " + name.substring(0, 1);
+            }
         }
 }

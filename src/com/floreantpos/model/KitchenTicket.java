@@ -278,6 +278,12 @@ public class KitchenTicket extends BaseKitchenTicket {
                     item.setQuantity(ticketItem.getItemCount());
                 }
                 item.setStatus(KitchenTicketStatus.WAITING.name());
+                if (ticketItem.getSizeModifier() != null) {
+                    String name = ticketItem.getSizeModifier().getNamePrinting();
+                    if (name != null) {
+                        item.setSizeShortName(name);
+                    }
+                }
 
                 kitchenTicket.addToticketItems(item);
 
@@ -389,6 +395,12 @@ public class KitchenTicket extends BaseKitchenTicket {
                     item.setQuantity(ticketItem.getItemCount());
                 }
                 item.setStatus(KitchenTicketStatus.WAITING.name());
+                if (ticketItem.getSizeModifier() != null) {
+                    String name = ticketItem.getSizeModifier().getNamePrinting();
+                    if (name != null) {
+                        item.setSizeShortName(name);
+                    }
+                }
 
                 kitchenTicket.addToticketItems(item);
 
@@ -466,7 +478,7 @@ public class KitchenTicket extends BaseKitchenTicket {
                     item.setSortOrder(ticketItem.getMenuItem().getParent().getSortOrder());
                 }
                 //item.setFractionalQuantity(itemModifier.getItemCount().doubleValue());
-                item.setQuantity(itemModifier.getItemCount());
+//                item.setQuantity(itemModifier.getItemCount());
                 item.setStatus(KitchenTicketStatus.WAITING.name());
                 kitchenTicket.addToticketItems(item);
 
@@ -499,7 +511,7 @@ public class KitchenTicket extends BaseKitchenTicket {
                     item.setSortOrder(ticketItem.getMenuItem().getParent().getSortOrder());
                 }
                 //item.setFractionalQuantity(ticketItemModifier.getItemCount().doubleValue());
-                item.setQuantity(ticketItemModifier.getItemCount());
+//                item.setQuantity(ticketItemModifier.getItemCount());
                 item.setStatus(KitchenTicketStatus.WAITING.name());
                 kitchenTicket.addToticketItems(item);
 
