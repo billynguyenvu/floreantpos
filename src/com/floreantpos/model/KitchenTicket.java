@@ -457,7 +457,7 @@ public class KitchenTicket extends BaseKitchenTicket {
                  continue;
                  }*/
 
-                if (itemModifier.isPrintedToKitchen() || !itemModifier.isShouldPrintToKitchen()) {
+                if (!itemModifier.isShouldPrintToKitchen()) {
                     continue;
                 }
 

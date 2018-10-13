@@ -518,12 +518,12 @@ public class TicketView extends JPanel {
 		if (ticket.getOrderType().isShouldPrintToKitchen()) {
 			if (ticket.needsKitchenPrint()) {
 
-            if (ticket.getOrderType().getName().equals(OrderType.TAKE_OUT)) {
-                ReceiptPrintService.printTOToKitchen(ticket, true);
-            }
-            else {
-                ReceiptPrintService.printTOToKitchen(ticket, false);
-            }				ReceiptPrintService.printToKitchen(ticket);
+				if (ticket.getOrderType().getName().equals(OrderType.TAKE_OUT)) {
+					ReceiptPrintService.printTOToKitchen(ticket, true);
+				} else {
+					ReceiptPrintService.printTOToKitchen(ticket, false);
+				}
+				ReceiptPrintService.printToKitchen(ticket);
 				TicketDAO.getInstance().refresh(ticket);
 				setCancelable(false);
 				setAllowToLogOut(false);
